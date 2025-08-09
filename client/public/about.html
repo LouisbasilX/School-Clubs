@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -72,11 +72,6 @@
               href="club-events.html"
               class="text-sm font-medium text-gray-700 hover:text-yellow-600 transition"
               >Events</a
-            >
-            <a
-              href="contact.html"
-              class="text-sm font-medium text-gray-700 hover:text-yellow-600 transition"
-              >Contact</a
             >
           </div>
           <div id="login" class="flex items-center space-x-4">
@@ -549,9 +544,8 @@
           // Show welcome message
           const welcome = document.getElementById("welcomeMessage");
           welcome.classList.remove("hidden");
-          welcome.querySelector(
-            "p"
-          ).textContent = `Welcome back, ${user.username}!`;
+          welcome.querySelector("p").textContent =
+            `Welcome back, ${user.username}!`;
         }
       });
     </script>

@@ -1,901 +1,548 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login | Hillrange Clubs</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <style>
-    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap");
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Hillrange Clubs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap");
 
-    :root {
-      --primary: #fbbf24;
-      --secondary: #78350f;
-      --accent: #f59e0b;
-      --light: #fef3c7;
-      --dark: #451a03;
-      --blue: #1e40af;
-      --background-light: #fef9e7;
-      --background-dark: #1c1917;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: "Inter", sans-serif;
-      background: var(--background-light);
-      overflow-x: hidden;
-      min-height: 100vh;
-      transition: background 0.5s ease;
-    }
-
-    body.dark {
-      background: var(--background-dark);
-      color: var(--light);
-    }
-
-    .school-font {
-      font-family: "Playfair Display", serif;
-      font-weight: 900;
-      letter-spacing: -0.015em;
-    }
-
-    .school-gradient {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
-    }
-
-    .school-text-gradient {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    /* Hero Section */
-    .hero-section {
-      position: relative;
-      height: 40vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--blue) 100%);
-      z-index: 10;
-    }
-
-    .hero-text {
-      position: relative;
-      z-index: 20;
-    }
-
-    /* Login Container */
-    .login-container {
-      background: #ffffff;
-      border: 4px solid var(--secondary);
-      border-radius: 2rem;
-      box-shadow: 0 40px 100px rgba(69, 26, 3, 0.5);
-      padding: 4.5rem;
-      max-width: 40rem;
-      width: 100%;
-      position: relative;
-      z-index: 1000;
-      transition: all 0.5s ease;
-    }
-
-    body.dark .login-container {
-      background: #333333;
-      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
-      border-color: var(--light);
-    }
-
-    /* Form Elements */
-    .form-input {
-      border: 4px solid var(--secondary);
-      border-radius: 0.75rem;
-      padding: 0.85rem 1.2rem;
-      transition: all 0.3s ease;
-      background: #ffffff;
-      width: 100%;
-      font-size: 1.2rem;
-      color: var(--dark);
-    }
-
-    body.dark .form-input {
-      background: #3a3a3a;
-      border-color: var(--light);
-      color: var(--light);
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 6px rgba(251, 191, 36, 0.5);
-      transform: scale(1.02);
-    }
-
-    .form-label {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--secondary);
-      margin-bottom: 0.6rem;
-      display: block;
-      transition: color 0.5s ease;
-    }
-
-    body.dark .form-label {
-      color: var(--light);
-    }
-
-    /* Sign In Button */
-    .login-button {
-      background: linear-gradient(135deg, var(--primary), var(--blue));
-      padding: 1.2rem;
-      border-radius: 0.75rem;
-      color: white;
-      font-weight: 700;
-      font-size: 1.3rem;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 12px 30px rgba(251, 191, 36, 0.7), 0 0 25px rgba(251, 191, 36, 0.5);
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: buttonPulse 2s ease-in-out infinite;
-    }
-
-    .login-button:hover {
-      transform: scale(1.15) translateY(-5px);
-      box-shadow: 0 15px 40px rgba(251, 191, 36, 0.8), 0 0 30px rgba(251, 191, 36, 0.6);
-      background: linear-gradient(135deg, var(--accent), var(--secondary));
-    }
-
-    .login-button:disabled {
-      background: linear-gradient(135deg, #9ca3af, #6b7280);
-      cursor: not-allowed;
-      box-shadow: none;
-      animation: none;
-    }
-
-    @keyframes buttonPulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 12px 30px rgba(251, 191, 36, 0.7), 0 0 25px rgba(251, 191, 36, 0.5); }
-      50% { transform: scale(1.06); box-shadow: 0 15px 40px rgba(251, 191, 36, 0.9), 0 0 35px rgba(251, 191, 36, 0.6); }
-    }
-
-    /* Toggle Buttons */
-    .toggle-button {
-      position: fixed;
-      top: 1rem;
-      background: linear-gradient(135deg, var(--primary), var(--blue));
-      padding: 0.75rem;
-      border-radius: 50%;
-      color: white;
-      z-index: 2000;
-      box-shadow: 0 4px 10px rgba(69, 26, 3, 0.2);
-      transition: all 0.3s ease;
-    }
-
-    .toggle-button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 6px 15px rgba(69, 26, 3, 0.3);
-    }
-
-    #themeToggle {
-      right: 1rem;
-    }
-
-    #musicToggle {
-      right: 4rem;
-    }
-
-    /* Animations */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-20px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-      20%, 40%, 60%, 80% { transform: translateX(5px); }
-    }
-
-    @keyframes scaleUp {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes buttonPop {
-      0% { transform: scale(0.5); opacity: 0; }
-      70% { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(1); }
-    }
-
-    .animate-fade-in {
-      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
-
-    .animate-slide-in {
-      animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
-
-    .animate-shake {
-      animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-    }
-
-    .animate-scale-up {
-      animation: scaleUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
-
-    .animate-button-pop {
-      animation: buttonPop 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
-
-    /* Loading Spinner */
-    .spinner {
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Typewriter Effect */
-    .typewriter {
-      overflow: hidden;
-      border-right: 0.15em solid var(--primary);
-      white-space: nowrap;
-      margin: 0 auto;
-      animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
-    }
-
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 100%; }
-    }
-
-    @keyframes blink-caret {
-      from, to { border-color: transparent; }
-      50% { border-color: var(--primary); }
-    }
-
-    /* Password Toggle */
-    .password-toggle {
-      position: absolute;
-      right: 1.2rem;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      color: var(--secondary);
-      font-size: 1.3rem;
-      transition: color 0.3s ease;
-    }
-
-    body.dark .password-toggle {
-      color: var(--light);
-    }
-
-    .password-toggle:hover {
-      color: var(--primary);
-    }
-
-    /* Error Message */
-    .error-message {
-      transition: all 0.3s ease;
-      font-weight: 600;
-      font-size: 1.1rem;
-    }
-
-    /* Glow Effect */
-    .glow-effect {
-      transition: box-shadow 0.3s ease;
-    }
-
-    .glow-effect:focus {
-      box-shadow: 0 0 25px rgba(251, 191, 36, 0.7);
-    }
-
-    /* Responsive Styles */
-    @media (max-width: 640px) {
-      .login-container {
-        padding: 2.5rem;
-        max-width: 90%;
-        border-width: 3px;
+      :root {
+        --primary: #fbbf24;
+        --secondary: #78350f;
+        --accent: #f59e0b;
+        --light: #fef3c7;
+        --dark: #1c1917;
+        --blue: #1e40af;
+        --background: #0f172a;
+        --card-bg: #1e293b;
+        --input-bg: #334155;
       }
-      .form-input {
-        font-size: 1rem;
-        padding: 0.65rem 1rem;
-        border-width: 3px;
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-      .form-label {
-        font-size: 0.95rem;
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--background);
+        color: #e2e8f0;
+        overflow-x: hidden;
+        min-height: 100vh;
       }
-      .login-button {
-        padding: 0.9rem;
-        font-size: 1.1rem;
+
+      .school-font {
+        font-family: "Playfair Display", serif;
+        font-weight: 900;
+        letter-spacing: -0.015em;
       }
-      .password-toggle {
-        font-size: 1.1rem;
-        right: 1rem;
+
+      .school-text-gradient {
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--accent) 50%,
+          var(--secondary) 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
       }
-      .error-message {
-        font-size: 0.95rem;
-      }
+
+      /* Hero Section */
       .hero-section {
+        position: relative;
         height: 30vh;
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--blue) 100%
+        );
+        z-index: 10;
       }
-    }
 
-    @media (max-width: 480px) {
+      /* Login Container */
       .login-container {
-        padding: 2rem;
-        max-width: 95%;
+        background: var(--card-bg);
+        border: 2px solid var(--primary);
+        border-radius: 1.5rem;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        padding: 2.5rem;
+        max-width: 40rem;
+        width: 90%;
+        position: relative;
+        z-index: 1000;
+        margin: -3rem auto 2rem;
       }
+
+      /* Form Elements */
       .form-input {
-        font-size: 0.9rem;
-        padding: 0.5rem 0.8rem;
+        border: 2px solid var(--primary);
+        border-radius: 0.75rem;
+        padding: 0.85rem 1.2rem;
+        transition: all 0.3s ease;
+        background: var(--input-bg);
+        width: 100%;
+        font-size: 1rem;
+        color: #f8fafc;
       }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.5);
+      }
+
       .form-label {
-        font-size: 0.85rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--light);
+        margin-bottom: 0.6rem;
+        display: block;
       }
+
+      /* Sign In Button */
       .login-button {
-        padding: 0.8rem;
-        font-size: 1rem;
+        background: linear-gradient(135deg, var(--primary), var(--blue));
+        padding: 1rem;
+        border-radius: 0.75rem;
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
-      .password-toggle {
-        font-size: 1rem;
-      }
-      .error-message {
-        font-size: 0.85rem;
-      }
-      .hero-section {
-        height: 25vh;
-      }
-    }
 
-    @media (min-width: 768px) {
-      .login-container {
-        padding: 5rem;
-        max-width: 42rem;
+      .login-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3);
       }
-      .form-input {
-        font-size: 1.3rem;
-        padding: 0.9rem 1.3rem;
+
+      .login-button:disabled {
+        background: #64748b;
+        cursor: not-allowed;
       }
-      .form-label {
+
+      /* Password Toggle */
+      .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: var(--primary);
         font-size: 1.2rem;
       }
-      .login-button {
-        padding: 1.3rem;
-        font-size: 1.4rem;
-      }
-    }
 
-    @media (min-width: 1024px) {
-      .login-container {
-        padding: 5.5rem;
-        max-width: 44rem;
-      }
-      .form-input {
-        font-size: 1.4rem;
-        padding: 1rem 1.4rem;
-      }
-      .form-label {
-        font-size: 1.3rem;
-      }
-      .login-button {
-        padding: 1.4rem;
-        font-size: 1.5rem;
-      }
-    }
-
-    /* Additional Styles for Line Count */
-    .login-container::after {
-      content: '';
-      position: absolute;
-      top: -10px;
-      left: -10px;
-      right: -10px;
-      bottom: -10px;
-      border-radius: 2.5rem;
-      background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(30, 64, 175, 0.2));
-      z-index: -1;
-      opacity: 0.3;
-      transition: opacity 0.5s ease;
-    }
-
-    body.dark .login-container::after {
-      background: linear-gradient(135deg, rgba(254, 243, 199, 0.2), rgba(69, 26, 3, 0.2));
-    }
-
-    .form-input::placeholder {
-      color: #a8a29e;
-      opacity: 0.7;
-      transition: opacity 0.3s ease;
-    }
-
-    body.dark .form-input::placeholder {
-      color: #d4d4d4;
-    }
-
-    .form-input:focus::placeholder {
-      opacity: 0.3;
-    }
-
-    .login-button::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 0.75rem;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .login-button:hover::before {
-      opacity: 1;
-    }
-
-    .login-container:hover {
-      box-shadow: 0 50px 120px rgba(69, 26, 3, 0.6);
-    }
-
-    body.dark .login-container:hover {
-      box-shadow: 0 50px 120px rgba(0, 0, 0, 0.9);
-    }
-
-    .form-label::before {
-      content: '';
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      background: var(--secondary);
-      border-radius: 50%;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-
-    body.dark .form-label::before {
-      background: var(--light);
-    }
-
-    .login-button:active {
-      transform: scale(0.95);
-      box-shadow: 0 8px 20px rgba(251, 191, 36, 0.5);
-    }
-
-    .login-container:focus-within {
-      box-shadow: 0 50px 120px rgba(69, 26, 3, 0.7), 0 0 30px rgba(251, 191, 36, 0.3);
-    }
-
-    body.dark .login-container:focus-within {
-      box-shadow: 0 50px 120px rgba(0, 0, 0, 1), 0 0 30px rgba(254, 243, 199, 0.3);
-    }
-
-    .form-input:hover {
-      border-color: var(--accent);
-    }
-
-    .error-message::before {
-      content: '!';
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      background: #dc2626;
-      color: white;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 20px;
-      margin-right: 8px;
-      font-size: 0.9rem;
-    }
-
-    @keyframes glow {
-      0% { box-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
-      50% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.7); }
-      100% { box-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
-    }
-
-    .login-container:hover .form-input {
-      box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
-    }
-
-    .login-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary), var(--blue));
-      border-radius: 2rem 2rem 0 0;
-    }
-
-    body.dark .login-container::before {
-      background: linear-gradient(90deg, var(--light), var(--accent));
-    }
-
-    .form-label:hover {
-      color: var(--accent);
-    }
-
-    body.dark .form-label:hover {
-      color: var(--primary);
-    }
-
-    .login-button::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 50%;
-      height: 4px;
-      background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.3), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .login-button:hover::after {
-      opacity: 1;
-    }
-
-    @media (max-width: 360px) {
-      .login-container {
-        padding: 1.5rem;
-        max-width: 100%;
-      }
-      .form-input {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.7rem;
-        border-width: 2px;
-      }
-      .form-label {
-        font-size: 0.8rem;
-      }
-      .login-button {
-        padding: 0.7rem;
-        font-size: 0.9rem;
-      }
-      .password-toggle {
-        font-size: 0.9rem;
-        right: 0.8rem;
-      }
-    }
-
-    .form-input:disabled {
-      background: #e5e5e5;
-      border-color: #9ca3af;
-      cursor: not-allowed;
-    }
-
-    body.dark .form-input:disabled {
-      background: #4b4b4b;
-      border-color: #6b7280;
-    }
-
-    .login-button:focus {
-      outline: none;
-      box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.4), 0 15px 40px rgba(251, 191, 36, 0.8);
-    }
-
-    .form-input:hover:not(:focus) {
-      box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
-    }
-
-    .login-container:focus-within::after {
-      opacity: 0.5;
-    }
-
-    @keyframes inputGlow {
-      0% { box-shadow: 0 0 5px rgba(251, 191, 36, 0.3); }
-      50% { box-shadow: 0 0 15px rgba(251, 191, 36, 0.5); }
-      100% { box-shadow: 0 0 5px rgba(251, 191, 36, 0.3); }
-    }
-
-    .form-input:focus {
-      animation: inputGlow 1.5s ease-in-out infinite;
-    }
-  </style>
-</head>
-<body class="relative">
-  <!-- Theme Toggle -->
-  <button id="themeToggle" class="toggle-button" title="Toggle Theme">
-    <i class="ti ti-moon"></i>
-  </button>
-
-  <!-- Music Toggle -->
-  <button id="musicToggle" class="toggle-button" title="Toggle Music">
-    <i class="ti ti-music"></i>
-  </button>
-
-  <!-- Hero Section -->
-  <div class="hero-section">
-    <div class="hero-text">
-      <h1 class="text-5xl md:text-7xl font-bold school-text-gradient school-font mb-4 typewriter">
-        Welcome to Hillrange Clubs
-      </h1>
-      <p class="text-lg md:text-xl text-white opacity-95 school-font animate-fade-in" style="animation-delay: 3.5s;">
-        Connect, Engage, Thrive
-      </p>
-    </div>
-  </div>
-
-  <!-- Login Form -->
-  <div class="flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
-    <div class="login-container animate-scale-up">
-      <div class="flex justify-center mb-8">
-        <i class="ti ti-school text-6xl text-yellow-600 animate-pulse"></i>
-      </div>
-      <h2 class="text-4xl font-bold text-center school-text-gradient school-font mb-8 animate-fade-in">
-        Sign In to Your Account
-      </h2>
-      <form id="loginForm" class="space-y-6">
-        <div class="animate-slide-in" style="animation-delay: 0.2s;">
-          <label for="username" class="form-label">Username</label>
-          <input type="text" id="username" class="form-input glow-effect" required placeholder="Enter your username">
-        </div>
-        <div class="relative animate-slide-in" style="animation-delay: 0.4s;">
-          <label for="password" class="form-label">Password</label>
-          <input type="password" id="password" class="form-input glow-effect pr-12" required placeholder="Enter your password">
-          <i id="passwordToggle" class="ti ti-eye password-toggle"></i>
-        </div>
-        <button type="submit" id="loginButton" class="login-button animate-button-pop">
-          <i class="ti ti-login mr-2"></i> Sign In
-        </button>
-        <p id="loginMessage" class="error-message text-sm text-center mt-4 text-red-600"></p>
-      </form>
-      <p class="text-center text-sm text-gray-600 mt-6 school-font animate-slide-in" style="animation-delay: 0.6s;">
-        Don't have an account? <a href="register.html" class="text-yellow-600 hover:text-yellow-700">Sign up</a>
-      </p>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <footer class="bg-white border-t border-yellow-100 mt-16 w-full">
-    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="flex items-center animate-fade-in">
-          <i class="ti ti-school text-3xl text-yellow-600 mr-3 animate-pulse"></i>
-          <span class="text-xl font-bold school-text-gradient school-font">Hillrange Clubs</span>
-        </div>
-        <div class="mt-6 md:mt-0">
-          <p class="text-center text-base text-gray-500">© 2023 Hillrange School. All rights reserved.</p>
-        </div>
-        <div class="mt-6 md:mt-0 flex space-x-8">
-          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
-            <i class="ti ti-brand-facebook text-xl"></i>
-          </a>
-          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
-            <i class="ti ti-brand-twitter text-xl"></i>
-          </a>
-          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
-            <i class="ti ti-brand-instagram text-xl"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Audio Element -->
-  <audio id="backgroundMusic" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
-    Your browser does not support the audio element.
-  </audio>
-
-  <script>
-    // Global variables
-    let isMusicPlaying = false;
-    const audio = document.getElementById('backgroundMusic');
-
-    // Theme Toggle
-    document.getElementById('themeToggle').addEventListener('click', () => {
-      console.log('Toggling theme');
-      document.body.classList.toggle('dark');
-      const icon = document.getElementById('themeToggle').querySelector('i');
-      icon.classList.toggle('ti-moon');
-      icon.classList.toggle('ti-sun');
-      gsap.to(document.body, {
-        backgroundColor: document.body.classList.contains('dark') ? '#1c1917' : '#fef9e7',
-        duration: 0.5,
-        ease: 'power2.out',
-      });
-      gsap.to('.login-container', {
-        backgroundColor: document.body.classList.contains('dark') ? '#333333' : '#ffffff',
-        borderColor: document.body.classList.contains('dark') ? '#fef3c7' : '#78350f',
-        duration: 0.5,
-        ease: 'power2.out',
-      });
-      gsap.to('.form-label, .error-message', {
-        color: document.body.classList.contains('dark') ? '#fef3c7' : '#78350f',
-        duration: 0.5,
-        ease: 'power2.out',
-      });
-      gsap.to('.form-input', {
-        backgroundColor: document.body.classList.contains('dark') ? '#3a3a3a' : '#ffffff',
-        borderColor: document.body.classList.contains('dark') ? '#fef3c7' : '#78350f',
-        color: document.body.classList.contains('dark') ? '#fef3c7' : '#451a03',
-        duration: 0.5,
-        ease: 'power2.out',
-      });
-      gsap.to('.login-button', {
-        boxShadow: document.body.classList.contains('dark')
-          ? '0 12px 30px rgba(251, 191, 36, 0.7), 0 0 25px rgba(251, 191, 36, 0.5)'
-          : '0 12px 30px rgba(251, 191, 36, 0.7), 0 0 25px rgba(251, 191, 36, 0.5)',
-        duration: 0.5,
-        ease: 'power2.out',
-      });
-    });
-
-    // Music Toggle
-    document.getElementById('musicToggle').addEventListener('click', () => {
-      console.log('Toggling music');
-      isMusicPlaying = !isMusicPlaying;
-      const icon = document.getElementById('musicToggle').querySelector('i');
-      icon.classList.toggle('ti-music');
-      icon.classList.toggle('ti-music-off');
-      if (isMusicPlaying) {
-        audio.play().catch(err => {
-          console.error('Music playback error:', err);
-          isMusicPlaying = false;
-          icon.classList.remove('ti-music-off');
-          icon.classList.add('ti-music');
-          document.getElementById('loginMessage').textContent = 'Please interact with the page to enable music playback';
-          setTimeout(() => document.getElementById('loginMessage').textContent = '', 3000);
-        });
-      } else {
-        audio.pause();
-      }
-      gsap.to('#musicToggle', { scale: 1.2, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 });
-    });
-
-    // Password Toggle
-    document.getElementById('passwordToggle').addEventListener('click', () => {
-      console.log('Toggling password visibility');
-      const passwordInput = document.getElementById('password');
-      const icon = document.getElementById('passwordToggle');
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        icon.classList.remove('ti-eye');
-        icon.classList.add('ti-eye-off');
-      } else {
-        passwordInput.type = 'password';
-        icon.classList.remove('ti-eye-off');
-        icon.classList.add('ti-eye');
-      }
-      gsap.to(icon, { scale: 1.2, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 });
-    });
-
-    // Login Form Submission
-    document.getElementById('loginForm').addEventListener('submit', async function (e) {
-      e.preventDefault();
-      console.log('Form submitted');
-
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-      const loginButton = document.getElementById('loginButton');
-      const loginMessage = document.getElementById('loginMessage');
-
-      if (!username || !password) {
-        console.log('Validation failed: Empty fields');
-        loginMessage.textContent = 'Please fill in all fields';
-        loginMessage.classList.add('animate-shake');
-        setTimeout(() => loginMessage.classList.remove('animate-shake'), 500);
-        return;
+      /* Error Message */
+      .error-message {
+        font-weight: 600;
+        font-size: 0.95rem;
       }
 
-      loginButton.disabled = true;
-      loginButton.innerHTML = '<i class="ti ti-loader spinner mr-2"></i> Signing In...';
-      loginButton.style.animation = 'none';
-
-      try {
-        console.log('Sending login request:', { username });
-        const response = await fetch('/api/users/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password }),
-        });
-
-        const result = await response.json();
-        console.log('Server response:', result);
-
-        if (response.ok) {
-          localStorage.setItem('loggedInUser', JSON.stringify(result));
-          loginMessage.textContent = 'Login successful!';
-          loginMessage.classList.remove('text-red-600');
-          loginMessage.classList.add('text-green-600');
-          gsap.to(loginMessage, { scale: 1.1, duration: 0.3, ease: 'power2.out', yoyo: true, repeat: 1 });
-          setTimeout(() => {
-            console.log('Redirecting to home.html');
-            window.location.href = '/home.html';
-          }, 1000);
-        } else {
-          console.log('Login failed:', result.error);
-          loginMessage.textContent = result.error || 'Invalid login credentials';
-          loginMessage.classList.add('animate-shake');
-          setTimeout(() => loginMessage.classList.remove('animate-shake'), 500);
-          loginButton.disabled = false;
-          loginButton.innerHTML = '<i class="ti ti-login mr-2"></i> Sign In';
-          loginButton.style.animation = 'buttonPulse 2s ease-in-out infinite';
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
-      } catch (err) {
-        console.error('Login error:', err);
-        loginMessage.textContent = 'Failed to connect to server. Please try again.';
-        loginMessage.classList.add('animate-shake');
-        setTimeout(() => loginMessage.classList.remove('animate-shake'), 500);
-        loginButton.disabled = false;
-        loginButton.innerHTML = '<i class="ti ti-login mr-2"></i> Sign In';
-        loginButton.style.animation = 'buttonPulse 2s ease-in-out infinite';
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
-    });
 
-    // Initialize Page
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('Page loaded, initializing');
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
 
-      // Attempt to autoplay music (may be blocked by browser)
-      audio.play().then(() => {
-        console.log('Music autoplay started');
-        isMusicPlaying = true;
-        document.getElementById('musicToggle').querySelector('i').classList.remove('ti-music');
-        document.getElementById('musicToggle').querySelector('i').classList.add('ti-music-off');
-      }).catch(err => {
-        console.log('Autoplay blocked:', err);
-        isMusicPlaying = false;
-      });
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-5px);
+        }
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(5px);
+        }
+      }
 
-      // GSAP Animations
-      gsap.from('.hero-section', { opacity: 0, y: -100, duration: 1, ease: 'power3.out' });
-      gsap.from('.login-container', { scale: 0.9, opacity: 0, duration: 0.8, delay: 0.5, ease: 'power3.out' });
-      gsap.from('.form-input, .form-label', {
-        y: 20,
-        opacity: 0,
-        stagger: 0.2,
-        duration: 0.6,
-        delay: 0.7,
-        ease: 'power3.out',
-      });
-      gsap.from('.login-button', {
-        y: 20,
-        opacity: 0,
-        duration: 0.8,
-        delay: 0.9,
-        ease: 'power3.out',
-      });
-      gsap.from('.toggle-button', {
-        opacity: 0,
-        scale: 0.5,
-        stagger: 0.2,
-        duration: 0.5,
-        delay: 1,
-        ease: 'power3.out',
-      });
+      @keyframes scaleUp {
+        from {
+          transform: scale(0.95);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
 
-      // Input Focus Animations
-      document.querySelectorAll('.form-input').forEach(input => {
-        input.addEventListener('focus', () => {
-          console.log('Input focused:', input.id);
-          gsap.to(input, { scale: 1.02, boxShadow: '0 0 25px rgba(251, 191, 36, 0.7)', duration: 0.3 });
+      .animate-fade-in {
+        animation: fadeInUp 0.6s ease forwards;
+      }
+
+      .animate-slide-in {
+        animation: slideIn 0.6s ease forwards;
+      }
+
+      .animate-shake {
+        animation: shake 0.5s ease both;
+      }
+
+      .animate-scale-up {
+        animation: scaleUp 0.8s ease forwards;
+      }
+
+      /* Loading Spinner */
+      .spinner {
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Responsive Styles */
+      @media (min-width: 640px) {
+        .hero-section {
+          height: 35vh;
+        }
+        .login-container {
+          padding: 3rem;
+          width: 85%;
+        }
+        .form-input {
+          font-size: 1.1rem;
+        }
+      }
+
+      @media (min-width: 768px) {
+        .hero-section {
+          height: 40vh;
+        }
+        .login-container {
+          padding: 4rem;
+          width: 80%;
+        }
+        .form-input {
+          font-size: 1.2rem;
+        }
+        .login-button {
+          padding: 1.2rem;
+          font-size: 1.2rem;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .login-container {
+          max-width: 44rem;
+          width: 70%;
+        }
+      }
+
+      /* Footer */
+      footer {
+        background: var(--card-bg);
+        border-top: 1px solid #334155;
+      }
+
+      /* Theme Toggle */
+      .theme-toggle {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        background: var(--primary);
+        padding: 0.75rem;
+        border-radius: 50%;
+        color: var(--dark);
+        z-index: 2000;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .theme-toggle:hover {
+        transform: scale(1.1);
+      }
+    </style>
+  </head>
+  <body class="relative">
+    <!-- Theme Toggle -->
+    <button id="themeToggle" class="theme-toggle" title="Toggle Theme">
+      <i class="ti ti-sun"></i>
+    </button>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="hero-text">
+        <h1
+          class="text-4xl md:text-5xl lg:text-6xl font-bold school-text-gradient school-font mb-4"
+        >
+          Welcome to Hillrange Clubs
+        </h1>
+        <p class="text-lg md:text-xl text-white opacity-95 school-font">
+          Connect, Engage, Thrive
+        </p>
+      </div>
+    </div>
+
+    <!-- Login Form -->
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="login-container animate-scale-up">
+        <div class="flex justify-center mb-6">
+          <i class="ti ti-school text-5xl text-yellow-500"></i>
+        </div>
+        <h2
+          class="text-3xl font-bold text-center school-text-gradient school-font mb-6"
+        >
+          Sign In to Your Account
+        </h2>
+        <form id="loginForm" class="space-y-5">
+          <div>
+            <label for="username" class="form-label">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-input"
+              required
+              placeholder="Enter your username"
+            />
+          </div>
+          <div class="relative">
+            <label for="password" class="form-label">Password</label>
+            <input
+              type="password"
+              id="password"
+              class="form-input pr-12"
+              required
+              placeholder="Enter your password"
+            />
+            <i id="passwordToggle" class="ti ti-eye password-toggle"></i>
+          </div>
+          <button type="submit" id="loginButton" class="login-button">
+            <i class="ti ti-login mr-2"></i> Sign In
+          </button>
+          <p
+            id="loginMessage"
+            class="error-message text-center mt-4 text-red-400"
+          ></p>
+        </form>
+        <p class="text-center text-sm text-gray-400 mt-6">
+          Don't have an account?
+          <a
+            href="register.html"
+            class="text-yellow-500 hover:text-yellow-400 font-medium"
+            >Sign up</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w-full mt-12">
+      <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="flex items-center">
+            <i class="ti ti-school text-3xl text-yellow-500 mr-3"></i>
+            <span class="text-xl font-bold school-text-gradient school-font"
+              >Hillrange Clubs</span
+            >
+          </div>
+          <div class="mt-4 md:mt-0">
+            <p class="text-center text-sm text-gray-400">
+              © 2023 Hillrange School. All rights reserved.
+            </p>
+          </div>
+          <div class="mt-4 md:mt-0 flex space-x-6">
+            <a
+              href="#"
+              class="text-gray-400 hover:text-yellow-500 transition-colors"
+            >
+              <i class="ti ti-brand-facebook text-xl"></i>
+            </a>
+            <a
+              href="#"
+              class="text-gray-400 hover:text-yellow-500 transition-colors"
+            >
+              <i class="ti ti-brand-twitter text-xl"></i>
+            </a>
+            <a
+              href="#"
+              class="text-gray-400 hover:text-yellow-500 transition-colors"
+            >
+              <i class="ti ti-brand-instagram text-xl"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Password Toggle
+      document
+        .getElementById("passwordToggle")
+        .addEventListener("click", () => {
+          const passwordInput = document.getElementById("password");
+          const icon = document.getElementById("passwordToggle");
+          if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            icon.classList.remove("ti-eye");
+            icon.classList.add("ti-eye-off");
+          } else {
+            passwordInput.type = "password";
+            icon.classList.remove("ti-eye-off");
+            icon.classList.add("ti-eye");
+          }
         });
-        input.addEventListener('blur', () => {
-          console.log('Input blurred:', input.id);
-          gsap.to(input, { scale: 1, boxShadow: 'none', duration: 0.3 });
+
+      // Login Form Submission
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const username = document.getElementById("username").value.trim();
+          const password = document.getElementById("password").value;
+          const loginButton = document.getElementById("loginButton");
+          const loginMessage = document.getElementById("loginMessage");
+
+          if (!username || !password) {
+            loginMessage.textContent = "Please fill in all fields";
+            loginMessage.classList.add("animate-shake");
+            setTimeout(
+              () => loginMessage.classList.remove("animate-shake"),
+              500
+            );
+            return;
+          }
+
+          loginButton.disabled = true;
+          loginButton.innerHTML =
+            '<i class="ti ti-loader spinner mr-2"></i> Signing In...';
+
+          try {
+            const response = await fetch("/api/users/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ username, password }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              localStorage.setItem("loggedInUser", JSON.stringify(result));
+              loginMessage.textContent = "Login successful! Redirecting...";
+              loginMessage.classList.remove("text-red-400");
+              loginMessage.classList.add("text-green-400");
+
+              setTimeout(() => {
+                window.location.href = "/home.html";
+              }, 1000);
+            } else {
+              loginMessage.textContent =
+                result.error || "Invalid login credentials";
+              loginMessage.classList.add("animate-shake");
+              setTimeout(
+                () => loginMessage.classList.remove("animate-shake"),
+                500
+              );
+              loginButton.disabled = false;
+              loginButton.innerHTML =
+                '<i class="ti ti-login mr-2"></i> Sign In';
+            }
+          } catch (err) {
+            loginMessage.textContent =
+              "Failed to connect to server. Please try again.";
+            loginMessage.classList.add("animate-shake");
+            setTimeout(
+              () => loginMessage.classList.remove("animate-shake"),
+              500
+            );
+            loginButton.disabled = false;
+            loginButton.innerHTML = '<i class="ti ti-login mr-2"></i> Sign In';
+          }
+        });
+
+      // Initialize Page
+      document.addEventListener("DOMContentLoaded", () => {
+        // GSAP Animations
+        gsap.from(".hero-section", {
+          opacity: 0,
+          y: -50,
+          duration: 0.8,
+          ease: "power2.out",
+        });
+
+        gsap.from(".login-container", {
+          scale: 0.95,
+          opacity: 0,
+          duration: 0.6,
+          delay: 0.3,
+          ease: "power2.out",
+        });
+
+        gsap.from(".form-input, .form-label", {
+          y: 10,
+          opacity: 0,
+          stagger: 0.1,
+          duration: 0.4,
+          delay: 0.5,
+          ease: "power2.out",
+        });
+
+        gsap.from(".login-button", {
+          y: 10,
+          opacity: 0,
+          duration: 0.5,
+          delay: 0.7,
+          ease: "power2.out",
+        });
+
+        gsap.from(".theme-toggle", {
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.5,
+          delay: 0.9,
+          ease: "power2.out",
         });
       });
-
-      console.log('Login form initialized');
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>

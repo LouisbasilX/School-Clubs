@@ -1,5 +1,4 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -27,7 +26,8 @@
       }
       .club-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        box-shadow:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
           0 10px 10px -5px rgba(0, 0, 0, 0.04);
       }
       .gradient-text {
@@ -70,11 +70,6 @@
               class="text-sm font-medium text-gray-700 hover:text-yellow-600 transition"
               >Events</a
             >
-            <a
-              href="contact.html"
-              class="text-sm font-medium text-gray-700 hover:text-yellow-600 transition"
-              >Contact</a
-            >
           </div>
           <div id="login" class="flex items-center space-x-4">
             <a
@@ -111,8 +106,8 @@
             Find and Build Your <span class="gradient-text">Passion</span>
           </h1>
           <p class="mt-6 max-w-2xl mx-auto text-xl text-gray-600">
-            Join hot clubs, build new skills, and create
-            unforgettable memories with Hillrange's diverse club offerings.
+            Join hot clubs, build new skills, and create unforgettable memories
+            with Hillrange's diverse club offerings.
           </p>
           <div class="mt-10 flex justify-center gap-4">
             <a
@@ -523,9 +518,8 @@
           // Show welcome message
           const welcome = document.getElementById("welcomeMessage");
           welcome.classList.remove("hidden");
-          welcome.querySelector(
-            "p"
-          ).textContent = `Welcome back, ${user.username}!`;
+          welcome.querySelector("p").textContent =
+            `Welcome back, ${user.username}!`;
         }
       });
     </script>
