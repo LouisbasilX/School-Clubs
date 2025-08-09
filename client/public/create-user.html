@@ -1,496 +1,626 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Create User | Hillrange Clubs</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            'hillrange-yellow': '#F9A825',
-            'hillrange-brown': '#5D4037',
-            'hillrange-blue': '#1565C0',
-            'user-role': '#757575',     // Gray for regular users
-            'admin-role': '#D32F2F',    // Red for admin
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-
-    .role-option {
-      display: flex;
-      align-items: center;
-      padding: 8px 12px;
-    }
-    .role-color {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-    .dropdown-enter {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    .dropdown-enter-active {
-      opacity: 1;
-      transform: translateY(0);
-      transition: all 0.2s ease-out;
-    }
-    .password-toggle {
-      right: 12px;
-      top: 12px;
-      cursor: pointer;
-    }
-     /* Navigation - same as user management */
-    nav {
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), #fef3c7);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(251, 191, 36, 0.2);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    nav a {
-      position: relative;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    nav a:hover::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: var(--accent);
-      transform: scaleX(1);
-      transform-origin: center;
-    }
-
-    nav a::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: var(--accent);
-      transform: scaleX(0);
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Dropdown */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    .dropdown-toggle {
-      display: flex;
-      align-items: center;
-      padding: 0.5rem;
-      border-radius: 1rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      background: linear-gradient(135deg, #fef3c7, #fff);
-      box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
-    }
-
-    .dropdown-toggle:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(69, 26, 3, 0.2);
-      background: linear-gradient(135deg, #fff, #fef3c7);
-    }
-
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 100%;
-      margin-top: 1rem;
-      min-width: 260px;
-      background: white;
-      border-radius: 1.5rem;
-      box-shadow: 0 12px 40px rgba(69, 26, 3, 0.2);
-      border: 1px solid rgba(251, 191, 36, 0.2);
-      backdrop-filter: blur(10px);
-      z-index: 100;
-      transform: translateY(10px);
-      opacity: 0;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .dropdown-menu.show {
-      display: block;
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .dropdown-item {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 1.5rem;
-      color: var(--secondary);
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .dropdown-item:hover {
-      background: #fef3c7;
-      color: var(--dark);
-      transform: translateX(5px);
-    }
- /* Responsive navigation - Changed from 640px to 1000px */
-    @media (max-width: 1000px) {
-      nav .hidden-md {
-        display: none;
-      }
-      
-      .mobile-dropdown {
-        display: block;
-        width: 100%;
-        padding: 1rem;
-      }
-      
-      .mobile-dropdown-toggle {
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create User | Hillrange Clubs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "hillrange-yellow": "#F9A825",
+              "hillrange-brown": "#5D4037",
+              "hillrange-blue": "#1565C0",
+              "user-role": "#757575", // Gray for regular users
+              "admin-role": "#D32F2F", // Red for admin
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .role-option {
         display: flex;
         align-items: center;
-        padding: 0.75rem 1rem;
-        border-radius: 0.75rem;
+        padding: 8px 12px;
+      }
+      .role-color {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+      .dropdown-enter {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      .dropdown-enter-active {
+        opacity: 1;
+        transform: translateY(0);
+        transition: all 0.2s ease-out;
+      }
+      .password-toggle {
+        right: 12px;
+        top: 12px;
+        cursor: pointer;
+      }
+      /* Navigation - same as user management */
+      nav {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), #fef3c7);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      nav a {
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      nav a:hover::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--accent);
+        transform: scaleX(1);
+        transform-origin: center;
+      }
+
+      nav a::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--accent);
+        transform: scaleX(0);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Dropdown */
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem;
+        border-radius: 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         background: linear-gradient(135deg, #fef3c7, #fff);
         box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
-        width: 100%;
       }
-      
-      .mobile-dropdown-menu {
+
+      .dropdown-toggle:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(69, 26, 3, 0.2);
+        background: linear-gradient(135deg, #fff, #fef3c7);
+      }
+
+      .dropdown-menu {
         display: none;
-        width: 100%;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        margin-top: 1rem;
+        min-width: 260px;
         background: white;
-        border-radius: 0.75rem;
-        margin-top: 0.5rem;
-        box-shadow: 0 4px 15px rgba(69, 26, 3, 0.1);
+        border-radius: 1.5rem;
+        box-shadow: 0 12px 40px rgba(69, 26, 3, 0.2);
+        border: 1px solid rgba(251, 191, 36, 0.2);
+        backdrop-filter: blur(10px);
+        z-index: 100;
+        transform: translateY(10px);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
-      
-      .mobile-dropdown-menu.show {
+
+      .dropdown-menu.show {
         display: block;
+        transform: translateY(0);
+        opacity: 1;
       }
-      
-      .mobile-dropdown-item {
+
+      .dropdown-item {
         display: flex;
         align-items: center;
-        padding: 0.75rem 1rem;
+        padding: 0.75rem 1.5rem;
         color: var(--secondary);
-        transition: all 0.2s ease;
+        font-weight: 500;
+        transition: all 0.3s ease;
       }
-      
-      .mobile-dropdown-item:hover {
+
+      .dropdown-item:hover {
         background: #fef3c7;
+        color: var(--dark);
+        transform: translateX(5px);
       }
-    }
+      /* Responsive navigation - Changed from 640px to 1000px */
+      @media (max-width: 1000px) {
+        nav .hidden-md {
+          display: none;
+        }
 
-    @media (min-width: 1001px) {
-      .mobile-only {
-        display: none !important;
+        .mobile-dropdown {
+          display: block;
+          width: 100%;
+          padding: 1rem;
+        }
+
+        .mobile-dropdown-toggle {
+          display: flex;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          border-radius: 0.75rem;
+          background: linear-gradient(135deg, #fef3c7, #fff);
+          box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+          width: 100%;
+        }
+
+        .mobile-dropdown-menu {
+          display: none;
+          width: 100%;
+          background: white;
+          border-radius: 0.75rem;
+          margin-top: 0.5rem;
+          box-shadow: 0 4px 15px rgba(69, 26, 3, 0.1);
+        }
+
+        .mobile-dropdown-menu.show {
+          display: block;
+        }
+
+        .mobile-dropdown-item {
+          display: flex;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          color: var(--secondary);
+          transition: all 0.2s ease;
+        }
+
+        .mobile-dropdown-item:hover {
+          background: #fef3c7;
+        }
       }
-    }
-  </style>
-</head>
-<body class="bg-gradient-to-br from-yellow-50 to-blue-50 min-h-screen font-sans">
 
-  <!-- Navigation -->
-   <nav class="bg-white shadow-lg">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-20">
-        <div class="flex items-center">
-          <div class="flex-shrink-0 flex items-center">
-            <i class="ti ti-school text-4xl text-yellow-600 mr-3 animate-pulse"></i>
-            <span class="text-2xl font-bold school-text-gradient school-font">New User</span>
+      @media (min-width: 1001px) {
+        .mobile-only {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gradient-to-br from-yellow-50 to-blue-50 min-h-screen font-sans"
+  >
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-20">
+          <div class="flex items-center">
+            <div class="flex-shrink-0 flex items-center">
+              <i
+                class="ti ti-school text-4xl text-yellow-600 mr-3 animate-pulse"
+              ></i>
+              <span class="text-2xl font-bold school-text-gradient school-font"
+                >New User</span
+              >
+            </div>
+            <div class="hidden-md sm:ml-8 sm:flex sm:space-x-10">
+              <a
+                href="dashboard.html"
+                class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in"
+              >
+                <i class="ti ti-layout-dashboard mr-2 text-yellow-600"></i>
+                Dashboard
+              </a>
+              <a
+                href="club-events.html"
+                class="border-yellow-500 text-gray-900 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in"
+                style="animation-delay: 0.1s"
+              >
+                <i class="ti ti-calendar-event mr-2 text-yellow-600"></i> Event
+              </a>
+              <a
+                href="view-clubs.html"
+                class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in"
+                style="animation-delay: 0.2s"
+              >
+                Clubs
+              </a>
+              <a
+                href="home.html"
+                class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in"
+                style="animation-delay: 0.3s"
+              >
+                Home
+              </a>
+            </div>
           </div>
-          <div class="hidden-md sm:ml-8 sm:flex sm:space-x-10">
-            <a href="dashboard.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in">
-              <i class="ti ti-layout-dashboard mr-2 text-yellow-600"></i> Dashboard
-            </a>
-            <a href="club-events.html" class="border-yellow-500 text-gray-900 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.1s;">
-              <i class="ti ti-calendar-event mr-2 text-yellow-600"></i> Event
-            </a>
-            <a href="view-clubs.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.2s;">
-              Clubs
-            </a>
-            <a href="home.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.3s;">
-              Home
-            </a>
+          <div class="hidden-md sm:ml-6 sm:flex sm:items-center space-x-4">
+            <button
+              class="p-2 rounded-full text-gray-400 hover:text-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-300 animate-pulse"
+            >
+              <i class="ti ti-bell text-2xl"></i>
+            </button>
+            <div class="dropdown">
+              <button class="dropdown-toggle" id="dropdownToggle">
+                <div
+                  class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden"
+                >
+                  <img
+                    id="navProfilePicture"
+                    class="w-full h-full object-cover hidden"
+                    alt="Profile"
+                  />
+                  <i class="ti ti-user text-2xl text-yellow-600"></i>
+                  <div
+                    class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50"
+                  ></div>
+                </div>
+                <span
+                  class="ml-3 font-medium text-gray-700 school-font"
+                  id="username"
+                  >Loading...</span
+                >
+                <i class="ti ti-chevron-down text-yellow-600 ml-2"></i>
+              </button>
+              <div class="dropdown-menu" id="dropdownMenu">
+                <div
+                  class="px-4 py-3 text-sm text-gray-500 border-b border-yellow-50"
+                >
+                  Logged in as
+                  <span
+                    id="dropdownUsername"
+                    class="font-medium text-gray-700"
+                  ></span>
+                </div>
+                <a href="profile.html" class="dropdown-item">
+                  <i class="ti ti-user mr-2"></i> Profile
+                </a>
+                <a href="settings.html" class="dropdown-item">
+                  <i class="ti ti-settings mr-2"></i> Settings
+                </a>
+                <button
+                  onclick="logout()"
+                  class="dropdown-item w-full text-left"
+                >
+                  <i class="ti ti-logout mr-2"></i> Logout
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Mobile menu button -->
+          <div class="mobile-only flex items-center">
+            <button
+              type="button"
+              id="mobileMenuButton"
+              class="p-2 rounded-md text-gray-700 hover:text-yellow-600 focus:outline-none"
+            >
+              <i class="ti ti-menu-2 text-2xl"></i>
+            </button>
           </div>
         </div>
-        <div class="hidden-md sm:ml-6 sm:flex sm:items-center space-x-4">
-          <button class="p-2 rounded-full text-gray-400 hover:text-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-300 animate-pulse">
-            <i class="ti ti-bell text-2xl"></i>
-          </button>
-          <div class="dropdown">
-            <button class="dropdown-toggle" id="dropdownToggle">
-              <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden">
-                <img id="navProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
-                <i class="ti ti-user text-2xl text-yellow-600"></i>
-                <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50"></div>
+      </div>
+      <!-- Mobile menu -->
+      <div
+        class="mobile-only hidden absolute top-20 left-0 right-0 bg-white shadow-lg z-50"
+        id="mobileMenu"
+      >
+        <div class="px-2 pt-2 pb-3 space-y-1">
+          <a
+            href="dashboard.html"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600"
+          >
+            <i class="ti ti-layout-dashboard mr-2"></i> Dashboard
+          </a>
+          <a
+            href="club-events.html"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 bg-yellow-50"
+          >
+            <i class="ti ti-calendar-event mr-2"></i> Events
+          </a>
+          <a
+            href="view-clubs.html"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600"
+          >
+            Clubs
+          </a>
+          <a
+            href="home.html"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600"
+          >
+            Home
+          </a>
+
+          <!-- Mobile Profile Dropdown -->
+          <div class="mobile-dropdown">
+            <button class="mobile-dropdown-toggle" id="mobileDropdownToggle">
+              <div
+                class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden mr-3"
+              >
+                <img
+                  id="mobileNavProfilePicture"
+                  class="w-full h-full object-cover hidden"
+                  alt="Profile"
+                />
+                <i class="ti ti-user text-xl text-yellow-600"></i>
               </div>
-              <span class="ml-3 font-medium text-gray-700 school-font" id="username">Loading...</span>
-              <i class="ti ti-chevron-down text-yellow-600 ml-2"></i>
+              <span
+                class="font-medium text-gray-700 school-font"
+                id="mobileUsername"
+                >Loading...</span
+              >
+              <i class="ti ti-chevron-down text-yellow-600 ml-auto"></i>
             </button>
-            <div class="dropdown-menu" id="dropdownMenu">
-              <div class="px-4 py-3 text-sm text-gray-500 border-b border-yellow-50">
-                Logged in as <span id="dropdownUsername" class="font-medium text-gray-700"></span>
+            <div class="mobile-dropdown-menu" id="mobileDropdownMenu">
+              <div
+                class="px-4 py-2 text-sm text-gray-500 border-b border-yellow-50"
+              >
+                Logged in as
+                <span
+                  id="mobileDropdownUsername"
+                  class="font-medium text-gray-700"
+                ></span>
               </div>
-              <a href="profile.html" class="dropdown-item">
+              <a href="profile.html" class="mobile-dropdown-item">
                 <i class="ti ti-user mr-2"></i> Profile
               </a>
-              <a href="settings.html" class="dropdown-item">
+              <a href="settings.html" class="mobile-dropdown-item">
                 <i class="ti ti-settings mr-2"></i> Settings
               </a>
-              <button onclick="logout()" class="dropdown-item w-full text-left">
+              <button
+                onclick="logout()"
+                class="mobile-dropdown-item w-full text-left"
+              >
                 <i class="ti ti-logout mr-2"></i> Logout
               </button>
             </div>
           </div>
         </div>
-        <!-- Mobile menu button -->
-        <div class="mobile-only flex items-center">
-          <button type="button" id="mobileMenuButton" class="p-2 rounded-md text-gray-700 hover:text-yellow-600 focus:outline-none">
-            <i class="ti ti-menu-2 text-2xl"></i>
-          </button>
-        </div>
       </div>
-    </div>
-    <!-- Mobile menu -->
-    <div class="mobile-only hidden absolute top-20 left-0 right-0 bg-white shadow-lg z-50" id="mobileMenu">
-      <div class="px-2 pt-2 pb-3 space-y-1">
-        <a href="dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
-          <i class="ti ti-layout-dashboard mr-2"></i> Dashboard
-        </a>
-        <a href="club-events.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 bg-yellow-50">
-          <i class="ti ti-calendar-event mr-2"></i> Events
-        </a>
-        <a href="view-clubs.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
-          Clubs
-        </a>
-        <a href="home.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
-           Home
-        </a>
-        
-        <!-- Mobile Profile Dropdown -->
-        <div class="mobile-dropdown">
-          <button class="mobile-dropdown-toggle" id="mobileDropdownToggle">
-            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden mr-3">
-              <img id="mobileNavProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
-              <i class="ti ti-user text-xl text-yellow-600"></i>
+    </nav>
+
+    <main class="max-w-2xl mx-auto mt-8 p-4">
+      <div
+        class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100"
+      >
+        <!-- Form Header with School Colors -->
+        <div
+          class="bg-gradient-to-r from-hillrange-yellow to-hillrange-blue p-6"
+        >
+          <div class="flex items-center">
+            <i class="ti ti-user-plus text-2xl text-white mr-3"></i>
+            <h1 class="text-2xl font-bold text-white">Create New User</h1>
+          </div>
+          <p class="text-yellow-100 mt-1">
+            Add new users to the Hillrange system
+          </p>
+        </div>
+
+        <!-- Form Content -->
+        <form id="createUserForm" class="p-8 space-y-6">
+          <div class="space-y-1">
+            <label class="block text-lg font-semibold text-hillrange-brown"
+              >Username</label
+            >
+            <div class="relative">
+              <i class="ti ti-user absolute left-3 top-3 text-gray-400"></i>
+              <input
+                type="text"
+                id="newUsername"
+                required
+                class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-hillrange-yellow focus:border-transparent transition bg-gray-50"
+              />
             </div>
-            <span class="font-medium text-gray-700 school-font" id="mobileUsername">Loading...</span>
-            <i class="ti ti-chevron-down text-yellow-600 ml-auto"></i>
-          </button>
-          <div class="mobile-dropdown-menu" id="mobileDropdownMenu">
-            <div class="px-4 py-2 text-sm text-gray-500 border-b border-yellow-50">
-              Logged in as <span id="mobileDropdownUsername" class="font-medium text-gray-700"></span>
+          </div>
+
+          <div class="space-y-1">
+            <label class="block text-lg font-semibold text-hillrange-brown"
+              >Password</label
+            >
+            <div class="relative">
+              <i class="ti ti-lock absolute left-3 top-3 text-gray-400"></i>
+              <input
+                type="password"
+                id="password"
+                required
+                class="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-hillrange-yellow focus:border-transparent transition bg-gray-50"
+              />
+              <i
+                id="togglePassword"
+                class="ti ti-eye absolute password-toggle text-gray-400 hover:text-hillrange-yellow"
+              ></i>
             </div>
-            <a href="profile.html" class="mobile-dropdown-item">
-              <i class="ti ti-user mr-2"></i> Profile
-            </a>
-            <a href="settings.html" class="mobile-dropdown-item">
-              <i class="ti ti-settings mr-2"></i> Settings
-            </a>
-            <button onclick="logout()" class="mobile-dropdown-item w-full text-left">
-              <i class="ti ti-logout mr-2"></i> Logout
-            </button>
+            <p class="text-xs text-gray-500 mt-1">Minimum 8 characters</p>
           </div>
-        </div>
+
+          <!-- Enhanced Role Dropdown with Colors -->
+          <div class="space-y-1">
+            <label class="block text-lg font-semibold text-hillrange-brown"
+              >Role</label
+            >
+            <div class="relative">
+              <i class="ti ti-shield absolute left-3 top-3 text-gray-400"></i>
+              <select
+                id="role"
+                class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-hillrange-yellow focus:border-transparent transition bg-gray-50 appearance-none"
+              >
+                <option value="user" class="role-option">
+                  <span class="role-color bg-user-role"></span> User
+                </option>
+                <option value="admin" class="role-option">
+                  <span class="role-color bg-admin-role"></span> Admin
+                </option>
+              </select>
+              <i
+                class="ti ti-chevron-down absolute right-3 top-3 text-gray-400"
+              ></i>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-gradient-to-r from-hillrange-yellow to-hillrange-brown text-white py-3 rounded-lg hover:from-hillrange-yellow hover:to-hillrange-yellow transition-all shadow-md flex items-center justify-center space-x-2 group"
+          >
+            <i
+              class="ti ti-user-plus group-hover:scale-110 transition-transform"
+            ></i>
+            <span>Create User</span>
+          </button>
+
+          <div
+            id="responseMessage"
+            class="text-center font-medium p-4 rounded-lg transition-all duration-300"
+          ></div>
+        </form>
       </div>
-    </div>
-  </nav>
+    </main>
 
+    <script>
+      const user = JSON.parse(localStorage.getItem("loggedInUser"))?.user;
+      // User dropdown toggle
+      const userMenuButton = document.getElementById("userMenuButton");
+      const userDropdown = document.getElementById("userDropdown");
+      document.getElementById("username").textContent = user.username;
+      document.getElementById("dropdownUsername").textContent = user.username;
+      document.getElementById("mobileUsername").textContent = user.username;
+      document.getElementById("mobileDropdownUsername").textContent =
+        user.username;
 
-  <main class="max-w-2xl mx-auto mt-8 p-4">
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-      <!-- Form Header with School Colors -->
-      <div class="bg-gradient-to-r from-hillrange-yellow to-hillrange-blue p-6">
-        <div class="flex items-center">
-          <i class="ti ti-user-plus text-2xl text-white mr-3"></i>
-          <h1 class="text-2xl font-bold text-white">Create New User</h1>
-        </div>
-        <p class="text-yellow-100 mt-1">Add new users to the Hillrange system</p>
-      </div>
-
-      <!-- Form Content -->
-      <form id="createUserForm" class="p-8 space-y-6">
-        <div class="space-y-1">
-          <label class="block text-lg font-semibold text-hillrange-brown">Username</label>
-          <div class="relative">
-            <i class="ti ti-user absolute left-3 top-3 text-gray-400"></i>
-            <input type="text" id="username" required 
-                  class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-hillrange-yellow focus:border-transparent transition bg-gray-50">
-          </div>
-        </div>
-
-        <div class="space-y-1">
-          <label class="block text-lg font-semibold text-hillrange-brown">Password</label>
-          <div class="relative">
-            <i class="ti ti-lock absolute left-3 top-3 text-gray-400"></i>
-            <input type="password" id="password" required 
-                  class="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-hillrange-yellow focus:border-transparent transition bg-gray-50">
-            <i id="togglePassword" class="ti ti-eye absolute password-toggle text-gray-400 hover:text-hillrange-yellow"></i>
-          </div>
-          <p class="text-xs text-gray-500 mt-1">Minimum 8 characters</p>
-        </div>
-
-        <!-- Enhanced Role Dropdown with Colors -->
-        <div class="space-y-1">
-          <label class="block text-lg font-semibold text-hillrange-brown">Role</label>
-          <div class="relative">
-            <i class="ti ti-shield absolute left-3 top-3 text-gray-400"></i>
-            <select id="role" class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-hillrange-yellow focus:border-transparent transition bg-gray-50 appearance-none">
-              <option value="user" class="role-option">
-                <span class="role-color bg-user-role"></span> User
-              </option>
-              <option value="admin" class="role-option">
-                <span class="role-color bg-admin-role"></span> Admin
-              </option>
-            </select>
-            <i class="ti ti-chevron-down absolute right-3 top-3 text-gray-400"></i>
-          </div>
-        </div>
-
-        <button type="submit" class="w-full bg-gradient-to-r from-hillrange-yellow to-hillrange-brown text-white py-3 rounded-lg hover:from-hillrange-yellow hover:to-hillrange-yellow transition-all shadow-md flex items-center justify-center space-x-2 group">
-          <i class="ti ti-user-plus group-hover:scale-110 transition-transform"></i>
-          <span>Create User</span>
-        </button>
-
-        <div id="responseMessage" class="text-center font-medium p-4 rounded-lg transition-all duration-300"></div>
-      </form>
-    </div>
-  </main>
-
-  <script>
-    const user = JSON.parse(localStorage.getItem("loggedInUser"))?.user;
-    // User dropdown toggle
-    const userMenuButton = document.getElementById('userMenuButton');
-    const userDropdown = document.getElementById('userDropdown');
-     document.getElementById('username').textContent = user.username;
-        document.getElementById('dropdownUsername').textContent = user.username;
-           document.getElementById('mobileUsername').textContent = user.username;
-        document.getElementById('mobileDropdownUsername').textContent = user.username;
-   
       // Mobile menu toggle
-      const mobileMenuButton = document.getElementById('mobileMenuButton');
-      const mobileMenu = document.getElementById('mobileMenu');
-      mobileMenuButton.addEventListener('click', () => {
-        const isExpanded = mobileMenu.classList.toggle('hidden');
-        mobileMenuButton.innerHTML = isExpanded 
-          ? '<i class="ti ti-menu-2 text-2xl"></i>' 
+      const mobileMenuButton = document.getElementById("mobileMenuButton");
+      const mobileMenu = document.getElementById("mobileMenu");
+      mobileMenuButton.addEventListener("click", () => {
+        const isExpanded = mobileMenu.classList.toggle("hidden");
+        mobileMenuButton.innerHTML = isExpanded
+          ? '<i class="ti ti-menu-2 text-2xl"></i>'
           : '<i class="ti ti-x text-2xl"></i>';
       });
 
       // Mobile dropdown toggle
-      const mobileDropdownToggle = document.getElementById('mobileDropdownToggle');
-      const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
+      const mobileDropdownToggle = document.getElementById(
+        "mobileDropdownToggle"
+      );
+      const mobileDropdownMenu = document.getElementById("mobileDropdownMenu");
       if (mobileDropdownToggle) {
-        mobileDropdownToggle.addEventListener('click', () => {
-          mobileDropdownMenu.classList.toggle('show');
+        mobileDropdownToggle.addEventListener("click", () => {
+          mobileDropdownMenu.classList.toggle("show");
         });
       }
 
+      // Password visibility toggle
+      const togglePassword = document.getElementById("togglePassword");
+      const passwordField = document.getElementById("password");
 
-    // Password visibility toggle
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordField = document.getElementById('password');
+      togglePassword.addEventListener("click", () => {
+        const type =
+          passwordField.getAttribute("type") === "password"
+            ? "text"
+            : "password";
+        passwordField.setAttribute("type", type);
+        togglePassword.classList.toggle("ti-eye");
+        togglePassword.classList.toggle("ti-eye-off");
+      });
 
-    togglePassword.addEventListener('click', () => {
-      const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-      passwordField.setAttribute('type', type);
-      togglePassword.classList.toggle('ti-eye');
-      togglePassword.classList.toggle('ti-eye-off');
-    });
+      // Form submission
+      document
+        .getElementById("createUserForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
 
-    // Form submission
-    document.getElementById('createUserForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
+          const username = document.getElementById("newUsername").value.trim();
+          const password = document.getElementById("password").value.trim();
+          const role = document.getElementById("role").value;
 
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const role = document.getElementById('role').value;
+          // Show loading state
+          const submitBtn = e.target.querySelector('button[type="submit"]');
+          submitBtn.innerHTML = `<i class="ti ti-loader-2 animate-spin"></i> Creating...`;
+          submitBtn.disabled = true;
 
-      // Show loading state
-      const submitBtn = e.target.querySelector('button[type="submit"]');
-      submitBtn.innerHTML = `<i class="ti ti-loader-2 animate-spin"></i> Creating...`;
-      submitBtn.disabled = true;
+          try {
+            const response = await fetch("/api/users/create-user", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ username, password, role, user }),
+            });
+            const res = await fetch(
+              `/api/users/${encodeURIComponent(user.username)}`,
+              {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  recentActivity: {
+                    header: "User Created",
+                    message: `You Created a new user: ${username}`,
+                    icon: "ti-users-group",
+                  },
+                }),
+              }
+            );
+            const result = await response.json();
+            const msg = document.getElementById("responseMessage");
 
-      try {
-        const response = await fetch('/api/users/create-user', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password, role, user })
-        });
- const res =  await fetch(`/api/users/${encodeURIComponent(user.username)}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      recentActivity: {
-         header: "User Created",
-        message: `You Created a new user: ${username}`,
-        icon: "ti-users-group"
-
-      }
-    })
-  });
-        const result = await response.json();
-        const msg = document.getElementById('responseMessage');
-
-        if (response.ok) {
-          msg.innerHTML = `
+            if (response.ok) {
+              msg.innerHTML = `
             <div class="flex items-center justify-center space-x-2">
               <i class="ti ti-circle-check text-green-500 text-xl"></i>
               <span>User <span class="font-bold">${result.username}</span> (${result.role}) created successfully!</span>
             </div>
           `;
-          msg.className = 'text-green-600 bg-green-50 text-center font-medium p-4 rounded-lg';
-          
-          // Clear form
-          document.getElementById('username').value = '';
-          document.getElementById('password').value = '';
-        } else {
-          msg.innerHTML = `
+              msg.className =
+                "text-green-600 bg-green-50 text-center font-medium p-4 rounded-lg";
+
+              // Clear form
+              document.getElementById("username").value = "";
+              document.getElementById("password").value = "";
+            } else {
+              msg.innerHTML = `
             <div class="flex items-center justify-center space-x-2">
               <i class="ti ti-alert-circle text-red-500 text-xl"></i>
-              <span>Error: ${result.error || 'Failed to create user'}</span>
+              <span>Error: ${result.error || "Failed to create user"}</span>
             </div>
           `;
-          msg.className = 'text-red-600 bg-red-50 text-center font-medium p-4 rounded-lg';
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        const msg = document.getElementById('responseMessage');
-        msg.innerHTML = `
+              msg.className =
+                "text-red-600 bg-red-50 text-center font-medium p-4 rounded-lg";
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            const msg = document.getElementById("responseMessage");
+            msg.innerHTML = `
           <div class="flex items-center justify-center space-x-2">
             <i class="ti ti-alert-triangle text-red-500 text-xl"></i>
             <span>Network error - please try again</span>
           </div>
         `;
-        msg.className = 'text-red-600 bg-red-50 text-center font-medium p-4 rounded-lg';
-      } finally {
-        submitBtn.innerHTML = `<i class="ti ti-user-plus"></i> Create User`;
-        submitBtn.disabled = false;
-        
-        // Auto-hide message after 5 seconds
-        setTimeout(() => {
-          const msg = document.getElementById('responseMessage');
-          msg.innerHTML = '';
-          msg.className = 'text-center font-medium p-4 rounded-lg';
-        }, 5000);
-      }
-    });
-  </script>
+            msg.className =
+              "text-red-600 bg-red-50 text-center font-medium p-4 rounded-lg";
+          } finally {
+            submitBtn.innerHTML = `<i class="ti ti-user-plus"></i> Create User`;
+            submitBtn.disabled = false;
 
-</body>
+            // Auto-hide message after 5 seconds
+            setTimeout(() => {
+              const msg = document.getElementById("responseMessage");
+              msg.innerHTML = "";
+              msg.className = "text-center font-medium p-4 rounded-lg";
+            }, 5000);
+          }
+        });
+    </script>
+  </body>
 </html>
