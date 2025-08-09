@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Club Details | Hillrange</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap");
+
+    :root {
+      --primary: #fbbf24; /* Amber-400 */
+      --secondary: #78350f; /* Amber-900 */
+      --accent: #f59e0b; /* Amber-500 */
+      --light: #fef3c7; /* Amber-50 */
+      --dark: #451a03; /* Amber-950 */
+      --blue: #1e40af; /* Blue-800 */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #fef9e7 0%, #fef3c7 100%);
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    .school-font {
+      font-weight: 900;
+      letter-spacing: -0.015em;
+    }
+
+    .school-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+    }
+
+    .school-text-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Navigation */
+    nav {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), #fef3c7);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav a {
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    nav a:hover::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(1);
+      transform-origin: center;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Dropdown */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-radius: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, #fef3c7, #fff);
+      box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+    }
+
+    .dropdown-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(69, 26, 3, 0.2);
+      background: linear-gradient(135deg, #fff, #fef3c7);
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 1rem;
+      min-width: 260px;
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 12px 40px rgba(69, 26, 3, 0.2);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      transform: translateY(10px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dropdown-menu.show {
+      display: block;
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      color: var(--secondary);
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-item:hover {
+      background: #fef3c7;
+      color: var(--dark);
+      transform: translateX(5px);
+    }
+
+    /* Club Image */
+    .club-image-container {
+      height: 500px;
+      overflow: hidden;
+      position: relative;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(69, 26, 3, 0.2);
+      background: linear-gradient(135deg, #fef3c7, #fff);
+    }
+
+    .club-image-placeholder {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      position: relative;
+    }
+
+    .club-image-placeholder i {
+      font-size: 6rem;
+      color: var(--secondary);
+      opacity: 0.3;
+      animation: pulseIcon 2s ease-in-out infinite;
+    }
+
+    .club-image-placeholder span {
+      color: var(--secondary);
+      font-size: 1.25rem;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+
+    /* Buttons */
+    .back-button {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
+    }
+
+    .back-button:hover {
+      transform: translateX(-5px) scale(1.02);
+      box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+    }
+
+    .join-button {
+      background: linear-gradient(135deg, var(--primary), var(--blue));
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .join-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: 0.5s;
+    }
+
+    .join-button:hover::before {
+      left: 100%;
+    }
+
+    .join-button:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 8px 20px rgba(251, 191, 36, 0.5);
+    }
+
+    .join-button.disabled {
+      background: linear-gradient(135deg, #9ca3af, #6b7280);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Category Badge */
+    .category-badge {
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #fef3c7, #fff);
+      color: var(--secondary);
+      box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .category-badge:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+    }
+
+    /* Animations */
+    @keyframes pulseIcon {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.2); opacity: 0.5; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .animate-slide-in {
+      animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(69, 26, 3, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.15);
+      overflow: hidden;
+      position: relative;
+      transition: all 0.4s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(69, 26, 3, 0.15);
+    }
+
+    /* Attendees */
+    .attendee-avatar {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .attendee-avatar:hover {
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 6px 15px rgba(69, 26, 3, 0.2);
+    }
+
+    .attendee-tooltip {
+      position: absolute;
+      top: -2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--secondary);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .attendee-avatar:hover .attendee-tooltip {
+      opacity: 1;
+      top: -3rem;
+    }
+
+    /* Progress Ring */
+    .progress-ring {
+      position: relative;
+      width: 100px;
+      height: 100px;
+    }
+
+    .progress-ring circle {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: center;
+    }
+
+    .progress-ring .bg {
+      stroke: #e5e7eb;
+    }
+
+    .progress-ring .progress {
+      stroke: var(--primary);
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 0.5s ease;
+    }
+
+    /* Share Buttons */
+    .share-button {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, #fef3c7, #fff);
+      padding: 0.75rem;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+    }
+
+    .share-button:hover {
+      transform: scale(1.2);
+      box-shadow: 0 6px 15px rgba(69, 26, 3, 0.2);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+    }
+
+    /* Event Card */
+    .event-card {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(69, 26, 3, 0.15);
+      border-color: var(--accent);
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.75rem;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, var(--primary), var(--accent));
+      border-radius: 2px;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.25rem;
+      top: 0.5rem;
+      width: 1rem;
+      height: 1rem;
+      background: var(--primary);
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .timeline-item:hover::before {
+      transform: scale(1.2);
+      background: var(--accent);
+    }
+
+    /* Decorations */
+    .decoration {
+      position: absolute;
+      z-index: -1;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .decoration-1 {
+      top: 5%;
+      left: 3%;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, var(--primary) 0%, transparent 60%);
+      animation: pulse 10s ease-in-out infinite;
+    }
+
+    .decoration-2 {
+      bottom: 5%;
+      right: 3%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--accent) 0%, transparent 60%);
+      animation: pulse 12s ease-in-out infinite;
+    }
+
+    .decoration-3 {
+      top: 20%;
+      right: 10%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, var(--blue) 0%, transparent 60%);
+      animation: pulse 8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.15; }
+      50% { transform: scale(1.2); opacity: 0.25; }
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Responsive navigation - Changed from 640px to 1000px */
+    @media (max-width: 1000px) {
+      nav .hidden-md {
+        display: none;
+      }
+      
+      .mobile-dropdown {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+      }
+      
+      .mobile-dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, #fef3c7, #fff);
+        box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+        width: 100%;
+      }
+      
+      .mobile-dropdown-menu {
+        display: none;
+        width: 100%;
+        background: white;
+        border-radius: 0.75rem;
+        margin-top: 0.5rem;
+        box-shadow: 0 4px 15px rgba(69, 26, 3, 0.1);
+      }
+      
+      .mobile-dropdown-menu.show {
+        display: block;
+      }
+      
+      .mobile-dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--secondary);
+        transition: all 0.2s ease;
+      }
+      
+      .mobile-dropdown-item:hover {
+        background: #fef3c7;
+      }
+    }
+
+    @media (min-width: 1001px) {
+      .mobile-only {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 relative overflow-x-hidden">
+  <!-- Decorations -->
+  <div class="decoration decoration-1"></div>
+  <div class="decoration decoration-2"></div>
+  <div class="decoration decoration-3"></div>
+
+  <!-- 3D Background Canvas -->
+  <canvas id="bgCanvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <i class="ti ti-school text-3xl text-yellow-600 mr-3 animate-pulse"></i>
+            <span class="text-xl font-bold school-text-gradient school-font">Hillrange Clubs</span>
+          </div>
+          <div class="hidden-md sm:ml-8 sm:flex sm:space-x-10">
+            <a href="dashboard.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in">
+              <i class="ti ti-layout-dashboard mr-2 text-yellow-600"></i> Dashboard
+            </a>
+            <a href="club-events.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.1s;">
+              <i class="ti ti-calendar-event mr-2 text-yellow-600"></i> Events
+            </a>
+            <a href="view-clubs.html" class="border-yellow-500 text-gray-900 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.2s;">
+              <i class="ti ti-users-group mr-2 text-yellow-600"></i> Clubs
+            </a>
+            <a href="home.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.3s;">
+              Home
+            </a>
+          </div>
+        </div>
+        <div class="hidden-md sm:ml-6 sm:flex sm:items-center space-x-4">
+          <button class="p-2 rounded-full text-gray-400 hover:text-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-300 animate-pulse">
+            <i class="ti ti-bell text-2xl"></i>
+          </button>
+          <div class="dropdown">
+            <button class="dropdown-toggle" id="dropdownToggle">
+              <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden">
+                <img id="navProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+                <i class="ti ti-user text-2xl text-yellow-600"></i>
+                <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50"></div>
+              </div>
+              <span class="ml-3 font-medium text-gray-700 school-font" id="username">Loading...</span>
+              <i class="ti ti-chevron-down text-yellow-600 ml-2"></i>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <div class="px-4 py-3 text-sm text-gray-500 border-b border-yellow-50">
+                Logged in as <span id="dropdownUsername" class="font-medium text-gray-700"></span>
+              </div>
+              <a href="profile.html" class="dropdown-item">
+                <i class="ti ti-user mr-2"></i> Profile
+              </a>
+              <a href="settings.html" class="dropdown-item">
+                <i class="ti ti-settings mr-2"></i> Settings
+              </a>
+              <button onclick="logout()" class="dropdown-item w-full text-left">
+                <i class="ti ti-logout mr-2"></i> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Mobile menu button -->
+        <div class="mobile-only flex items-center">
+          <button type="button" id="mobileMenuButton" class="p-2 rounded-md text-gray-700 hover:text-yellow-600 focus:outline-none">
+            <i class="ti ti-menu-2 text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div class="mobile-only hidden absolute top-20 left-0 right-0 bg-white shadow-lg z-50" id="mobileMenu">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <a href="dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
+          <i class="ti ti-layout-dashboard mr-2"></i> Dashboard
+        </a>
+        <a href="club-events.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
+          <i class="ti ti-calendar-event mr-2"></i> Events
+        </a>
+        <a href="view-clubs.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 bg-yellow-50">
+          <i class="ti ti-users-group mr-2"></i> Clubs
+        </a>
+        <a href="home.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
+          Home
+        </a>
+        
+        <!-- Mobile Profile Dropdown -->
+        <div class="mobile-dropdown">
+          <button class="mobile-dropdown-toggle" id="mobileDropdownToggle">
+            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden mr-3">
+              <img id="mobileNavProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+              <i class="ti ti-user text-xl text-yellow-600"></i>
+            </div>
+            <span class="font-medium text-gray-700 school-font" id="mobileUsername">Loading...</span>
+            <i class="ti ti-chevron-down text-yellow-600 ml-auto"></i>
+          </button>
+          <div class="mobile-dropdown-menu" id="mobileDropdownMenu">
+            <div class="px-4 py-2 text-sm text-gray-500 border-b border-yellow-50">
+              Logged in as <span id="mobileDropdownUsername" class="font-medium text-gray-700"></span>
+            </div>
+            <a href="profile.html" class="mobile-dropdown-item">
+              <i class="ti ti-user mr-2"></i> Profile
+            </a>
+            <a href="settings.html" class="mobile-dropdown-item">
+              <i class="ti ti-settings mr-2"></i> Settings
+            </a>
+            <button onclick="logout()" class="mobile-dropdown-item w-full text-left">
+              <i class="ti ti-logout mr-2"></i> Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Back Button -->
+    <button onclick="window.history.back()" class="back-button mb-8 inline-flex items-center text-white animate-fade-in">
+      <i class="ti ti-arrow-left mr-2"></i> Back to Clubs
+    </button>
+
+    <!-- Club Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
+      <div>
+        <h1 class="text-4xl md:text-5xl font-bold leading-tight school-text-gradient school-font mb-4 animate-fade-in" id="club-title">
+          Loading Club...
+        </h1>
+        <div class="flex items-center space-x-6 animate-slide-in">
+          <span class="category-badge" id="club-category">Loading...</span>
+          <span class="text-base text-gray-600 school-font" id="member-count">
+            <i class="ti ti-users mr-1"></i> Loading...
+          </span>
+        </div>
+      </div>
+      <div class="mt-6 md:mt-0 flex items-center space-x-4">
+        <button id="join-button" class="join-button inline-flex items-center px-6 py-3 text-lg font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 animate-fade-in">
+          <i class="ti ti-user-plus mr-2"></i> Join Club
+        </button>
+        <div class="flex space-x-3">
+          <button class="share-button share-facebook" title="Share on Facebook">
+            <i class="ti ti-brand-facebook"></i>
+          </button>
+          <button class="share-button share-twitter" title="Share on Twitter">
+            <i class="ti ti-brand-twitter"></i>
+          </button>
+          <button class="share-button share-link" title="Copy Link">
+            <i class="ti ti-link"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Club Spotlight -->
+    <div class="club-image-container mb-12 animate-fade-in" id="club-image-container">
+      <canvas id="clubCanvas" class="w-full h-full"></canvas>
+      <div class="club-image-placeholder h-full">
+        <i class="ti ti-users-group"></i>
+        <span>No image available</span>
+      </div>
+    </div>
+
+    <!-- Club Details Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-16">
+      <!-- Main Content -->
+      <div class="lg:col-span-2">
+        <!-- Description -->
+        <div class="card p-8 mb-10 animate-slide-in">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-notes mr-2 text-yellow-600"></i> Club Description
+          </h2>
+          <div class="prose max-w-none text-gray-700 leading-relaxed" id="club-description">
+            Loading club description...
+          </div>
+        </div>
+
+        <!-- Club Leaders -->
+        <div class="card p-8 mb-10 animate-slide-in" style="animation-delay: 0.1s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-crown mr-2 text-yellow-600"></i> Club Leaders
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="leaders-list">
+            <div class="flex items-center space-x-4">
+              <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden">
+                <i class="ti ti-user text-2xl text-yellow-600"></i>
+                <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50"></div>
+              </div>
+              <div>
+                <h3 class="font-medium text-gray-900 school-font">Loading...</h3>
+                <p class="text-gray-600">Club President</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="lg:col-span-1">
+        <!-- Club Stats -->
+        <div class="card p-8 mb-10 animate-slide-in" style="animation-delay: 0.2s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-chart-bar mr-2 text-yellow-600"></i> Club Stats
+          </h2>
+          <div class="space-y-6">
+            <div>
+              <h3 class="text-sm font-medium text-gray-500">Members</h3>
+              <div class="flex items-center justify-center">
+                <svg class="progress-ring" viewBox="0 0 100 100">
+                  <circle class="bg" cx="50" cy="50" r="45"></circle>
+                  <circle class="progress" cx="50" cy="50" r="45" id="membership-progress"></circle>
+                </svg>
+                <div class="absolute text-lg font-semibold text-gray-900" id="member-count-circle">
+                  Loading...
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-sm font-medium text-gray-500">Founded</h3>
+              <p class="text-lg font-semibold text-gray-900 school-font" id="founded-date">
+                Loading...
+              </p>
+            </div>
+            <div>
+              <h3 class="text-sm font-medium text-gray-500">Meeting Schedule</h3>
+              <p class="text-lg font-semibold text-gray-900 school-font" id="meeting-schedule">
+                Loading...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Members -->
+        <div class="card p-8 animate-slide-in" style="animation-delay: 0.3s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-users mr-2 text-yellow-600"></i> Members
+          </h2>
+          <div id="members-list" class="flex flex-wrap gap-4 justify-center">
+            <div class="animate-pulse text-gray-400">Loading members...</div>
+          </div>
+          <div class="flex justify-between mt-6">
+            <button id="members-prev" class="share-button disabled">
+              <i class="ti ti-chevron-left"></i>
+            </button>
+            <button id="members-next" class="share-button">
+              <i class="ti ti-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="mb-16">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center school-font animate-fade-in">
+        <i class="ti ti-calendar mr-2 text-yellow-600"></i> Upcoming Events
+      </h2>
+      <div class="relative">
+        <div id="upcoming-events" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 overflow-hidden"></div>
+        <button id="events-prev" class="absolute top-1/2 -left-4 transform -translate-y-1/2 share-button">
+          <i class="ti ti-chevron-left"></i>
+        </button>
+        <button id="events-next" class="absolute top-1/2 -right-4 transform -translate-y-1/2 share-button">
+          <i class="ti ti-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-yellow-100 mt-16">
+    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center animate-fade-in">
+          <i class="ti ti-school text-3xl text-yellow-600 mr-3 animate-pulse"></i>
+          <span class="text-xl font-bold school-text-gradient school-font">Hillrange Clubs</span>
+        </div>
+        <div class="mt-6 md:mt-0">
+          <p class="text-center text-base text-gray-500">© 2023 Hillrange School. All rights reserved.</p>
+        </div>
+        <div class="mt-6 md:mt-0 flex space-x-8">
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-facebook text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-twitter text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-instagram text-xl"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Global variables
+    let currentClub = null;
+    let membersPage = 0;
+    const membersPerPage = 6;
+    let upcomingEventsPage = 0;
+    let upcomingEventsData = [];
+    let scene, camera, renderer, particles;
+
+    // Initialize 3D Background
+    function initBackground() {
+      const canvas = document.getElementById('bgCanvas');
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const geometry = new THREE.BufferGeometry();
+      const vertices = [];
+      const colors = [];
+      const sizes = [];
+
+      const color = new THREE.Color();
+      const palette = [0xfbbf24, 0xf59e0b, 0x78350f, 0x1e40af];
+
+      for (let i = 0; i < 500; i++) {
+        vertices.push(
+          Math.random() * 2000 - 1000,
+          Math.random() * 2000 - 1000,
+          Math.random() * 2000 - 1000
+        );
+        color.setHex(palette[Math.floor(Math.random() * palette.length)]);
+        colors.push(color.r, color.g, color.b);
+        sizes.push(Math.random() * 5 + 2);
+      }
+
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+      geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+
+      const material = new THREE.PointsMaterial({
+        size: 5,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.3,
+      });
+
+      particles = new THREE.Points(geometry, material);
+      scene.add(particles);
+      camera.position.z = 1000;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        particles.rotation.y += 0.001;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+
+    // Initialize Club Canvas
+    let clubScene, clubCamera, clubRenderer, clubTexture;
+    function initClubCanvas(imageSrc) {
+      const canvas = document.getElementById('clubCanvas');
+      clubScene = new THREE.Scene();
+      clubCamera = new THREE.PerspectiveCamera(75, canvas.offsetWidth / canvas.offsetHeight, 0.1, 1000);
+      clubRenderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+      clubRenderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
+
+      const geometry = new THREE.PlaneGeometry(5, 3);
+      const material = new THREE.MeshBasicMaterial({ map: null, transparent: true });
+      const plane = new THREE.Mesh(geometry, material);
+      clubScene.add(plane);
+      clubCamera.position.z = 5;
+
+      if (imageSrc) {
+        const loader = new THREE.TextureLoader();
+        loader.load(imageSrc, (texture) => {
+          clubTexture = texture;
+          material.map = texture;
+          material.needsUpdate = true;
+        });
+      }
+
+      function animateClub() {
+        requestAnimationFrame(animateClub);
+        plane.rotation.y += 0.005;
+        clubRenderer.render(clubScene, clubCamera);
+      }
+      animateClub();
+
+      window.addEventListener('resize', () => {
+        clubRenderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
+        clubCamera.aspect = canvas.offsetWidth / canvas.offsetHeight;
+        clubCamera.updateProjectionMatrix();
+      });
+    }
+
+    // Dropdown functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.getElementById('dropdownToggle');
+      const menu = document.getElementById('dropdownMenu');
+
+      toggle.addEventListener('click', () => {
+        menu.classList.toggle('show');
+        gsap.to(menu, {
+          opacity: menu.classList.contains('show') ? 1 : 0,
+          y: menu.classList.contains('show') ? 0 : 10,
+          duration: 0.3,
+          ease: 'power2.out',
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.remove('show');
+          gsap.to(menu, { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out' });
+        }
+      });
+
+      // Initialize GSAP animations
+      gsap.from('nav', { y: -100, opacity: 0, duration: 1, ease: 'power3.out' });
+      gsap.from('.back-button', { x: -50, opacity: 0, duration: 0.8, delay: 0.2, ease: 'power3.out' });
+      gsap.from('#club-title', { scale: 0.8, opacity: 0, duration: 0.8, delay: 0.4, ease: 'power3.out' });
+      gsap.from('.category-badge, #member-count', { x: 20, opacity: 0, stagger: 0.2, duration: 0.6, delay: 0.6, ease: 'power3.out' });
+      gsap.from('#join-button, .share-button', { y: 20, opacity: 0, stagger: 0.2, duration: 0.6, delay: 0.8, ease: 'power3.out' });
+
+      // Scroll animations
+      gsap.utils.toArray('.card').forEach((card, i) => {
+        gsap.from(card, {
+          y: 50,
+          opacity: 0,
+          duration: 0.8,
+          delay: i * 0.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 80%',
+          },
+        });
+      });
+
+      // Initialize 3D background
+      initBackground();
+    });
+
+    // Load club data
+    async function loadClubData(clubId) {
+      try {
+        document.getElementById('club-title').textContent = 'Loading...';
+        const user = JSON.parse(localStorage.getItem('loggedInUser'))?.user;
+        if (!user) {
+          window.location.href = '/login.html';
+          return;
+        }
+
+        document.getElementById('username').textContent = user.username;
+        document.getElementById('dropdownUsername').textContent = user.username;
+        document.getElementById('mobileUsername').textContent = user.username;
+        document.getElementById('mobileDropdownUsername').textContent = user.username;
+
+        const response = await fetch(`/api/clubs/${clubId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        currentClub = await response.json();
+        populateClubData();
+        loadUpcomingEvents();
+        initClubCanvas(currentClub.image && currentClub.image !== 'null' ? currentClub.image : null);
+      } catch (err) {
+        console.error('Failed to load club:', err);
+        showError('Failed to load club details. Please try again later.');
+      }
+    }
+
+    // Populate club data
+    function populateClubData() {
+      if (!currentClub) return;
+
+      document.getElementById('club-title').textContent = currentClub.name;
+      document.getElementById('club-category').textContent = currentClub.category.charAt(0).toUpperCase() + currentClub.category.slice(1);
+      document.getElementById('club-description').textContent = currentClub.description || 'No description provided';
+      
+      const memberCount = currentClub.members ? currentClub.members.length : 0;
+      document.getElementById('member-count').innerHTML = `<i class="ti ti-users mr-1"></i> ${memberCount} members`;
+      document.getElementById('member-count-circle').textContent = `${memberCount}`;
+      
+      // Set membership progress (assuming a max of 50 members for visualization)
+      const maxMembers = 50;
+      const percentage = Math.min(100, Math.round((memberCount / maxMembers) * 283));
+      document.getElementById('membership-progress').style.strokeDashoffset = 283 - percentage;
+
+      // Set founded date and meeting schedule (placeholder data)
+      document.getElementById('founded-date').textContent = currentClub.foundedDate || '2023';
+      document.getElementById('meeting-schedule').textContent = currentClub.meetingSchedule || 'Every Wednesday, 3:30 PM';
+
+      // Set club leaders (placeholder data)
+      const leadersList = document.getElementById('leaders-list');
+      leadersList.innerHTML = `
+        <div class="flex items-center space-x-4">
+          <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden">
+            <i class="ti ti-user text-2xl text-yellow-600"></i>
+            <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50"></div>
+          </div>
+          <div>
+            <h3 class="font-medium text-gray-900 school-font">${currentClub.leader || 'Club President'}</h3>
+            <p class="text-gray-600">President</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden">
+            <i class="ti ti-user text-2xl text-yellow-600"></i>
+            <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50"></div>
+          </div>
+          <div>
+            <h3 class="font-medium text-gray-900 school-font">${currentClub.viceLeader || 'Vice President'}</h3>
+            <p class="text-gray-600">Vice President</p>
+          </div>
+        </div>
+      `;
+
+      const user = JSON.parse(localStorage.getItem('loggedInUser'))?.user;
+      const joinButton = document.getElementById('join-button');
+      if (currentClub.members && currentClub.members.includes(user.username)) {
+        joinButton.innerHTML = '<i class="ti ti-check mr-2"></i> Already Joined';
+        joinButton.classList.add('disabled', 'bg-green-600', 'hover:bg-green-700');
+        joinButton.disabled = true;
+      }
+
+      loadMembers();
+    }
+
+    // Load members
+    function loadMembers() {
+      const membersList = document.getElementById('members-list');
+      membersList.innerHTML = '';
+      if (!currentClub.members || currentClub.members.length === 0) {
+        membersList.innerHTML = '<p class="text-gray-500 school-font">No members yet</p>';
+        return;
+      }
+
+      const start = membersPage * membersPerPage;
+      const end = start + membersPerPage;
+      const paginatedMembers = currentClub.members.slice(start, end);
+
+      paginatedMembers.forEach((member, i) => {
+        const memberElement = document.createElement('div');
+        memberElement.className = 'attendee-avatar flex flex-col items-center';
+        memberElement.style.animationDelay = `${i * 0.1}s`;
+        memberElement.innerHTML = `
+          <div class="w-14 h-14 rounded-full bg-yellow-100 flex items-center justify-center mb-2 relative overflow-hidden">
+            <i class="ti ti-user text-yellow-600 text-2xl"></i>
+            <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50"></div>
+            <span class="attendee-tooltip">${member}</span>
+          </div>
+          <span class="text-sm text-gray-600 truncate w-20 text-center">${member}</span>
+        `;
+        membersList.appendChild(memberElement);
+      });
+
+      document.getElementById('members-prev').classList.toggle('disabled', membersPage === 0);
+      document.getElementById('members-next').classList.toggle('disabled', end >= currentClub.members.length);
+    }
+
+    // Members navigation
+    document.getElementById('members-prev').addEventListener('click', () => {
+      if (membersPage > 0) {
+        membersPage--;
+        loadMembers();
+        gsap.from('#members-list .attendee-avatar', { x: -20, opacity: 0, stagger: 0.1, duration: 0.5, ease: 'power3.out' });
+      }
+    });
+
+    document.getElementById('members-next').addEventListener('click', () => {
+      if ((membersPage + 1) * membersPerPage < currentClub.members.length) {
+        membersPage++;
+        loadMembers();
+        gsap.from('#members-list .attendee-avatar', { x: 20, opacity: 0, stagger: 0.1, duration: 0.5, ease: 'power3.out' });
+      }
+    });
+
+    // Load upcoming events
+    async function loadUpcomingEvents() {
+      try {
+        const response = await fetch(`/api/events/club/${encodeURIComponent(currentClub.name)}`);
+        const clubEvents = await response.json();
+        const now = new Date();
+        upcomingEventsData = clubEvents.filter(event => new Date(event.startDate) > now);
+        upcomingEventsPage = 0;
+        renderUpcomingEvents();
+      } catch (err) {
+        console.error('Failed to load upcoming events:', err);
+        document.getElementById('upcoming-events').innerHTML = '<p class="text-gray-500 school-font">Failed to load upcoming events</p>';
+      }
+    }
+
+    function renderUpcomingEvents() {
+      const container = document.getElementById('upcoming-events');
+      container.innerHTML = '';
+      if (upcomingEventsData.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 school-font">No upcoming events</p>';
+        return;
+      }
+
+      const start = upcomingEventsPage * 3;
+      const end = start + 3;
+      const paginatedEvents = upcomingEventsData.slice(start, end);
+
+      paginatedEvents.forEach((event, i) => {
+        const eventElement = document.createElement('div');
+        eventElement.className = 'event-card bg-white overflow-hidden shadow rounded-lg border border-gray-200 animate-slide-in';
+        eventElement.style.animationDelay = `${i * 0.2}s`;
+        eventElement.innerHTML = `
+          <div class="club-image-container ${!event.image || event.image === 'null' ? 'club-image-placeholder' : ''} h-48">
+            ${event.image && event.image !== 'null'
+              ? `<img src="${event.image}" alt="${event.title}" class="club-image w-full h-full object-cover">`
+              : `<i class="${getEventIcon(event.category)} mb-4"></i><span>No image available</span>`}
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-2 school-font">${event.title}</h3>
+            <div class="flex items-center text-sm text-gray-500 mb-3">
+              <i class="ti ti-calendar mr-1"></i>
+              <span>${new Date(event.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+            </div>
+            <button onclick="window.location.href='event-details.html?id=${event.id}'" class="w-full school-gradient inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+              View Details
+            </button>
+          </div>
+        `;
+        container.appendChild(eventElement);
+      });
+
+      document.getElementById('events-prev').classList.toggle('disabled', upcomingEventsPage === 0);
+      document.getElementById('events-next').classList.toggle('disabled', end >= upcomingEventsData.length);
+    }
+
+    // Events navigation
+    document.getElementById('events-prev').addEventListener('click', () => {
+      if (upcomingEventsPage > 0) {
+        upcomingEventsPage--;
+        renderUpcomingEvents();
+        gsap.from('#upcoming-events .event-card', { x: -20, opacity: 0, stagger: 0.2, duration: 0.5, ease: 'power3.out' });
+      }
+    });
+
+    document.getElementById('events-next').addEventListener('click', () => {
+      if ((upcomingEventsPage + 1) * 3 < upcomingEventsData.length) {
+        upcomingEventsPage++;
+        renderUpcomingEvents();
+        gsap.from('#upcoming-events .event-card', { x: 20, opacity: 0, stagger: 0.2, duration: 0.5, ease: 'power3.out' });
+      }
+    });
+
+    // Join club
+    document.getElementById('join-button').addEventListener('click', async function () {
+      if (!currentClub) return;
+      const button = this;
+      const originalText = button.innerHTML;
+      try {
+        button.innerHTML = '<i class="ti ti-loader spinner mr-2"></i> Joining...';
+        button.disabled = true;
+        const user = JSON.parse(localStorage.getItem('loggedInUser'))?.user;
+        const response = await fetch(`/api/clubs/${currentClub.id}/add-member`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: user.username }),
+        });
+        const response2 = await fetch(`/api/users/${encodeURIComponent(user.username)}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ joinClubId: currentClub.id }),
+        });
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+        if (!response2.ok) {
+          throw new Error(await response2.text());
+        }
+        currentClub = await response.json();
+        populateClubData();
+        button.innerHTML = '<i class="ti ti-check mr-2"></i> Joined!';
+        button.classList.add('disabled', 'bg-green-600', 'hover:bg-green-700');
+      } catch (err) {
+        console.error('Joining failed:', err);
+        button.innerHTML = originalText;
+        button.disabled = false;
+        alert('Joining failed. Please try again.');
+      }
+    });
+
+    // Share functionality
+    document.querySelectorAll('.share-button').forEach(button => {
+      button.addEventListener('click', () => {
+        const url = window.location.href;
+        if (button.classList.contains('share-facebook')) {
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+        } else if (button.classList.contains('share-twitter')) {
+          window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(currentClub.name)}`, '_blank');
+        } else if (button.classList.contains('share-link')) {
+          navigator.clipboard.write(url).then(() => {
+            button.innerHTML = '<i class="ti ti-check"></i>';
+            setTimeout(() => {
+              button.innerHTML = '<i class="ti ti-link"></i>';
+            }, 2000);
+          });
+        }
+        gsap.to(button, { scale: 1.3, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 });
+      });
+    });
+
+    // Helper function to get event icon
+    function getEventIcon(category) {
+      const icons = {
+        Workshop: 'ti ti-device-laptop',
+        Competition: 'ti ti-trophy',
+        Meeting: 'ti ti-users',
+        Social: 'ti ti-mood-smile',
+        Performance: 'ti ti-music',
+        Exhibition: 'ti ti-photo',
+        Sports: 'ti ti-ball-football',
+        Discussion: 'ti ti-message-circle',
+      };
+      return icons[category] || 'ti ti-calendar-event';
+    }
+
+    // Show error message
+    function showError(message) {
+      const mainContent = document.querySelector('.max-w-7xl.mx-auto');
+      mainContent.innerHTML = `
+        <div class="text-center py-20 animate-fade-in">
+          <i class="ti ti-alert-triangle text-6xl text-red-500 mb-6"></i>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4 school-font">Error Loading Club</h2>
+          <p class="text-gray-600 mb-8">${message}</p>
+          <button onclick="window.history.back()" class="school-gradient inline-flex items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-lg font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+            <i class="ti ti-arrow-left mr-2"></i> Back to Clubs
+          </button>
+        </div>
+      `;
+    }
+
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenuButton.addEventListener('click', () => {
+      const isExpanded = mobileMenu.classList.toggle('hidden');
+      mobileMenuButton.innerHTML = isExpanded 
+        ? '<i class="ti ti-menu-2 text-2xl"></i>' 
+        : '<i class="ti ti-x text-2xl"></i>';
+    });
+
+    // Mobile dropdown toggle
+    const mobileDropdownToggle = document.getElementById('mobileDropdownToggle');
+    const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
+    if (mobileDropdownToggle) {
+      mobileDropdownToggle.addEventListener('click', () => {
+        mobileDropdownMenu.classList.toggle('show');
+      });
+    }
+
+    // Logout function
+    function logout() {
+      localStorage.removeItem('loggedInUser');
+      window.location.href = 'login.html';
+    }
+
+    // Load club on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const clubId = urlParams.get('id');
+      if (!clubId) {
+        showError('No club ID provided');
+        return;
+      }
+      loadClubData(clubId);
+    });
+  </script>
+</body>
+</html>

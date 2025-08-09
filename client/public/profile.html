@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile | Hillrange</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap");
+
+    :root {
+      --primary: #fbbf24; /* Amber-400 */
+      --secondary: #78350f; /* Amber-900 */
+      --accent: #f59e0b; /* Amber-500 */
+      --light: #fef3c7; /* Amber-50 */
+      --dark: #451a03; /* Amber-950 */
+      --blue: #1e40af; /* Blue-800 */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #fef9e7 0%, #fef3c7 100%);
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    .school-font {
+      font-weight: 900;
+      letter-spacing: -0.015em;
+    }
+
+    .school-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+    }
+
+    .school-text-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Navigation */
+    nav {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), #fef3c7);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav a {
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    nav a:hover::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(1);
+      transform-origin: center;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Dropdown */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-radius: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, #fef3c7, #fff);
+      box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+    }
+
+    .dropdown-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(69, 26, 3, 0.2);
+      background: linear-gradient(135deg, #fff, #fef3c7);
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 1rem;
+      min-width: 260px;
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 12px 40px rgba(69, 26, 3, 0.2);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      transform: translateY(10px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dropdown-menu.show {
+      display: block;
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      color: var(--secondary);
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-item:hover {
+      background: #fef3c7;
+      color: var(--dark);
+      transform: translateX(5px);
+    }
+
+    /* Profile Picture */
+    .profile-picture-container {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(69, 26, 3, 0.3);
+      border: 4px solid var(--primary);
+      background: linear-gradient(135deg, #fef3c7, #fff);
+    }
+
+    .profile-picture-canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .profile-picture-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+    }
+
+    .profile-picture-placeholder i {
+      font-size: 5rem;
+      color: var(--secondary);
+      opacity: 0.3;
+      animation: pulseIcon 2s ease-in-out infinite;
+    }
+
+    label{
+      opacity: 1;
+    }
+
+    .profile-upload-button {
+      background: linear-gradient(135deg, var(--primary), var(--blue));
+      padding: 0.75rem 1.5rem;
+      border-radius: 1rem;
+      color: white;
+      opacity: 1;
+      font-weight: 500;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
+    }
+
+    .profile-upload-button:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(69, 26, 3, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.15);
+      overflow: hidden;
+      position: relative;
+      transition: all 0.4s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(69, 26, 3, 0.15);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #fef3c7, #fff);
+      color: var(--secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .badge:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 2.5rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.75rem;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, var(--primary), var(--accent));
+      border-radius: 2px;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.25rem;
+      top: 0.5rem;
+      width: 1rem;
+      height: 1rem;
+      background: var(--primary);
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .timeline-item:hover::before {
+      transform: scale(1.2);
+      background: var(--accent);
+    }
+
+    /* Club and Event Cards */
+    .club-card, .event-card {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .club-card:hover, .event-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(69, 26, 3, 0.15);
+      border-color: var(--accent);
+    }
+
+    .club-image, .event-image {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .club-card:hover .club-image, .event-card:hover .event-image {
+      transform: scale(1.05);
+    }
+
+    .club-placeholder, .event-placeholder {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 150px;
+    }
+
+    .club-placeholder i, .event-placeholder i {
+      font-size: 3rem;
+      color: var(--secondary);
+      opacity: 0.3;
+      animation: pulseIcon 2s ease-in-out infinite;
+    }
+
+    /* Buttons */
+    .action-button {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      padding: 0.75rem 1.5rem;
+      border-radius: 1rem;
+      color: white;
+      font-weight: 500;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
+    }
+
+    .action-button:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+    }
+
+    .action-button:disabled {
+      background: linear-gradient(135deg, #9ca3af, #6b7280);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Share Buttons */
+    .share-button {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, #fef3c7, #fff);
+      padding: 0.75rem;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+    }
+
+    .share-button:hover {
+      transform: scale(1.2);
+      box-shadow: 0 6px 15px rgba(69, 26, 3, 0.2);
+      background: linear-gradient(135deg, var(--primary), var(--blue));
+      color: white;
+    }
+
+    /* Animations */
+    @keyframes pulseIcon {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.2); opacity: 0.5; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .animate-slide-in {
+      animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* Decorations */
+    .decoration {
+      position: absolute;
+      z-index: -1;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .decoration-1 {
+      top: 5%;
+      left: 3%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--primary) 0%, transparent 60%);
+      animation: pulse 10s ease-in-out infinite;
+    }
+
+    .decoration-2 {
+      bottom: 5%;
+      right: 3%;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, var(--accent) 0%, transparent 60%);
+      animation: pulse 12s ease-in-out infinite;
+    }
+
+    .decoration-3 {
+      top: 20%;
+      right: 10%;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, var(--blue) 0%, transparent 60%);
+      animation: pulse 8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.15; }
+      50% { transform: scale(1.2); opacity: 0.25; }
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Form Elements */
+    textarea, input[type="text"] {
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      transition: all 0.3s ease;
+      background: #fff;
+    }
+
+    textarea:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+    }
+
+    /* Badges Animation */
+    .badge-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .badge {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .badge::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: 0.5s;
+    }
+
+    .badge:hover::before {
+      left: 100%;
+    }
+
+     /* Responsive navigation - Changed from 640px to 1000px */
+    @media (max-width: 1000px) {
+      nav .hidden-md {
+        display: none;
+      }
+      
+      .mobile-dropdown {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+      }
+      
+      .mobile-dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, #fef3c7, #fff);
+        box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+        width: 100%;
+      }
+      
+      .mobile-dropdown-menu {
+        display: none;
+        width: 100%;
+        background: white;
+        border-radius: 0.75rem;
+        margin-top: 0.5rem;
+        box-shadow: 0 4px 15px rgba(69, 26, 3, 0.1);
+      }
+      
+      .mobile-dropdown-menu.show {
+        display: block;
+      }
+      
+      .mobile-dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--secondary);
+        transition: all 0.2s ease;
+      }
+      
+      .mobile-dropdown-item:hover {
+        background: #fef3c7;
+      }
+    }
+
+    @media (min-width: 1001px) {
+      .mobile-only {
+        display: none !important;
+      }
+    }@media (max-width: 450px) {
+  /* Profile Header */
+  .flex.flex-col.md\\:flex-row.justify-between.items-start.md\\:items-end {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Profile picture and text container */
+  .flex.items-center.space-x-6 {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+  }
+
+  /* Profile text content */
+  .flex.items-center.space-x-6 > div {
+    margin-left: 0;
+    padding: 0 1rem;
+  }
+
+  /* Buttons and share icons */
+  .mt-6.md\\:mt-0.flex.items-center.space-x-4 {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  /* Share buttons */
+  .flex.space-x-3 {
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+
+  /* Make profile picture smaller on mobile */
+  .profile-picture-container {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+
+  </style>
+</head>
+<body class="bg-gray-50 relative overflow-x-hidden">
+  <!-- Decorations -->
+  <div class="decoration decoration-1"></div>
+  <div class="decoration decoration-2"></div>
+  <div class="decoration decoration-3"></div>
+
+  <!-- 3D Background Canvas -->
+  <canvas id="bgCanvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+
+  <!-- Navigation -->
+   <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <i class="ti ti-school text-4xl text-yellow-600 mr-3 animate-pulse"></i>
+            <span class="text-2xl font-bold school-text-gradient school-font">Profile</span>
+          </div>
+          <div class="hidden-md sm:ml-8 sm:flex sm:space-x-10">
+            <a href="dashboard.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in">
+              <i class="ti ti-layout-dashboard mr-2 text-yellow-600"></i> Dashboard
+            </a>
+            <a href="club-events.html" class="border-yellow-500 text-gray-900 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.1s;">
+              <i class="ti ti-calendar-event mr-2 text-yellow-600"></i> Event
+            </a>
+            <a href="view-clubs.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.2s;">
+              Clubs
+            </a>
+            <a href="home.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.3s;">
+              Home
+            </a>
+          </div>
+        </div>
+        <div class="hidden-md sm:ml-6 sm:flex sm:items-center space-x-4">
+          <button class="p-2 rounded-full text-gray-400 hover:text-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-300 animate-pulse">
+            <i class="ti ti-bell text-2xl"></i>
+          </button>
+          <div class="dropdown">
+            <button class="dropdown-toggle" id="dropdownToggle">
+              <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden">
+                <img id="navProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+                <i class="ti ti-user text-2xl text-yellow-600"></i>
+                <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50"></div>
+              </div>
+              <span class="ml-3 font-medium text-gray-700 school-font" id="username">Loading...</span>
+              <i class="ti ti-chevron-down text-yellow-600 ml-2"></i>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <div class="px-4 py-3 text-sm text-gray-500 border-b border-yellow-50">
+                Logged in as <span id="dropdownUsername" class="font-medium text-gray-700"></span>
+              </div>
+              <a href="profile.html" class="dropdown-item">
+                <i class="ti ti-user mr-2"></i> Profile
+              </a>
+              <a href="settings.html" class="dropdown-item">
+                <i class="ti ti-settings mr-2"></i> Settings
+              </a>
+              <button onclick="logout()" class="dropdown-item w-full text-left">
+                <i class="ti ti-logout mr-2"></i> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Mobile menu button -->
+        <div class="mobile-only flex items-center">
+          <button type="button" id="mobileMenuButton" class="p-2 rounded-md text-gray-700 hover:text-yellow-600 focus:outline-none">
+            <i class="ti ti-menu-2 text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div class="mobile-only hidden absolute top-20 left-0 right-0 bg-white shadow-lg z-50" id="mobileMenu">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <a href="dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
+          <i class="ti ti-layout-dashboard mr-2"></i> Dashboard
+        </a>
+        <a href="club-events.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 bg-yellow-50">
+          <i class="ti ti-calendar-event mr-2"></i> Events
+        </a>
+        <a href="view-clubs.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
+          Clubs
+        </a>
+        <a href="home.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
+           Home
+        </a>
+        
+        <!-- Mobile Profile Dropdown -->
+        <div class="mobile-dropdown">
+          <button class="mobile-dropdown-toggle" id="mobileDropdownToggle">
+            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden mr-3">
+              <img id="mobileNavProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+              <i class="ti ti-user text-xl text-yellow-600"></i>
+            </div>
+            <span class="font-medium text-gray-700 school-font" id="mobileUsername">Loading...</span>
+            <i class="ti ti-chevron-down text-yellow-600 ml-auto"></i>
+          </button>
+          <div class="mobile-dropdown-menu" id="mobileDropdownMenu">
+            <div class="px-4 py-2 text-sm text-gray-500 border-b border-yellow-50">
+              Logged in as <span id="mobileDropdownUsername" class="font-medium text-gray-700"></span>
+            </div>
+            <a href="profile.html" class="mobile-dropdown-item">
+              <i class="ti ti-user mr-2"></i> Profile
+            </a>
+            <a href="settings.html" class="mobile-dropdown-item">
+              <i class="ti ti-settings mr-2"></i> Settings
+            </a>
+            <button onclick="logout()" class="mobile-dropdown-item w-full text-left">
+              <i class="ti ti-logout mr-2"></i> Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Profile Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
+      <div class="flex items-center space-x-6">
+        <div class="profile-picture-container animate-fade-in">
+          <canvas id="profileCanvas" class="profile-picture-canvas"></canvas>
+          <div class="profile-picture-placeholder">
+            <i class="ti ti-user"></i>
+          </div>
+        </div>
+        <div>
+          <h1 class="text-4xl md:text-5xl font-bold school-text-gradient school-font mb-4 animate-fade-in" id="profile-username">
+            Loading...
+          </h1>
+          <p class="text-lg text-gray-600 school-font" id="profile-email">Loading...</p>
+          <p class="text-base text-gray-500 mt-2" id="profile-joined">Joined: Loading...</p>
+        </div>
+      </div>
+      <div class="mt-6 md:mt-0 flex items-center space-x-4">
+        <label for="profilePictureInput" class="profile-upload-button inline-flex items-center cursor-pointer">
+          <i class="ti ti-camera mr-2"></i> Update Picture
+        </label>
+        <input type="file" id="profilePictureInput" accept="image/*" class="hidden">
+        <div class="flex space-x-3">
+          <button class="share-button share-facebook" title="Share on Facebook">
+            <i class="ti ti-brand-facebook"></i>
+          </button>
+          <button class="share-button share-twitter" title="Share on Twitter">
+            <i class="ti ti-brand-twitter"></i>
+          </button>
+          <button class="share-button share-link" title="Copy Link">
+            <i class="ti ti-link"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Details Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-16">
+      <!-- Main Content -->
+      <div class="lg:col-span-2">
+        <!-- Bio -->
+        <div class="card p-8 mb-10 animate-slide-in">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-notes mr-2 text-yellow-600"></i> About Me
+          </h2>
+          <textarea id="profile-bio" class="w-full h-32 resize-none" placeholder="Tell us about yourself..."></textarea>
+          <button id="save-bio" class="action-button mt-4">
+            <i class="ti ti-device-floppy mr-2"></i> Save Bio
+          </button>
+        </div>
+
+        <!-- Activity Timeline -->
+        <div class="card p-8 mb-10 animate-slide-in" style="animation-delay: 0.1s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-timeline mr-2 text-yellow-600"></i> Recent Activity
+          </h2>
+          <div class="timeline" id="activity-timeline">
+            <div class="animate-pulse text-gray-500">Loading activities...</div>
+          </div>
+        </div>
+
+        <!-- Clubs -->
+        <div class="card p-8 mb-10 animate-slide-in" style="animation-delay: 0.2s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-users-group mr-2 text-yellow-600"></i> My Clubs
+          </h2>
+          <div id="clubs-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="animate-pulse text-gray-500">Loading clubs...</div>
+          </div>
+          <div class="flex justify-between mt-6">
+            <button id="clubs-prev" class="share-button disabled">
+              <i class="ti ti-chevron-left"></i>
+            </button>
+            <button id="clubs-next" class="share-button">
+              <i class="ti ti-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="lg:col-span-1">
+        <!-- Stats -->
+        <div class="card p-8 mb-10 animate-slide-in" style="animation-delay: 0.3s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-chart-bar mr-2 text-yellow-600"></i> Profile Stats
+          </h2>
+          <div class="space-y-6">
+            <div>
+              <h3 class="text-sm font-medium text-gray-500">Clubs Joined</h3>
+              <p class="text-lg font-semibold text-gray-900 school-font" id="stats-clubs">0</p>
+            </div>
+            <div>
+              <h3 class="text-sm font-medium text-gray-500">Events Attended</h3>
+              <p class="text-lg font-semibold text-gray-900 school-font" id="stats-events">0</p>
+            </div>
+            <div>
+              <h3 class="text-sm font-medium text-gray-500">Achievements</h3>
+              <div class="badge-container" id="stats-achievements">
+                <div class="animate-pulse text-gray-500">Loading achievements...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Events -->
+        <div class="card p-8 animate-slide-in" style="animation-delay: 0.4s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-calendar-event mr-2 text-yellow-600"></i> Upcoming Events
+          </h2>
+          <div id="events-list" class="space-y-6">
+            <div class="animate-pulse text-gray-500">Loading events...</div>
+          </div>
+          <div class="flex justify-between mt-6">
+            <button id="events-prev" class="share-button disabled">
+              <i class="ti ti-chevron-left"></i>
+            </button>
+            <button id="events-next" class="share-button">
+              <i class="ti ti-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-yellow-100 mt-16">
+    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center animate-fade-in">
+          <i class="ti ti-school text-3xl text-yellow-600 mr-3 animate-pulse"></i>
+          <span class="text-xl font-bold school-text-gradient school-font">Hillrange Clubs</span>
+        </div>
+        <div class="mt-6 md:mt-0">
+          <p class="text-center text-base text-gray-500">© 2023 Hillrange School. All rights reserved.</p>
+        </div>
+        <div class="mt-6 md:mt-0 flex space-x-8">
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-facebook text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-twitter text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-instagram text-xl"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Global variables
+    let currentUser = null;
+    let clubsData = [];
+    let eventsData = [];
+    let clubsPage = 0;
+    let eventsPage = 0;
+    const itemsPerPage = 4;
+    let scene, camera, renderer, particles;
+    let profileScene, profileCamera, profileRenderer, profileTexture;
+
+    // Initialize 3D Background
+    function initBackground() {
+      const canvas = document.getElementById('bgCanvas');
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const geometry = new THREE.BufferGeometry();
+      const vertices = [];
+      const colors = [];
+      const sizes = [];
+      const palette = [0xfbbf24, 0xf59e0b, 0x78350f, 0x1e40af];
+
+      for (let i = 0; i < 600; i++) {
+        vertices.push(
+          Math.random() * 2000 - 1000,
+          Math.random() * 2000 - 1000,
+          Math.random() * 2000 - 1000
+        );
+        const color = new THREE.Color(palette[Math.floor(Math.random() * palette.length)]);
+        colors.push(color.r, color.g, color.b);
+        sizes.push(Math.random() * 5 + 2);
+      }
+
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+      geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+
+      const material = new THREE.PointsMaterial({
+        size: 5,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.3,
+      });
+
+      particles = new THREE.Points(geometry, material);
+      scene.add(particles);
+      camera.position.z = 1000;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        particles.rotation.y += 0.001;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+
+    // Initialize Profile Picture Canvas
+    function initProfileCanvas(imageSrc) {
+      const canvas = document.getElementById('profileCanvas');
+      profileScene = new THREE.Scene();
+      profileCamera = new THREE.PerspectiveCamera(75, canvas.offsetWidth / canvas.offsetHeight, 0.1, 1000);
+      profileRenderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+      profileRenderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
+
+      const geometry = new THREE.SphereGeometry(1, 32, 32);
+      const material = new THREE.MeshBasicMaterial({ map: null, transparent: true });
+      const sphere = new THREE.Mesh(geometry, material);
+      profileScene.add(sphere);
+      profileCamera.position.z = 2;
+
+      if (imageSrc) {
+        const loader = new THREE.TextureLoader();
+        loader.load(imageSrc, (texture) => {
+          profileTexture = texture;
+          material.map = texture;
+          material.needsUpdate = true;
+          document.getElementById('navProfilePicture').src = imageSrc;
+          document.getElementById('navProfilePicture').classList.remove('hidden');
+          document.querySelector('.dropdown-toggle .ti-user').classList.add('hidden');
+        });
+      }
+
+      function animateProfile() {
+        requestAnimationFrame(animateProfile);
+        sphere.rotation.y += 0.005;
+        profileRenderer.render(profileScene, profileCamera);
+      }
+      animateProfile();
+
+      window.addEventListener('resize', () => {
+        profileRenderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
+        profileCamera.aspect = canvas.offsetWidth / canvas.offsetHeight;
+        profileCamera.updateProjectionMatrix();
+      });
+    }
+
+    // Load user data
+    async function loadUserData() {
+      try {
+        const user = JSON.parse(localStorage.getItem('loggedInUser'))?.user;
+        if (!user) {
+          window.location.href = '/login.html';
+          return;
+        }
+
+        document.getElementById('username').textContent = user.username;
+        document.getElementById('dropdownUsername').textContent = user.username;
+           document.getElementById('mobileUsername').textContent = user.username;
+        document.getElementById('mobileDropdownUsername').textContent = user.username;
+
+        const response = await fetch(`/api/users/${encodeURIComponent(user.username)}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        currentUser = await response.json();
+        populateUserData();
+
+        await loadClubs();
+        await loadEvents();
+        initProfileCanvas(currentUser.profilePicture);
+      } catch (err) {
+        console.error('Failed to load user data:', err);
+        showError('Failed to load profile. Please try again later.');
+      }
+    }
+
+    // Populate user data
+    function populateUserData() {
+      if (!currentUser) return;
+
+      document.getElementById('profile-username').textContent = currentUser.username;
+      document.getElementById('profile-email').textContent = currentUser.email;
+      document.getElementById('profile-joined').textContent = `Joined: ${new Date(currentUser.joinedDate).toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      })}`;
+      document.getElementById('profile-bio').value = currentUser.bio || '';
+      document.getElementById('stats-clubs').textContent = currentUser.clubs?.length || 0;
+      document.getElementById('stats-events').textContent = currentUser.events?.length || 0;
+
+      loadAchievements();
+      loadActivityTimeline();
+    }
+
+    // Load clubs
+    async function loadClubs() {
+      try {
+        const response = await fetch('/api/clubs');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        clubsData = await response.json();
+        clubsPage = 0;
+        renderClubs();
+      } catch (err) {
+        console.error('Failed to load clubs:', err);
+        document.getElementById('clubs-list').innerHTML = '<p class="text-gray-500 school-font">Failed to load clubs</p>';
+      }
+    }
+
+    // Render clubs
+    function renderClubs() {
+      const container = document.getElementById('clubs-list');
+      container.innerHTML = '';
+      const userClubs = clubsData.filter(club => currentUser.clubs?.includes(club.id));
+      if (userClubs.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 school-font">No clubs joined</p>';
+        return;
+      }
+
+      const start = clubsPage * itemsPerPage;
+      const end = start + itemsPerPage;
+      const paginatedClubs = userClubs.slice(start, end);
+
+      paginatedClubs.forEach((club, i) => {
+        const clubElement = document.createElement('div');
+        clubElement.className = 'club-card bg-white overflow-hidden shadow rounded-lg border border-gray-200';
+        clubElement.style.animationDelay = `${i * 0.2}s`;
+        clubElement.innerHTML = `
+          <div class="club-image-container ${!club.image || club.image === 'null' ? 'club-placeholder' : ''}">
+            ${club.image && club.image !== 'null'
+              ? `<img src="${club.image}" alt="${club.name}" class="club-image">`
+              : `<i class="ti ti-users-group"></i>`}
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-medium text-gray-900 school-font mb-2">${club.name}</h3>
+            <p class="text-sm text-gray-600 mb-4">${club.description?.substring(0, 100) || 'No description'}...</p>
+            <button onclick="leaveClub('${club.id}')" class="action-button w-full">
+              <i class="ti ti-logout mr-2"></i> Leave Club
+            </button>
+          </div>
+        `;
+        container.appendChild(clubElement);
+      });
+
+      document.getElementById('clubs-prev').classList.toggle('disabled', clubsPage === 0);
+      document.getElementById('clubs-next').classList.toggle('disabled', end >= userClubs.length);
+    }
+
+    // Load events
+    async function loadEvents() {
+      try {
+        const response = await fetch('/api/events');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        eventsData = await response.json();
+        eventsPage = 0;
+        renderEvents();
+      } catch (err) {
+        console.error('Failed to load events:', err);
+        document.getElementById('events-list').innerHTML = '<p class="text-gray-500 school-font">Failed to load events</p>';
+      }
+    }
+
+    // Render events
+    function renderEvents() {
+      const container = document.getElementById('events-list');
+      container.innerHTML = '';
+      const userEvents = eventsData.filter(event => currentUser.events?.includes(event.id) && new Date(event.startDate) > new Date());
+      if (userEvents.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 school-font">No upcoming events</p>';
+        return;
+      }
+
+      const start = eventsPage * itemsPerPage;
+      const end = start + itemsPerPage;
+      const paginatedEvents = userEvents.slice(start, end);
+
+      paginatedEvents.forEach((event, i) => {
+        const eventElement = document.createElement('div');
+        eventElement.className = 'event-card bg-white overflow-hidden shadow rounded-lg border border-gray-200';
+        eventElement.style.animationDelay = `${i * 0.2}s`;
+        eventElement.innerHTML = `
+          <div class="event-image-container ${!event.image || event.image === 'null' ? 'event-placeholder' : ''}">
+            ${event.image && event.image !== 'null'
+              ? `<img src="${event.image}" alt="${event.title}" class="event-image">`
+              : `<i class="${getEventIcon(event.category)}"></i>`}
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-medium text-gray-900 school-font mb-2">${event.title}</h3>
+            <div class="flex items-center text-sm text-gray-500 mb-4">
+              <i class="ti ti-calendar mr-1"></i>
+              <span>${new Date(event.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+            </div>
+            <button onclick="window.location.href='event-details.html?id=${event.id}'" class="action-button w-full">
+              <i class="ti ti-eye mr-2"></i> View Details
+            </button>
+          </div>
+        `;
+        container.appendChild(eventElement);
+      });
+
+      document.getElementById('events-prev').classList.toggle('disabled', eventsPage === 0);
+      document.getElementById('events-next').classList.toggle('disabled', end >= userEvents.length);
+    }
+
+    // Load achievements
+    function loadAchievements() {
+      const container = document.getElementById('stats-achievements');
+      container.innerHTML = '';
+      const achievements = [];
+
+      if (currentUser.clubs?.length >= 5) {
+        achievements.push({ name: 'Club Enthusiast', icon: 'ti-users-group' });
+      }
+      if (currentUser.events?.length >= 10) {
+        achievements.push({ name: 'Event Master', icon: 'ti-calendar-event' });
+      }
+      if (currentUser.clubs?.length >= 1) {
+        achievements.push({ name: 'New Member', icon: 'ti-star' });
+      }
+
+      if (achievements.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 school-font">No achievements yet</p>';
+        return;
+      }
+
+      achievements.forEach((achievement, i) => {
+        const badge = document.createElement('div');
+        badge.className = 'badge';
+        badge.style.animationDelay = `${i * 0.2}s`;
+        badge.innerHTML = `<i class="ti ${achievement.icon} mr-2"></i> ${achievement.name}`;
+        container.appendChild(badge);
+      });
+    }
+
+    // Load activity timeline
+    function loadActivityTimeline() {
+      const container = document.getElementById('activity-timeline');
+      container.innerHTML = '';
+      const activities = [];
+
+      currentUser.events?.forEach(eventId => {
+        const event = eventsData.find(e => e.id === eventId);
+        if (event) {
+          activities.push({
+            date: new Date(event.startDate),
+            description: `Registered for ${event.title}`,
+            icon: getEventIcon(event.category),
+          });
+        }
+      });
+
+      currentUser.clubs?.forEach(clubId => {
+        const club = clubsData.find(c => c.id === clubId);
+        if (club) {
+          activities.push({
+            date: new Date(currentUser.joinedDate),
+            description: `Joined ${club.name}`,
+            icon: 'ti-users-group',
+          });
+        }
+      });
+
+      activities.sort((a, b) => b.date - a.date);
+      if (activities.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 school-font">No recent activity</p>';
+        return;
+      }
+
+      activities.slice(0, 5).forEach((activity, i) => {
+        const item = document.createElement('div');
+        item.className = 'timeline-item animate-slide-in';
+        item.style.animationDelay = `${i * 0.2}s`;
+        item.innerHTML = `
+          <div class="flex items-start">
+            <div class="flex-shrink-0 bg-yellow-100 rounded-full p-3 mr-4">
+              <i class="ti ${activity.icon} text-yellow-600"></i>
+            </div>
+            <div>
+              <h3 class="font-medium text-gray-900 school-font">${activity.description}</h3>
+              <p class="text-sm text-gray-500">${activity.date.toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+              })}</p>
+            </div>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Profile picture upload
+    document.getElementById('profilePictureInput').addEventListener('change', async function () {
+      const file = this.files[0];
+      if (!file) return;
+
+      // Validate file
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file.');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB.');
+        return;
+      }
+
+      const button = document.querySelector('.profile-upload-button');
+      const originalText = button.innerHTML;
+      button.innerHTML = '<i class="ti ti-loader spinner mr-2"></i> Uploading...';
+      button.disabled = true;
+
+      try {
+        const formData = new FormData();
+        formData.append('profilePicture', file);
+        const response = await fetch(`/api/users/${encodeURIComponent(currentUser.username)}/profile-picture`, {
+          method: 'POST',
+          body: formData,
+        });
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+        const data = await response.json();
+        currentUser.profilePicture = data.profilePicture;
+        initProfileCanvas(currentUser.profilePicture);
+        button.innerHTML = '<i class="ti ti-check mr-2"></i> Uploaded!';
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.disabled = false;
+        }, 2000);
+      } catch (err) {
+        console.error('Profile picture upload failed:', err);
+        alert('Failed to upload profile picture. Please try again.');
+        button.innerHTML = originalText;
+        button.disabled = false;
+      }
+    });
+
+    // Save bio
+    document.getElementById('save-bio').addEventListener('click', async function () {
+      const bio = document.getElementById('profile-bio').value;
+      const button = this;
+      const originalText = button.innerHTML;
+      button.innerHTML = '<i class="ti ti-loader spinner mr-2"></i> Saving...';
+      button.disabled = true;
+
+      try {
+        const response = await fetch(`/api/users/${encodeURIComponent(currentUser.username)}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bio }),
+        });
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+        currentUser.bio = bio;
+        button.innerHTML = '<i class="ti ti-check mr-2"></i> Saved!';
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.disabled = false;
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to save bio:', err);
+        alert('Failed to save bio. Please try again.');
+        button.innerHTML = originalText;
+        button.disabled = false;
+      }
+    });
+
+    // Leave club
+    async function leaveClub(clubId) {
+      if (!confirm('Are you sure you want to leave this club?')) return;
+
+      const button = event.target;
+      const originalText = button.innerHTML;
+      button.innerHTML = '<i class="ti ti-loader spinner mr-2"></i> Leaving...';
+      button.disabled = true;
+
+      try {
+       const response1 = await fetch(`/api/clubs/${clubId}/remove-member`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username: currentUser.username }),
+        });
+     const response2 = await fetch(`/api/users/${encodeURIComponent(currentUser.username)}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({leaveClubId: clubId}),
+        }); 
+        currentUser.clubs = currentUser.clubs.filter(id => id !== clubId);
+        renderClubs();
+        loadAchievements();
+        loadActivityTimeline();
+        document.getElementById('stats-clubs').textContent = currentUser.clubs.length;
+        button.innerHTML = '<i class="ti ti-check mr-2"></i> Left!';
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.disabled = false;
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to leave club:', err);
+        alert('Failed to leave club. Please try again.');
+        button.innerHTML = originalText;
+        button.disabled = false;
+      }
+    }
+    // Mobile menu toggle
+      const mobileMenuButton = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenuButton.addEventListener('click', () => {
+        const isExpanded = mobileMenu.classList.toggle('hidden');
+        mobileMenuButton.innerHTML = isExpanded 
+          ? '<i class="ti ti-menu-2 text-2xl"></i>' 
+          : '<i class="ti ti-x text-2xl"></i>';
+      });
+
+      // Mobile dropdown toggle
+      const mobileDropdownToggle = document.getElementById('mobileDropdownToggle');
+      const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
+      if (mobileDropdownToggle) {
+        mobileDropdownToggle.addEventListener('click', () => {
+          mobileDropdownMenu.classList.toggle('show');
+        });
+      }
+    // Share functionality
+    document.querySelectorAll('.share-button').forEach(button => {
+      button.addEventListener('click', () => {
+        const url = window.location.href;
+        if (button.classList.contains('share-facebook')) {
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+        } else if (button.classList.contains('share-twitter')) {
+          window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(`Check out my Hillrange Clubs profile!`)}`, '_blank');
+        } else if (button.classList.contains('share-link')) {
+          navigator.clipboard.write(url).then(() => {
+            button.innerHTML = '<i class="ti ti-check"></i>';
+            setTimeout(() => {
+              button.innerHTML = '<i class="ti ti-link"></i>';
+            }, 2000);
+          });
+        }
+        gsap.to(button, { scale: 1.3, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 });
+      });
+    });
+
+    // Clubs navigation
+    document.getElementById('clubs-prev').addEventListener('click', () => {
+      if (clubsPage > 0) {
+        clubsPage--;
+        renderClubs();
+        gsap.from('#clubs-list .club-card', { x: -20, opacity: 0, stagger: 0.2, duration: 0.5, ease: 'power3.out' });
+      }
+    });
+
+    document.getElementById('clubs-next').addEventListener('click', () => {
+      if ((clubsPage + 1) * itemsPerPage < currentUser.clubs.length) {
+        clubsPage++;
+        renderClubs();
+        gsap.from('#clubs-list .club-card', { x: 20, opacity: 0, stagger: 0.2, duration: 0.5, ease: 'power3.out' });
+      }
+    });
+
+    // Events navigation
+    document.getElementById('events-prev').addEventListener('click', () => {
+      if (eventsPage > 0) {
+        eventsPage--;
+        renderEvents();
+        gsap.from('#events-list .event-card', { x: -20, opacity: 0, stagger: 0.2, duration: 0.5, ease: 'power3.out' });
+      }
+    });
+
+    document.getElementById('events-next').addEventListener('click', () => {
+      if ((eventsPage + 1) * itemsPerPage < eventsData.filter(event => currentUser.events?.includes(event.id) && new Date(event.startDate) > new Date()).length) {
+        eventsPage++;
+        renderEvents();
+        gsap.from('#events-list .event-card', { x: 20, opacity: 0, stagger: 0.2, duration: 0.5, ease: 'power3.out' });
+      }
+    });
+
+    // Helper function to get event icon
+    function getEventIcon(category) {
+      const icons = {
+        Workshop: 'ti-device-laptop',
+        Competition: 'ti-trophy',
+        Meeting: 'ti-users',
+        Social: 'ti-mood-smile',
+        Performance: 'ti-music',
+        Exhibition: 'ti-photo',
+        Sports: 'ti-ball-football',
+        Discussion: 'ti-message-circle',
+      };
+      return icons[category] || 'ti-calendar-event';
+    }
+
+    // Show error message
+    function showError(message) {
+      const mainContent = document.querySelector('.max-w-7xl.mx-auto');
+      mainContent.innerHTML = `
+        <div class="text-center py-20 animate-fade-in">
+          <i class="ti ti-alert-triangle text-6xl text-red-500 mb-6"></i>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4 school-font">Error Loading Profile</h2>
+          <p class="text-gray-600 mb-8">${message}</p>
+          <button onclick="window.history.back()" class="school-gradient inline-flex items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-lg font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+            <i class="ti ti-arrow-left mr-2"></i> Back
+          </button>
+        </div>
+      `;
+    }
+
+    // Logout function
+    function logout() {
+      localStorage.removeItem('loggedInUser');
+      window.location.href = 'login.html';
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => {
+      initBackground();
+
+      // Dropdown functionality
+      const toggle = document.getElementById('dropdownToggle');
+      const menu = document.getElementById('dropdownMenu');
+      toggle.addEventListener('click', () => {
+        menu.classList.toggle('show');
+        gsap.to(menu, {
+          opacity: menu.classList.contains('show') ? 1 : 0,
+          y: menu.classList.contains('show') ? 0 : 10,
+          duration: 0.3,
+          ease: 'power2.out',
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.remove('show');
+          gsap.to(menu, { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out' });
+        }
+      });
+
+      // GSAP animations
+      gsap.from('nav', { y: -100, opacity: 0, duration: 1, ease: 'power3.out' });
+      gsap.from('.profile-picture-container', { scale: 0.8, opacity: 0.8, duration: 0.8, delay: 0.2, ease: 'power3.out' });
+      gsap.from('#profile-username, #profile-email, #profile-joined', { y: 20, opacity: 0, stagger: 0.2, duration: 0.6, delay: 0.4, ease: 'power3.out' });
+      gsap.from('.profile-upload-button, .share-button', { y: 20, opacity: 0.8, stagger: 0.2, duration: 0.6, delay: 0.6, ease: 'power3.out' });
+
+      gsap.utils.toArray('.card').forEach((card, i) => {
+        gsap.from(card, {
+          y: 50,
+          opacity: 0,
+          duration: 0.8,
+          delay: i * 0.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 80%',
+          },
+        });
+      });
+
+      loadUserData();
+    });
+  </script>
+</body>
+</html>

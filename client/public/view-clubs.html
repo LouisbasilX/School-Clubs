@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clubs Directory | Hillrange</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap");
+
+    :root {
+      --primary: #fbbf24;
+      --secondary: #78350f;
+      --accent: #f59e0b;
+      --light: #fef3c7;
+      --dark: #451a03;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #fef9e7 0%, #fef3c7 100%);
+      position: relative;
+      min-height: 100vh;
+    }
+
+    .school-font {
+      font-family: "Playfair Display", serif;
+      font-weight: 900;
+      letter-spacing: -0.015em;
+    }
+
+    .school-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+    }
+
+    .school-text-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Navigation */
+    nav {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), #fef3c7);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav a {
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    nav a:hover::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(1);
+      transform-origin: center;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Dropdown */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-radius: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, #fef3c7, #fff);
+      box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+      cursor: pointer;
+    }
+
+    .dropdown-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(69, 26, 3, 0.2);
+      background: linear-gradient(135deg, #fff, #fef3c7);
+    }
+
+    /* Dropdown menu styles */
+    .dropdown-menu {
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      transform-origin: top right;
+      transition: all 0.2s ease-out;
+    }
+
+    .dropdown-menu a, .dropdown-menu button {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      color: var(--dark);
+      transition: all 0.2s ease;
+    }
+
+    .dropdown-menu a:hover, .dropdown-menu button:hover {
+      background: var(--light);
+      color: var(--secondary);
+    }
+
+    /* Cards */
+    .club-card {
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(69, 26, 3, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.15);
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .club-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(69, 26, 3, 0.15);
+      border-color: var(--accent);
+    }
+
+    .club-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .club-card:hover .club-image {
+      transform: scale(1.05);
+    }
+
+    .club-placeholder {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 180px;
+    }
+
+    .club-placeholder i {
+      font-size: 3rem;
+      color: var(--secondary);
+      opacity: 0.3;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .animate-slide-in {
+      animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* Button styles */
+    .action-button {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      padding: 0.75rem 1.5rem;
+      border-radius: 1rem;
+      color: white;
+      font-weight: 500;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
+    }
+
+    .action-button:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+    }
+
+    .success-button {
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+    }
+
+    .success-button:hover {
+      background: linear-gradient(135deg, #22c55e, #15803d);
+    }
+
+    /* Filter panel styles */
+    .filter-panel {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      width: 280px;
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      z-index: 50;
+      margin-top: 0.5rem;
+    }
+
+    .filter-panel.active {
+      display: block;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive styles - Fixed version */
+    @media (max-width: 1000px) {
+      .desktop-menu {
+        display: none !important;
+      }
+      
+      .mobile-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+      }
+      
+      .mobile-menu.active {
+        display: block;
+      }
+      
+      .clubs-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .clubs-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+      }
+
+    }
+
+    
+     /* Responsive navigation - Changed from 640px to 1000px */
+    @media (max-width: 1000px) {
+      nav .hidden-md {
+        display: none;
+      }
+      
+      .mobile-dropdown {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+      }
+      
+      .mobile-dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, #fef3c7, #fff);
+        box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+        width: 100%;
+      }
+      
+      .mobile-dropdown-menu {
+        display: none;
+        width: 100%;
+        background: white;
+        border-radius: 0.75rem;
+        margin-top: 0.5rem;
+        box-shadow: 0 4px 15px rgba(69, 26, 3, 0.1);
+      }
+      
+      .mobile-dropdown-menu.show {
+        display: block;
+      }
+      
+      .mobile-dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--secondary);
+        transition: all 0.2s ease;
+      }
+      
+      .mobile-dropdown-item:hover {
+        background: #fef3c7;
+      }
+    }
+
+    @media (min-width: 1001px) {
+      .mobile-only {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 relative overflow-x-hidden">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <i class="ti ti-school text-4xl text-yellow-600 mr-3 animate-pulse"></i>
+            <span class="text-2xl font-bold school-text-gradient school-font">Clubs</span>
+          </div>
+          <!-- Desktop Menu -->
+          <div class="hidden lg:flex lg:ml-8 lg:space-x-10 desktop-menu">
+            <a href="dashboard.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in">
+              <i class="ti ti-layout-dashboard mr-2 text-yellow-600"></i> Dashboard
+            </a>
+            <a href="view-clubs.html" class="border-yellow-500 text-gray-900 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.1s;">
+              <i class="ti ti-users-group mr-2 text-yellow-600"></i> Clubs
+            </a>
+            <a href="club-events.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.2s;">
+              <i class="ti ti-calendar-event mr-2 text-yellow-600"></i> Events
+            </a>
+          </div>
+        </div>
+        <div class="hidden lg:ml-6 lg:flex lg:items-center space-x-4">
+          <div class="dropdown">
+            <button class="dropdown-toggle" id="dropdownToggle">
+              <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden">
+                <i class="ti ti-user text-2xl text-yellow-600"></i>
+                <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50"></div>
+              </div>
+              <span class="ml-3 font-medium text-gray-700 school-font" id="username">Loading...</span>
+              <i class="ti ti-chevron-down text-yellow-600 ml-2"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Mobile menu button -->
+        <div class="flex items-center lg:hidden">
+          <button type="button" id="mobileMenuButton" class="p-2 rounded-md text-gray-700 hover:text-yellow-600 focus:outline-none">
+            <i class="ti ti-menu-2 text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div class="lg:hidden hidden" id="mobileMenu">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <a href="dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+          <i class="ti ti-layout-dashboard mr-2"></i> Dashboard
+        </a>
+        <a href="view-clubs.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 bg-yellow-50">
+          <i class="ti ti-users-group mr-2"></i> Clubs
+        </a>
+        <a href="club-events.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+          <i class="ti ti-calendar-event mr-2"></i> Events
+        </a>
+        <div class="pt-2 border-t border-yellow-100">
+          <button onclick="logout()" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+            <i class="ti ti-logout mr-2"></i> Logout
+          </button>
+        </div>
+         <!-- Mobile Profile Dropdown -->
+        <div class="mobile-dropdown">
+          <button class="mobile-dropdown-toggle" id="mobileDropdownToggle">
+            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden mr-3">
+              <img id="mobileNavProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+              <i class="ti ti-user text-xl text-yellow-600"></i>
+            </div>
+            <span class="font-medium text-gray-700 school-font" id="mobileUsername">Loading...</span>
+            <i class="ti ti-chevron-down text-yellow-600 ml-auto"></i>
+          </button>
+          <div class="mobile-dropdown-menu" id="mobileDropdownMenu">
+            <div class="px-4 py-2 text-sm text-gray-500 border-b border-yellow-50">
+              Logged in as <span id="mobileDropdownUsername" class="font-medium text-gray-700"></span>
+            </div>
+            <a href="profile.html" class="mobile-dropdown-item">
+              <i class="ti ti-user mr-2"></i> Profile
+            </a>
+            <a href="settings.html" class="mobile-dropdown-item">
+              <i class="ti ti-settings mr-2"></i> Settings
+            </a>
+            <button onclick="logout()" class="mobile-dropdown-item w-full text-left">
+              <i class="ti ti-logout mr-2"></i> Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Page Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+      <div>
+        <h1 class="text-4xl md:text-5xl font-bold school-text-gradient school-font mb-4 animate-fade-in">
+          Clubs Directory
+        </h1>
+        <p class="text-lg text-gray-600 school-font">Discover and join clubs that match your interests</p>
+      </div>
+      <div class="mt-6 md:mt-0 flex items-center space-x-4">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="ti ti-search text-gray-400"></i>
+          </div>
+          <input type="text" id="searchInput" placeholder="Search clubs..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm">
+        </div>
+        <div class="relative">
+          <button id="filterButton" class="flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-yellow-500 focus:border-yellow-500">
+            <i class="ti ti-filter mr-2"></i> Filters
+          </button>
+          <div id="filterPanel" class="filter-panel">
+            <h3 class="font-medium text-gray-900 mb-3">Filter by:</h3>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select id="categoryFilter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm rounded-md">
+                  <option value="">All Categories</option>
+                  <option value="academic">Academic</option>
+                  <option value="arts">Arts</option>
+                  <option value="sports">Sports</option>
+                  <option value="technology">Technology</option>
+                  <option value="community">Community</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Members</label>
+                <select id="membersFilter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm rounded-md">
+                  <option value="">Any Size</option>
+                  <option value="small">Small (1-10)</option>
+                  <option value="medium">Medium (11-30)</option>
+                  <option value="large">Large (31+)</option>
+                </select>
+              </div>
+              <button id="applyFilters" class="w-full action-button mt-4">
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clubs Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="clubsContainer">
+      <!-- Clubs will be loaded here -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="text-center py-16 hidden">
+      <i class="ti ti-mood-sad text-5xl text-gray-400 mb-4"></i>
+      <h3 class="text-xl font-medium text-gray-900">No clubs found</h3>
+      <p class="mt-2 text-gray-500">Try adjusting your search or filters</p>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let allClubs = [];
+    let currentFilters = {
+      searchTerm: '',
+      category: '',
+      members: ''
+    };
+
+    // Load clubs based on user role
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = JSON.parse(localStorage.getItem('loggedInUser'))?.user;
+      if (!user) window.location.href = 'login.html';
+      
+      // Set username in navbar
+      document.getElementById('username').textContent = user.username;
+         document.getElementById('mobileUsername').textContent = user.username;
+        document.getElementById('mobileDropdownUsername').textContent = user.username;
+       // Mobile menu toggle
+      const mobileMenuButton = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenuButton.addEventListener('click', () => {
+        const isExpanded = mobileMenu.classList.toggle('hidden');
+        mobileMenuButton.innerHTML = isExpanded 
+          ? '<i class="ti ti-menu-2 text-2xl"></i>' 
+          : '<i class="ti ti-x text-2xl"></i>';
+      });
+
+      // Mobile dropdown toggle
+      const mobileDropdownToggle = document.getElementById('mobileDropdownToggle');
+      const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
+      if (mobileDropdownToggle) {
+        mobileDropdownToggle.addEventListener('click', () => {
+          mobileDropdownMenu.classList.toggle('show');
+        });
+      }
+    
+      // Profile dropdown functionality
+      const dropdownToggle = document.getElementById('dropdownToggle');
+      const dropdownMenu = document.createElement('div');
+      dropdownMenu.className = 'hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50';
+      dropdownMenu.innerHTML = `
+        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="dropdownToggle">
+          <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-600" role="menuitem">
+            <i class="ti ti-user mr-2"></i> Your Profile
+          </a>
+          <button onclick="logout()" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-600" role="menuitem">
+            <i class="ti ti-logout mr-2"></i> Sign out
+          </button>
+        </div>
+      `;
+
+      // Insert the dropdown menu into the DOM
+      const dropdownContainer = document.querySelector('.dropdown');
+      dropdownContainer.appendChild(dropdownMenu);
+
+      // Toggle dropdown visibility
+      dropdownToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('hidden');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!dropdownContainer.contains(e.target)) {
+          dropdownMenu.classList.add('hidden');
+        }
+      });
+
+      // Filter panel toggle
+      const filterButton = document.getElementById('filterButton');
+      const filterPanel = document.getElementById('filterPanel');
+      filterButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        filterPanel.classList.toggle('active');
+      });
+
+      // Close filter panel when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!filterButton.contains(e.target) && !filterPanel.contains(e.target)) {
+          filterPanel.classList.remove('active');
+        }
+      });
+
+      // Apply filters button
+      document.getElementById('applyFilters').addEventListener('click', () => {
+        currentFilters.category = document.getElementById('categoryFilter').value;
+        currentFilters.members = document.getElementById('membersFilter').value;
+        filterPanel.classList.remove('active');
+        filterClubs();
+      });
+
+      // Search functionality
+      const searchInput = document.getElementById('searchInput');
+      searchInput.addEventListener('input', (e) => {
+        currentFilters.searchTerm = e.target.value.toLowerCase();
+        filterClubs();
+      });
+
+      try {
+        // Fetch clubs from your API
+        const response = await fetch('/api/clubs');
+        allClubs = await response.json();
+        
+        renderClubs(allClubs);
+      } catch (err) {
+        console.error("Failed to load clubs:", err);
+        document.getElementById('emptyState').classList.remove('hidden');
+      }
+    });
+
+    function renderClubs(clubs) {
+      const container = document.getElementById('clubsContainer');
+      const user = JSON.parse(localStorage.getItem('loggedInUser'))?.user;
+
+      if (clubs.length === 0) {
+        document.getElementById('emptyState').classList.remove('hidden');
+      } else {
+        document.getElementById('emptyState').classList.add('hidden');
+      }
+
+      container.innerHTML = clubs.map((club, index) => `
+        <div class="club-card bg-white overflow-hidden shadow rounded-lg border border-gray-200 animate-slide-in" style="animation-delay: ${index * 0.1}s">
+          <div class="club-image-container ${!club.image || club.image === 'null' ? 'club-placeholder' : ''}">
+            ${club.image && club.image !== 'null' 
+              ? `<img src="${club.image}" alt="${club.name}" class="club-image">`
+              : `<i class="ti ti-users-group"></i>`}
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 school-font mb-2">${club.name}</h3>
+                <p class="text-gray-600">${club.members?.length || 0} members</p>
+              </div>
+              <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                ${club.category.charAt(0).toUpperCase() + club.category.slice(1)}
+              </span>
+            </div>
+            <p class="text-gray-600 mt-3 line-clamp-2">${club.description || 'No description provided'}</p>
+            
+            <div class="mt-6 flex justify-between items-center">
+              <a href="club-details.html?id=${club.id}" class="text-yellow-600 hover:text-yellow-800 font-medium">
+                View details
+              </a>
+              ${user && !club.members?.includes(user.username) ? `
+                <button onclick="joinClub('${club.id}', this)" class="action-button success-button">
+                  <i class="ti ti-user-plus mr-2"></i> Join
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterClubs() {
+      const filteredClubs = allClubs.filter(club => {
+        // Search term filter
+        if (currentFilters.searchTerm) {
+          const nameMatch = club.name.toLowerCase().includes(currentFilters.searchTerm);
+          const descMatch = club.description.toLowerCase().includes(currentFilters.searchTerm);
+          const categoryMatch = club.category.toLowerCase().includes(currentFilters.searchTerm);
+          if (!nameMatch && !descMatch && !categoryMatch) return false;
+        }
+        
+        // Category filter
+        if (currentFilters.category && club.category !== currentFilters.category) {
+          return false;
+        }
+        
+        // Members filter
+        if (currentFilters.members) {
+          const memberCount = club.members?.length || 0;
+          switch(currentFilters.members) {
+            case 'small': if (memberCount > 10) return false; break;
+            case 'medium': if (memberCount <= 10 || memberCount > 30) return false; break;
+            case 'large': if (memberCount <= 30) return false; break;
+          }
+        }
+        
+        return true;
+      });
+      
+      renderClubs(filteredClubs);
+    }
+
+    async function joinClub(clubId, buttonElement) {
+      const user = JSON.parse(localStorage.getItem('loggedInUser'))?.user;
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const originalText = buttonElement.innerHTML;
+      buttonElement.innerHTML = '<i class="ti ti-loader spinner mr-2"></i> Joining...';
+      buttonElement.disabled = true;
+
+      try {
+        // Add user to club
+        const response1 = await fetch(`/api/clubs/${clubId}/add-member`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username: user.username }),
+        });
+
+        // Add club to user's clubs
+        const response2 = await fetch(`/api/users/${encodeURIComponent(user.username)}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ joinClubId: clubId }),
+        });
+
+        if (response1.ok && response2.ok) {
+          // Update UI
+          buttonElement.innerHTML = '<i class="ti ti-check mr-2"></i> Joined';
+          buttonElement.classList.remove('bg-yellow-600', 'hover:bg-yellow-700');
+          buttonElement.classList.add('bg-green-500', 'hover:bg-green-600');
+          buttonElement.disabled = true;
+        } else {
+          const error = await response1.json();
+          throw new Error(error.error || 'Failed to join club');
+        }
+      } catch (err) {
+        console.error('Failed to join club:', err);
+        buttonElement.innerHTML = originalText;
+        buttonElement.disabled = false;
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('loggedInUser');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

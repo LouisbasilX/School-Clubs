@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Clubs | Hillrange Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <style>
+    /* Same styles as the user management page */
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap");
+
+    :root {
+      --primary: #fbbf24;
+      --secondary: #78350f;
+      --accent: #f59e0b;
+      --light: #fef3c7;
+      --dark: #451a03;
+      --blue: #1e40af;
+      --danger: #dc2626;
+      --success: #16a34a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #fef9e7 0%, #fef3c7 100%);
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    .school-font {
+      font-weight: 900;
+      letter-spacing: -0.015em;
+    }
+
+    .school-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+    }
+
+    .school-text-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Navigation - same as user management */
+    nav {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), #fef3c7);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav a {
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    nav a:hover::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(1);
+      transform-origin: center;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Dropdown */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-radius: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, #fef3c7, #fff);
+      box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+    }
+
+    .dropdown-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(69, 26, 3, 0.2);
+      background: linear-gradient(135deg, #fff, #fef3c7);
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 1rem;
+      min-width: 260px;
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 12px 40px rgba(69, 26, 3, 0.2);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      transform: translateY(10px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dropdown-menu.show {
+      display: block;
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      color: var(--secondary);
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-item:hover {
+      background: #fef3c7;
+      color: var(--dark);
+      transform: translateX(5px);
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(69, 26, 3, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.15);
+      overflow: hidden;
+      position: relative;
+      transition: all 0.4s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(69, 26, 3, 0.15);
+    }
+
+    /* Club cards specific styles */
+    .club-card {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .club-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(69, 26, 3, 0.15);
+      border-color: var(--accent);
+    }
+
+    .club-image {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .club-card:hover .club-image {
+      transform: scale(1.05);
+    }
+
+    .club-placeholder {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 150px;
+    }
+
+    .club-placeholder i {
+      font-size: 3rem;
+      color: var(--secondary);
+      opacity: 0.3;
+      animation: pulseIcon 2s ease-in-out infinite;
+    }
+
+    /* Modal styles - same as user management */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      box-shadow: 0 20px 50px rgba(69, 26, 3, 0.3);
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: translateY(0);
+    }
+
+    /* Animations */
+    @keyframes pulseIcon {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.2); opacity: 0.5; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .animate-slide-in {
+      animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* Button styles - same as user management */
+    .action-button {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      padding: 0.75rem 1.5rem;
+      border-radius: 1rem;
+      color: white;
+      font-weight: 500;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
+    }
+
+    .action-button:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+    }
+
+    .danger-button {
+      background: linear-gradient(135deg, var(--danger), #ef4444);
+    }
+
+    .danger-button:hover {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+    }
+
+    .success-button {
+      background: linear-gradient(135deg, var(--success), #22c55e);
+    }
+
+    .success-button:hover {
+      background: linear-gradient(135deg, #22c55e, #15803d);
+    }
+
+    /* Form elements */
+    textarea, input[type="text"], input[type="password"], select {
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      transition: all 0.3s ease;
+      background: #fff;
+      width: 100%;
+    }
+
+    textarea:focus, input[type="text"]:focus, input[type="password"]:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+    }
+
+    /* Grid layout for clubs */
+    .clubs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+/* In manage-clubs.css or style section */
+.club-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(251, 191, 36, 0.15);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.club-image-container {
+  height: 120px;
+  overflow: hidden;
+}
+
+.club-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.club-content {
+  padding: 1rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.club-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  word-break: break-word;
+}
+
+.club-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.club-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+@media (max-width: 400px) {
+  .clubs-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .club-image-container {
+    height: 100px;
+  }
+  
+  .club-content {
+    padding: 0.75rem;
+  }
+}
+
+/* Improved Club Card Styles */
+.club-card {
+  transition: all 0.3s ease;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.club-image-container {
+  height: 150px;
+  overflow: hidden;
+  position: relative;
+}
+
+.club-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.club-content {
+  padding: 1.25rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.club-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--dark);
+  word-break: break-word;
+}
+
+.club-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.club-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+/* Button Styles */
+.action-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+/* Card Action Buttons */
+.club-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+/* Mobile-specific styles (500px and below) */
+@media (max-width: 500px) {
+  .club-card {
+    border-radius: 0.5rem;
+  }
+  
+  .club-image-container {
+    height: 120px;
+  }
+  
+  .club-content {
+    padding: 1rem;
+  }
+  
+  /* Vertical button stack */
+  .club-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  /* Make all buttons full width */
+  .club-meta .view-members-btn,
+  .club-actions {
+    width: 100%;
+  }
+  
+  .club-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  /* Button styles */
+  .action-button {
+    width: 100%;
+    padding: 0.5rem;
+    justify-content: center;
+    border-radius: 0.5rem;
+  }
+  
+  /* Hide button text, show only icons */
+  .action-button span {
+    display: none;
+  }
+  
+  .action-button i {
+    margin: 0 !important;
+  }
+  
+  /* Special case for view members button */
+  #viewMembersButton::after {
+    content: " Members";
+    margin-left: 4px;
+    font-size: 0.75rem;
+  }
+  
+  /* Adjust member count display */
+  #viewMembersButton i {
+    margin-right: 4px !important;
+  }
+}
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .club-title {
+    font-size: 1rem;
+  }
+  
+  .club-description {
+    -webkit-line-clamp: 2;
+  }
+}
+
+
+    /* Loading spinner */
+    .spinner {
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #fef3c7, #fff);
+      color: var(--secondary);
+      font-size: 0.75rem;
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .badge:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+    }
+
+    .badge-admin {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+    }
+
+    .badge-user {
+      background: linear-gradient(135deg, var(--blue), #3b82f6);
+      color: white;
+    }
+
+    /* Search input container */
+    .search-input-container {
+      position: relative;
+    }
+
+    .search-input-container .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9CA3AF;
+    }
+
+    .search-input-container input {
+      padding-left: 40px !important;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .clubs-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+      
+      .modal-content {
+        width: 95%;
+        padding: 1rem;
+        margin: 1rem;
+      }
+      
+      .search-filter-container {
+        padding: 1rem;
+      }
+      
+      .search-filter-container .grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 1000px) {
+      nav .hidden {
+        display: none;
+      }
+    }
+       /* Responsive navigation - Changed from 640px to 1000px */
+    @media (max-width: 1000px) {
+      nav .hidden-md {
+        display: none;
+      }
+    
+      
+      .mobile-dropdown {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+      }
+      
+      .mobile-dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, #fef3c7, #fff);
+        box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+        width: 100%;
+      }
+      
+      .mobile-dropdown-menu {
+        display: none;
+        width: 100%;
+        background: white;
+        border-radius: 0.75rem;
+        margin-top: 0.5rem;
+        box-shadow: 0 4px 15px rgba(69, 26, 3, 0.1);
+      }
+      
+      .mobile-dropdown-menu.show {
+        display: block;
+      }
+      
+      .mobile-dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--secondary);
+        transition: all 0.2s ease;
+      }
+      
+      .mobile-dropdown-item:hover {
+        background: #fef3c7;
+      }
+    }
+
+    @media (min-width: 1001px) {
+      .mobile-only {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 relative overflow-x-hidden">
+  <!-- Decorations -->
+  <div class="decoration decoration-1"></div>
+  <div class="decoration decoration-2"></div>
+  <div class="decoration decoration-3"></div>
+
+  <!-- 3D Background Canvas -->
+  <canvas id="bgCanvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <i class="ti ti-school text-2xl text-yellow-600 mr-3 animate-pulse"></i>
+            <span class="text-xl font-bold school-text-gradient school-font">Admin</span>
+          </div>
+          <div class="hidden sm:ml-8 sm:flex sm:space-x-10">
+            <a href="dashboard.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in">
+              <i class="ti ti-layout-dashboard mr-2 text-yellow-600"></i> Dashboard
+            </a>
+            <a href="manage-users.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.1s;">
+              <i class="ti ti-users mr-2 text-yellow-600"></i> Manage Users
+            </a>
+            <a href="manage-clubs.html" class="border-yellow-500 text-gray-900 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.2s;">
+              <i class="ti ti-users-group mr-2 text-yellow-600"></i> Manage Clubs
+            </a>
+            <a href="manage-events.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.3s;">
+              <i class="ti ti-calendar-event mr-2 text-yellow-600"></i> Manage Events
+            </a>
+          </div>
+        </div>
+        <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+          <button class="p-2 rounded-full text-gray-400 hover:text-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-300 animate-pulse">
+            <i class="ti ti-bell text-2xl"></i>
+          </button>
+          <div class="dropdown">
+            <button class="dropdown-toggle" id="dropdownToggle">
+              <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden">
+                <img id="navProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+                <i class="ti ti-user text-2xl text-yellow-600"></i>
+                <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50"></div>
+              </div>
+              <span class="ml-3 font-medium text-gray-700 school-font" id="username">Loading...</span>
+              <i class="ti ti-chevron-down text-yellow-600 ml-2"></i>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <div class="px-4 py-3 text-sm text-gray-500 border-b border-yellow-50">
+                Logged in as <span id="dropdownUsername" class="font-medium text-gray-700"></span>
+              </div>
+              <a href="profile.html" class="dropdown-item">
+                <i class="ti ti-user mr-2"></i> Profile
+              </a>
+              <a href="settings.html" class="dropdown-item">
+                <i class="ti ti-settings mr-2"></i> Settings
+              </a>
+              <button onclick="logout()" class="dropdown-item w-full text-left">
+                <i class="ti ti-logout mr-2"></i> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Mobile menu button -->
+        <div class="sm:hidden flex items-center">
+          <button type="button" id="mobileMenuButton" class="p-2 rounded-md text-gray-700 hover:text-yellow-600 focus:outline-none">
+            <i class="ti ti-menu-2 text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div class="sm:hidden hidden absolute top-20 left-0 right-0 bg-white shadow-lg z-50" id="mobileMenu">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <a href="dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
+          <i class="ti ti-layout-dashboard mr-2"></i> Dashboard
+        </a>
+        <a href="manage-users.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
+          <i class="ti ti-users mr-2"></i> Manage Users
+        </a>
+        <a href="manage-clubs.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 bg-yellow-50">
+          <i class="ti ti-users-group mr-2"></i> Manage Clubs
+        </a>
+        <a href="manage-events.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
+          <i class="ti ti-calendar-event mr-2"></i> Manage Events
+        </a>
+         <div class="mobile-dropdown">
+          <button class="mobile-dropdown-toggle" id="mobileDropdownToggle">
+            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden mr-3">
+              <img id="mobileNavProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+              <i class="ti ti-user text-xl text-yellow-600"></i>
+            </div>
+            <span class="font-medium text-gray-700 school-font" id="mobileUsername">Loading...</span>
+            <i class="ti ti-chevron-down text-yellow-600 ml-auto"></i>
+          </button>
+          <div class="mobile-dropdown-menu" id="mobileDropdownMenu">
+            <div class="px-4 py-2 text-sm text-gray-500 border-b border-yellow-50">
+              Logged in as <span id="mobileDropdownUsername" class="font-medium text-gray-700"></span>
+            </div>
+            <a href="profile.html" class="mobile-dropdown-item">
+              <i class="ti ti-user mr-2"></i> Profile
+            </a>
+            <a href="settings.html" class="mobile-dropdown-item">
+              <i class="ti ti-settings mr-2"></i> Settings
+            </a>
+            <button onclick="logout()" class="mobile-dropdown-item w-full text-left">
+              <i class="ti ti-logout mr-2"></i> Logout
+            </button>
+          </div>
+        </div>
+      </div>
+       <!-- Mobile Profile Dropdown -->
+       
+    </div>
+      
+  </nav>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Page Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+      <div>
+        <h1 class="text-4xl md:text-5xl font-bold school-text-gradient school-font mb-4 animate-fade-in">
+          Club Management
+        </h1>
+        <p class="text-lg text-gray-600 school-font">Manage all school clubs and memberships</p>
+      </div>
+      <button id="addClubButton" class="action-button success-button mt-6 md:mt-0 inline-flex items-center animate-fade-in" style="animation-delay: 0.2s;">
+        <i class="ti ti-plus mr-2"></i> Create New Club
+      </button>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="search-filter-container animate-slide-in">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="search-input-container">
+          <label for="searchInput" class="block text-sm font-medium text-gray-700 mb-1">Search Clubs</label>
+          <div class="relative">
+            <div class="search-icon">
+              <i class="ti ti-search"></i>
+            </div>
+            <input type="text" id="searchInput" placeholder="Search by club name..." class="w-full py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
+          </div>
+        </div>
+        <div>
+          <label for="categoryFilter" class="block text-sm font-medium text-gray-700 mb-1">Filter by Category</label>
+          <select id="categoryFilter" class="w-full py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
+            <option value="all">All Categories</option>
+            <option value="academic">Academic</option>
+            <option value="arts">Arts</option>
+            <option value="sports">Sports</option>
+            <option value="technology">Technology</option>
+            <option value="community">Community Service</option>
+          </select>
+        </div>
+        <div class="flex items-end">
+          <button id="resetFilters" class="action-button w-full">
+            <i class="ti ti-filter-off mr-2"></i> Reset Filters
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clubs Grid -->
+    <div class="card p-8 mb-10 animate-slide-in" style="animation-delay: 0.1s;">
+      <div id="clubsContainer">
+        <div class="clubs-grid" id="clubsGrid">
+          <!-- Clubs will be loaded here -->
+          <div class="animate-pulse text-gray-500">Loading clubs...</div>
+        </div>
+      </div>
+      <div class="flex justify-between mt-6">
+        <button id="clubsPrev" class="action-button disabled">
+          <i class="ti ti-chevron-left mr-2"></i> Previous
+        </button>
+        <div class="text-gray-600" id="pageInfo">Page 1 of 1</div>
+        <button id="clubsNext" class="action-button">
+          Next <i class="ti ti-chevron-right ml-2"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Club Modal -->
+  <div class="modal-overlay" id="addClubModal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 school-font">
+          <i class="ti ti-plus text-yellow-600 mr-2"></i> Create New Club
+        </h2>
+        <button class="close-modal text-gray-400 hover:text-gray-600">
+          <i class="ti ti-x text-2xl"></i>
+        </button>
+      </div>
+      <form id="addClubForm" enctype="multipart/form-data">
+        <div class="space-y-4">
+          <div>
+            <label for="clubName" class="block text-sm font-medium text-gray-700 mb-1">Club Name</label>
+            <input type="text" id="clubName" name="name" required class="w-full">
+          </div>
+          <div>
+            <label for="clubCategory" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <select id="clubCategory" name="category" required class="w-full">
+              <option value="academic">Academic</option>
+              <option value="arts">Arts</option>
+              <option value="sports">Sports</option>
+              <option value="technology">Technology</option>
+              <option value="community">Community Service</option>
+            </select>
+          </div>
+          <div>
+            <label for="clubDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea id="clubDescription" name="description" rows="4" required class="w-full"></textarea>
+          </div>
+          <div>
+            <label for="clubImage" class="block text-sm font-medium text-gray-700 mb-1">Club Image</label>
+            <input type="file" id="clubImage" name="image" accept="image/*" class="w-full">
+          </div>
+          <div>
+            <label for="clubCapacity" class="block text-sm font-medium text-gray-700 mb-1">Club Capacity (Optional)</label>
+            <input type="number" id="clubCapacity" name="capacity" class="w-full">
+          </div>
+        </div>
+        <div class="flex justify-end space-x-4 mt-8">
+          <button type="button" class="close-modal action-button">
+            Cancel
+          </button>
+          <button type="submit" class="action-button success-button">
+            <i class="ti ti-plus mr-2"></i> Create Club
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Club Modal -->
+  <div class="modal-overlay" id="editClubModal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 school-font">
+          <i class="ti ti-edit text-yellow-600 mr-2"></i> Edit Club
+        </h2>
+        <button class="close-modal text-gray-400 hover:text-gray-600">
+          <i class="ti ti-x text-2xl"></i>
+        </button>
+      </div>
+      <form id="editClubForm" enctype="multipart/form-data">
+        <input type="hidden" id="editClubId">
+        <div class="space-y-4">
+          <div>
+            <label for="editClubName" class="block text-sm font-medium text-gray-700 mb-1">Club Name</label>
+            <input name="name" type="text" id="editClubName" required class="w-full">
+          </div>
+          <div>
+            <label for="editClubCategory" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <select name = "category" id="editClubCategory" required class="w-full">
+              <option value="academic">Academic</option>
+              <option value="arts">Arts</option>
+              <option value="sports">Sports</option>
+              <option value="technology">Technology</option>
+              <option value="community">Community Service</option>
+            </select>
+          </div>
+          <div>
+            <label for="editClubDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea name ="description"id="editClubDescription" rows="4" required class="w-full"></textarea>
+          </div>
+          <div>
+            <label for="editClubImage" class="block text-sm font-medium text-gray-700 mb-1">Update Club Image (optional)</label>
+            <input name  ="image" type="file" id="editClubImage" accept="image/*" class="w-full">
+            <div class="mt-2" id="currentClubImagePreview"></div>
+          </div>
+
+        </div>
+        <div class="flex justify-end space-x-4 mt-8">
+          <button type="button" class="close-modal action-button">
+            Cancel
+          </button>
+          <button type="submit" class="action-button">
+            <i class="ti ti-device-floppy mr-2"></i> Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Club Modal -->
+  <div class="modal-overlay" id="deleteClubModal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 school-font">
+          <i class="ti ti-alert-triangle text-yellow-600 mr-2"></i> Confirm Deletion
+        </h2>
+        <button class="close-modal text-gray-400 hover:text-gray-600">
+          <i class="ti ti-x text-2xl"></i>
+        </button>
+      </div>
+      <div class="mb-6">
+        <p class="text-gray-700">Are you sure you want to delete the club <span id="deleteClubNameDisplay" class="font-bold"></span>? This action cannot be undone and will remove all associated memberships.</p>
+      </div>
+      <div class="flex justify-end space-x-4">
+        <button type="button" class="close-modal action-button">
+          Cancel
+        </button>
+        <button type="button" id="confirmClubDelete" class="action-button danger-button">
+          <i class="ti ti-trash mr-2"></i> Delete Club
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Club Members Modal -->
+  <div class="modal-overlay" id="clubMembersModal">
+    <div class="modal-content" style="max-width: 800px;">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 school-font">
+          <i class="ti ti-users-group text-yellow-600 mr-2"></i> <span id="clubMembersTitle"></span>
+        </h2>
+        <button class="close-modal text-gray-400 hover:text-gray-600">
+          <i class="ti ti-x text-2xl"></i>
+        </button>
+      </div>
+      <div class="mb-6">
+        <div class="search-input-container mb-4">
+          <div class="relative">
+            <div class="search-icon">
+              <i class="ti ti-search"></i>
+            </div>
+            <input type="text" id="memberSearch" placeholder="Search members..." class="w-full py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
+          </div>
+        </div>
+        <div class="overflow-y-auto max-h-96">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-yellow-50">
+                <th class="text-left p-3">Username</th>
+                <th class="text-left p-3">Role</th>
+                <th class="text-right p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="clubMembersList">
+              <!-- Members will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="flex justify-between items-center mt-4">
+        <div>
+          <button id="addMemberButton" class="action-button">
+            <i class="ti ti-user-plus mr-2"></i> Add Members
+          </button>
+        </div>
+        <div class="flex space-x-4">
+          <button type="button" class="close-modal action-button">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Members Modal -->
+  <div class="modal-overlay" id="addMembersModal">
+    <div class="modal-content" style="max-width: 800px;">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 school-font">
+          <i class="ti ti-user-plus text-yellow-600 mr-2"></i> Add Members to <span id="addMembersClubName"></span>
+        </h2>
+        <button class="close-modal text-gray-400 hover:text-gray-600">
+          <i class="ti ti-x text-2xl"></i>
+        </button>
+      </div>
+      <div class="mb-6">
+        <div class="search-input-container mb-4">
+          <div class="relative">
+            <div class="search-icon">
+              <i class="ti ti-search"></i>
+            </div>
+            <input type="text" id="nonMemberSearch" placeholder="Search users..." class="w-full py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
+          </div>
+        </div>
+        <div class="overflow-y-auto max-h-96">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-yellow-50">
+                <th class="text-left p-3">Username</th>
+                <th class="text-left p-3">Role</th>
+                <th class="text-right p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="nonMembersList">
+              <!-- Non-members will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="flex justify-between items-center mt-4">
+        <div>
+          <button type="button" class="close-modal action-button">
+            <i class="ti ti-arrow-left mr-2"></i> Back to Club
+          </button>
+        </div>
+        <div class="flex space-x-4">
+          <button type="button" class="close-modal action-button">
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-yellow-100 mt-16">
+    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center animate-fade-in">
+          <i class="ti ti-school text-3xl text-yellow-600 mr-3 animate-pulse"></i>
+          <span class="text-xl font-bold school-text-gradient school-font">Hillrange Admin</span>
+        </div>
+        <div class="mt-6 md:mt-0">
+          <p class="text-center text-base text-gray-500">© 2023 Hillrange School. All rights reserved.</p>
+        </div>
+        <div class="mt-6 md:mt-0 flex space-x-8">
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-facebook text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-twitter text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-instagram text-xl"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem('loggedInUser'))?.user;
+    if (!user) {
+      window.location.href = '/login.html';
+    }
+    if(user.role === 'user') window.location.href = '/access-denied.html';
+
+    // Global variables
+    let currentUser = null;
+    let clubsData = [];
+    let filteredClubs = [];
+    let currentPage = 0;
+    const clubsPerPage = 9;
+    let currentClubMembers = [];
+    let allUsers = [];
+
+    // Initialize 3D Background
+    function initBackground() {
+      const canvas = document.getElementById('bgCanvas');
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const geometry = new THREE.BufferGeometry();
+      const vertices = [];
+      const colors = [];
+      const sizes = [];
+      const palette = [0xfbbf24, 0xf59e0b, 0x78350f, 0x1e40af];
+
+      for (let i = 0; i < 600; i++) {
+        vertices.push(
+          Math.random() * 2000 - 1000,
+          Math.random() * 2000 - 1000,
+          Math.random() * 2000 - 1000
+        );
+        const color = new THREE.Color(palette[Math.floor(Math.random() * palette.length)]);
+        colors.push(color.r, color.g, color.b);
+        sizes.push(Math.random() * 5 + 2);
+      }
+
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+      geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+
+      const material = new THREE.PointsMaterial({
+        size: 5,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.3,
+      });
+
+      const particles = new THREE.Points(geometry, material);
+      scene.add(particles);
+      camera.position.z = 1000;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        particles.rotation.y += 0.001;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+
+    // Load user data
+    async function loadUserData() {
+      try {
+        document.getElementById('username').textContent = user.username;
+        document.getElementById('dropdownUsername').textContent = user.username;
+ document.getElementById('mobileUsername').textContent = user.username;
+        document.getElementById('mobileDropdownUsername').textContent = user.username;
+        currentUser = user;
+        await loadAllClubs();
+        await loadAllUsers();
+      } catch (err) {
+        console.error('Failed to load user data:', err);
+        showError('Failed to load user data. Please try again later.');
+      }
+    }
+
+    // Load all clubs
+    async function loadAllClubs() {
+      try {
+        const response = await fetch('/api/clubs');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        clubsData = await response.json();
+        if(user.role !== "superadmin")clubsData = clubsData.filter(club => club.members.includes(user.username))
+        filteredClubs = [...clubsData];
+        renderClubsGrid();
+        updatePagination();
+      } catch (err) {
+        console.error('Failed to load clubs:', err);
+        document.getElementById('clubsGrid').innerHTML = `
+          <div class="col-span-full text-center py-8 text-red-500">
+            Failed to load clubs. Please try again.
+          </div>
+        `;
+      }
+    }
+
+    // Load all users
+    async function loadAllUsers() {
+      try {
+        const response = await fetch('/api/users');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        allUsers = await response.json();
+      } catch (err) {
+        console.error('Failed to load users:', err);
+      }
+    }
+
+    // Render clubs grid
+    function renderClubsGrid() {
+      const container = document.getElementById('clubsGrid');
+      container.innerHTML = '';
+
+      if (filteredClubs.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-8 text-gray-500">
+            No clubs found matching your criteria.
+          </div>
+        `;
+        return;
+      }
+
+      const start = currentPage * clubsPerPage;
+      const end = start + clubsPerPage;
+      const paginatedClubs = filteredClubs.slice(start, end);
+
+      paginatedClubs.forEach((club, i) => {
+        const clubElement = document.createElement('div');
+        clubElement.className = 'club-card bg-white overflow-hidden shadow rounded-lg border border-gray-200 animate-slide-in';
+        clubElement.style.animationDelay = `${i * 0.1}s`;
+        
+        clubElement.innerHTML = `
+  <div class="club-image-container ${!club.image || club.image === 'null' ? 'club-placeholder' : ''}">
+    ${club.image && club.image !== 'null'
+      ? `<img src="${club.image}" alt="${club.name}" class="club-image">`
+      : `<i class="ti ti-users-group"></i>`}
+  </div>
+  <div class="club-content">
+    <h3 class="club-title">${club.name}</h3>
+    <div class="flex items-center text-sm text-gray-500 mb-2">
+      <i class="ti ti-category mr-1"></i>
+      <span>${club.category.charAt(0).toUpperCase() + club.category.slice(1)}</span>
+    </div>
+    <p class="club-description">${club.description || 'No description available'}</p>
+    <div class="club-meta">
+      <button id="view${club.id}Members" onclick="viewClubMembers('${club.id}', '${club.name}')" 
+              class="action-button view-members-btn" id="viewMembersButton">
+        <i class="ti ti-users"></i>
+        <span class="member-count">${club.members?.length || 0}</span>
+      </button>
+      <div class="club-actions">
+        <button onclick="editClub('${club.id}')" class="action-button" title="Edit Club">
+          <i class="ti ti-edit"></i>
+          <span class="action-text">Edit</span>
+        </button>
+        <button onclick="showDeleteClubModal('${club.id}', '${club.name}')" 
+                class="action-button danger-button" title="Delete Club">
+          <i class="ti ti-trash"></i>
+          <span class="action-text">Delete</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+        `;
+        container.appendChild(clubElement);
+      });
+    }
+
+    // Update pagination controls
+    function updatePagination() {
+      const totalPages = Math.ceil(filteredClubs.length / clubsPerPage);
+      document.getElementById('pageInfo').textContent = `Page ${currentPage + 1} of ${totalPages}`;
+      document.getElementById('clubsPrev').classList.toggle('disabled', currentPage === 0);
+      document.getElementById('clubsNext').classList.toggle('disabled', currentPage + 1 >= totalPages);
+    }
+
+    // Filter clubs based on search and category
+    function filterClubs() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const categoryFilter = document.getElementById('categoryFilter').value;
+
+      filteredClubs = clubsData.filter(club => {
+        const matchesSearch = club.name.toLowerCase().includes(searchTerm);
+        const matchesCategory = categoryFilter === 'all' || club.category === categoryFilter;
+        return matchesSearch && matchesCategory;
+      });
+
+      currentPage = 0;
+      renderClubsGrid();
+      updatePagination();
+    }
+
+    // Show add club modal
+    function showAddClubModal() {
+      document.getElementById('addClubModal').classList.add('active');
+      document.getElementById('clubName').focus();
+    }
+
+    // Show edit club modal
+    function editClub(clubId) {
+      const club = clubsData.find(c => c.id === clubId);
+      if (!club) return;
+
+      document.getElementById('editClubId').value = club.id;
+      document.getElementById('editClubName').value = club.name;
+      document.getElementById('editClubCategory').value = club.category;
+      document.getElementById('editClubDescription').value = club.description || '';
+      
+      // Display current image if exists
+      const previewContainer = document.getElementById('currentClubImagePreview');
+      previewContainer.innerHTML = '';
+      if (club.image && club.image !== 'null') {
+        previewContainer.innerHTML = `
+          <p class="text-sm text-gray-500 mb-2">Current Image:</p>
+          <img src="${club.image}" alt="${club.name}" class="w-32 h-32 object-cover rounded-lg">
+        `;
+      }
+      
+      document.getElementById('editClubModal').classList.add('active');
+    }
+
+    // Show delete confirmation modal
+    function showDeleteClubModal(clubId, clubName) {
+      document.getElementById('deleteClubNameDisplay').textContent = clubName;
+      document.getElementById('confirmClubDelete').dataset.clubId = clubId;
+      document.getElementById('deleteClubModal').classList.add('active');
+    }
+
+    // View club members
+    function viewClubMembers(clubId, clubName) {
+      const club = clubsData.find(c => c.id === clubId);
+      if (!club) return;
+
+      document.getElementById('clubMembersTitle').textContent = `${clubName} Members`;
+      document.getElementById('clubMembersModal').dataset.clubId = clubId;
+      
+      // Get members data
+      currentClubMembers = allUsers.filter(user => user.clubs?.includes(clubId));
+      renderClubMembers(currentClubMembers);
+      
+      document.getElementById('clubMembersModal').classList.add('active');
+    }
+
+    // Render club members
+    function renderClubMembers(members) {
+      const container = document.getElementById('clubMembersList');
+      container.innerHTML = '';
+
+      if (members.length === 0) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="3" class="text-center py-4 text-gray-500">No members in this club yet</td>
+          </tr>
+        `;
+        return;
+      }
+
+      members.forEach(member => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-gray-100 hover:bg-yellow-50';
+        row.innerHTML = `
+          <td class="p-3">${member.username}</td>
+          <td class="p-3">
+            <span class="badge ${member.role === 'admin' ? 'badge-admin' : 'badge-user'}">
+              ${member.role === 'admin' ? 'Admin' : 'User'}
+            </span>
+          </td>
+          <td class="p-3 text-right">
+            <button onclick="removeMemberFromClub('${member.username}', '${document.getElementById('clubMembersModal').dataset.clubId}')" class="action-button danger-button" title="Remove from Club">
+              <i class="ti ti-user-minus"></i>
+            </button>
+          </td>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    // Close all modals
+    function closeAllModals() {
+      document.querySelectorAll('.modal-overlay').forEach(modal => {
+        modal.classList.remove('active');
+      });
+    }
+
+    // Add new club
+    async function addNewClub(event) {
+      event.preventDefault();
+      
+      const button = event.target.querySelector('button[type="submit"]');
+      const originalText = button.innerHTML;
+      button.innerHTML = '<i class="ti ti-loader spinner mr-2"></i> Creating...';
+      button.disabled = true;
+      const clubName = document.getElementById("clubName").value
+      try {
+        const formData = new FormData(document.getElementById("addClubForm"));
+       
+        const response = await fetch('/api/clubs', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-User-Name': user.username,
+            'X-User-Role': user.role
+          }
+        });
+        
+        const clubId = (clubsData.length ? Number(clubsData[clubsData.length-1].id) + 1 + "" : "1");
+        
+       
+            const res =  await fetch(`/api/users/${encodeURIComponent(user.username)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      recentActivity: {
+        header: "Club Created",
+        message: `You Created a new club: ${clubName}`,
+        icon: "ti-users-group"
+
+      },
+      joinClubId: clubId
+    })
+  });
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to create club');
+        }
+
+        const newClub = await response.json();
+        clubsData.push(newClub);
+        filterClubs();
+        closeAllModals();
+        document.getElementById('addClubForm').reset();
+        
+        showNotification(`Club "${newClub.name}" created successfully!`, 'success');
+      } catch (err) {
+        console.error('Failed to create club:', err);
+        showNotification(err.message || 'Failed to create club. Please try again.', 'error');
+      } finally {
+        button.innerHTML = originalText;
+        button.disabled = false;
+      }
+    }
+
+    // Update club
+ // Update club
+async function updateClub(event) {
+  event.preventDefault();
+  
+  const button = event.target.querySelector('button[type="submit"]');
+  const originalText = button.innerHTML;
+  button.innerHTML = '<i class="ti ti-loader spinner mr-2"></i> Saving...';
+  button.disabled = true;
+
+  try {
+    const formData = new FormData(event.target);
+    const clubName = formData.get('name');
+    const clubId = clubsData.find(club => club.name === clubName).id
+    // Validate required fields
+    if (!clubName || !formData.get('category') || !formData.get('description')) {
+      throw new Error('Please fill in all required fields');
+    }
+
+    const response = await fetch(`/api/clubs/${clubId}`, {
+      method: 'PUT',
+      body: formData,
+      headers: {
+        'X-User-Name': user.username,
+        'X-User-Role': user.role
+      }
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to update club');
+    }
+
+    // Update local data
+    const updatedClub = await response.json();
+    const clubIndex = clubsData.findIndex(c => c.id === clubId);
+    
+    if (clubIndex !== -1) {
+      clubsData[clubIndex] = updatedClub;
+    }
+
+    // Record activity
+    await fetch(`/api/users/${encodeURIComponent(user.username)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        recentActivity: {
+          header: "Club Updated",
+          message: `Updated club: ${clubName}`,
+          icon: "ti-edit"
+        }
+      })
+    });
+
+    filterClubs();
+    closeAllModals();
+    
+    showNotification(`Club "${clubName}" updated successfully!`, 'success');
+  } catch (err) {
+    console.error('Failed to update club:', err);
+    showNotification(err.message || 'Failed to update club. Please try again.', 'error');
+  } finally {
+    button.innerHTML = originalText;
+    button.disabled = false;
+  }
+}
+
+    // Delete club
+    async function deleteClub(clubId) {
+      const button = document.getElementById('confirmClubDelete');
+      const originalText = button.innerHTML;
+      button.innerHTML = '<i class="ti ti-loader spinner mr-2"></i> Deleting...';
+      button.disabled = true;
+      const clubName = clubsData.find(club => club.id === clubId).name
+
+      try {
+        // First remove all members from the club
+        const club = clubsData.find(c => c.id === clubId);
+        if (club && club.members && club.members.length > 0) {
+          // Create an array of promises for removing members
+          const removePromises = club.members.map(username => 
+            removeMemberFromClub(username, clubId, false)
+          );
+          
+          // Wait for all members to be removed
+          await Promise.all(removePromises);
+        }
+        
+
+        const eventResponse = await fetch(`/api/events/${clubName}`, {
+          method: 'DELETE',
+        });
+
+
+
+        // Then delete the club
+        const response = await fetch(`/api/clubs/${clubId}`, {
+          method: 'DELETE',
+        });
+          // Record activity for the admin who deleted the club
+ const res =  await fetch(`/api/users/${encodeURIComponent(user.username)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      recentActivity: {
+         header: "Club Deleted",
+        message: `Deleted club: ${clubName}`,
+        icon: "ti-trash"
+      }
+    })
+  });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to delete club');
+        }
+         if (!eventResponse.ok) {
+          const error = await eventResponse.json();
+          throw new Error(error.error || 'Failed to delete club');
+        }
+
+        // Update local data
+        clubsData = clubsData.filter(c => c.id !== clubId);
+        filterClubs();
+        closeAllModals();
+        
+        showNotification('Club deleted successfully!', 'success');
+      } catch (err) {
+        console.error('Failed to delete club:', err);
+        showNotification(err.message || 'Failed to delete club. Please try again.', 'error');
+      } finally {
+        button.innerHTML = originalText;
+        button.disabled = false;
+      }
+    }
+
+    // Remove member from club
+    async function removeMemberFromClub(username, clubId, showNotificationFlag = true) {
+      const club = clubsData.find(c => c.id === clubId)
+      try {
+        const [removeResponse, updateResponse] = await Promise.all([
+          fetch(`/api/clubs/${clubId}/remove-member`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username }),
+          }),
+          fetch(`/api/users/${encodeURIComponent(username)}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ leaveClubId: clubId }),
+          })
+        ]);
+
+        const res =   await fetch(`/api/users/${encodeURIComponent(user.username)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      recentActivity: {
+        header: "Removed User from Club",
+        message: `You removed ${username} from ${club.name} club`,
+        icon: "ti-users-group"
+      }
+    })
+  });
+
+        if (!removeResponse.ok || !updateResponse.ok) {
+          const error = await removeResponse.json();
+          throw new Error(error.error || 'Failed to remove member');
+        }
+
+        // Update local data
+        const userIndex = allUsers.findIndex(u => u.username === username);
+        if (userIndex !== -1) {
+          allUsers[userIndex].clubs = allUsers[userIndex].clubs?.filter(id => id !== clubId);
+        }
+
+        // Update the club's members list
+        const clubIndex = clubsData.findIndex(c => c.id === clubId);
+        if (clubIndex !== -1) {
+          clubsData[clubIndex].members = clubsData[clubIndex].members?.filter(u => u !== username);
+        }
+
+        // Update UI
+        currentClubMembers = currentClubMembers.filter(m => m.username !== username);
+        renderClubMembers(currentClubMembers);
+        
+        const viewMemberBtn = document.getElementById(`view${clubId}Members`);
+        if (viewMemberBtn) {
+          viewMemberBtn.innerHTML = `<i class="ti ti-users mr-1"></i> ${currentClubMembers.length}`;
+        }
+
+        // Show success notification if requested
+        if (showNotificationFlag) {
+          showNotification(`${username} removed from club!`, 'success');
+        }
+      } catch (err) {
+        console.error('Failed to remove member:', err);
+        showNotification(err.message || 'Failed to remove member. Please try again.', 'error');
+      }
+    }
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+      // Create notification container if it doesn't exist
+      let notificationContainer = document.getElementById('notification-container');
+      if (!notificationContainer) {
+        notificationContainer = document.createElement('div');
+        notificationContainer.id = 'notification-container';
+        notificationContainer.className = 'fixed top-4 right-4 z-[1000] space-y-3 w-full max-w-xs';
+        document.body.appendChild(notificationContainer);
+      }
+
+      // Create notification element
+      const notification = document.createElement('div');
+      const icon = type === 'success' ? 'ti-circle-check' : 
+                  type === 'error' ? 'ti-alert-triangle' : 
+                  type === 'warning' ? 'ti-alert-circle' : 'ti-info-circle';
+      
+      const bgColor = type === 'success' ? 'bg-green-500' : 
+                     type === 'error' ? 'bg-red-500' : 
+                     type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500';
+
+      notification.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg flex items-start animate-fade-in transform transition-all duration-300`;
+      notification.innerHTML = `
+        <i class="ti ${icon} text-xl mr-3 mt-0.5"></i>
+        <div class="flex-1">
+          <p class="text-sm font-medium">${message}</p>
+        </div>
+        <button class="ml-2 text-white hover:text-white/80 focus:outline-none">
+          <i class="ti ti-x"></i>
+        </button>
+      `;
+
+      // Add to container
+      notificationContainer.appendChild(notification);
+
+      // Auto-remove after 5 seconds
+      const autoRemove = setTimeout(() => {
+        notification.classList.add('opacity-0', 'translate-x-10');
+        setTimeout(() => notification.remove(), 300);
+      }, 5000);
+
+      // Manual close
+      notification.querySelector('button').addEventListener('click', () => {
+        clearTimeout(autoRemove);
+        notification.classList.add('opacity-0', 'translate-x-10');
+        setTimeout(() => notification.remove(), 300);
+      });
+    }
+
+    // Show error message
+    function showError(message) {
+      const mainContent = document.querySelector('.max-w-7xl.mx-auto');
+      mainContent.innerHTML = `
+        <div class="text-center py-20 animate-fade-in">
+          <i class="ti ti-alert-triangle text-6xl text-red-500 mb-6"></i>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4 school-font">Access Denied</h2>
+          <p class="text-gray-600 mb-8">${message}</p>
+          <button onclick="window.location.href='dashboard.html'" class="school-gradient inline-flex items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-lg font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+            <i class="ti ti-arrow-left mr-2"></i> Back to Dashboard
+          </button>
+        </div>
+      `;
+    }
+
+    // Logout function
+    function logout() {
+      localStorage.removeItem('loggedInUser');
+      window.location.href = 'login.html';
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => {
+      initBackground();
+
+      // Dropdown functionality
+      const toggle = document.getElementById('dropdownToggle');
+      const menu = document.getElementById('dropdownMenu');
+      toggle.addEventListener('click', () => {
+        menu.classList.toggle('show');
+        gsap.to(menu, {
+          opacity: menu.classList.contains('show') ? 1 : 0,
+          y: menu.classList.contains('show') ? 0 : 10,
+          duration: 0.3,
+          ease: 'power2.out',
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.remove('show');
+          gsap.to(menu, { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out' });
+        }
+      });
+
+      // Mobile menu toggle
+      const mobileMenuButton = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenuButton.addEventListener('click', () => {
+        const isExpanded = mobileMenu.classList.toggle('hidden');
+        mobileMenuButton.innerHTML = isExpanded 
+          ? '<i class="ti ti-menu-2 text-2xl"></i>' 
+          : '<i class="ti ti-x text-2xl"></i>';
+      });
+       // Mobile dropdown toggle
+      const mobileDropdownToggle = document.getElementById('mobileDropdownToggle');
+      const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
+      if (mobileDropdownToggle) {
+        mobileDropdownToggle.addEventListener('click', () => {
+          mobileDropdownMenu.classList.toggle('show');
+        });
+      }
+      // Modal close buttons
+      document.querySelectorAll('.close-modal').forEach(button => {
+        button.addEventListener('click', closeAllModals);
+      });
+
+      // Form submissions
+      document.getElementById('addClubForm').addEventListener('submit', addNewClub);
+      document.getElementById('editClubForm').addEventListener('submit', updateClub);
+
+      // Delete confirmation
+      document.getElementById('confirmClubDelete').addEventListener('click', () => {
+        const clubId = document.getElementById('confirmClubDelete').dataset.clubId;
+        deleteClub(clubId);
+      });
+
+      // Search and filter
+      document.getElementById('searchInput').addEventListener('input', filterClubs);
+      document.getElementById('categoryFilter').addEventListener('change', filterClubs);
+      document.getElementById('resetFilters').addEventListener('click', () => {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('categoryFilter').value = 'all';
+        filterClubs();
+      });
+
+      // Pagination
+      document.getElementById('clubsPrev').addEventListener('click', () => {
+        if (currentPage > 0) {
+          currentPage--;
+          renderClubsGrid();
+          updatePagination();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+
+      document.getElementById('clubsNext').addEventListener('click', () => {
+        if ((currentPage + 1) * clubsPerPage < filteredClubs.length) {
+          currentPage++;
+          renderClubsGrid();
+          updatePagination();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+
+      // Add club button
+      document.getElementById('addClubButton').addEventListener('click', showAddClubModal);
+
+      // Add members button
+      document.getElementById('addMemberButton').addEventListener('click', () => {
+        const clubId = document.getElementById('clubMembersModal').dataset.clubId;
+        const clubName = document.getElementById('clubMembersTitle').textContent.replace(' Members', '');
+        
+        document.getElementById('addMembersClubName').textContent = clubName;
+        document.getElementById('addMembersModal').dataset.clubId = clubId;
+        
+        // Show non-members
+        const nonMembers = allUsers.filter(user => !user.clubs?.includes(clubId));
+        renderNonMembers(nonMembers);
+        
+        closeAllModals();
+        document.getElementById('addMembersModal').classList.add('active');
+      });
+
+      // GSAP animations
+      gsap.from('nav', { y: -100, opacity: 0, duration: 1, ease: 'power3.out' });
+      gsap.from('.search-filter-container', { y: 20, opacity: 0, duration: 0.8, delay: 0.2, ease: 'power3.out' });
+      gsap.from('.card', { y: 20, opacity: 0, duration: 0.8, delay: 0.4, ease: 'power3.out' });
+
+      loadUserData();
+    });
+
+    // Render non-members for adding to club
+    function renderNonMembers(users) {
+      const container = document.getElementById('nonMembersList');
+      container.innerHTML = '';
+
+      if (users.length === 0) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="3" class="text-center py-4 text-gray-500">All users are already members of this club</td>
+          </tr>
+        `;
+        return;
+      }
+
+      users.forEach(user => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-gray-100 hover:bg-yellow-50';
+        row.innerHTML = `
+          <td class="p-3">${user.username}</td>
+          <td class="p-3">
+            <span class="badge ${user.role === 'admin' ? 'badge-admin' : 'badge-user'}">
+              ${user.role === 'admin' ? 'Admin' : 'User'}
+            </span>
+          </td>
+          <td class="p-3 text-right">
+            <button onclick="addMemberToClub('${user.username}', '${document.getElementById('addMembersModal').dataset.clubId}')" class="action-button success-button" title="Add to Club">
+              <i class="ti ti-user-plus"></i>
+            </button>
+          </td>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    // Add member to club
+    async function addMemberToClub(username, clubId) {
+      const club = clubsData.find(c => c.id === clubId);
+      try {
+        const [addResponse, updateResponse] = await Promise.all([
+          fetch(`/api/clubs/${clubId}/add-member`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username }),
+          }),
+          fetch(`/api/users/${encodeURIComponent(username)}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ joinClubId: clubId }),
+          })
+        ]);
+      const res =   await fetch(`/api/users/${user.username}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      recentActivity: {
+          header: "Added User to Club",
+        message: `You added ${username} to ${club.name} club`,
+        icon: "ti-users-group"
+      }
+    })
+  });
+
+        if (!addResponse.ok || !updateResponse.ok) {
+          const error = await addResponse.json();
+          throw new Error(error.error || 'Failed to add member');
+        }
+
+        // Update local data
+        const userIndex = allUsers.findIndex(u => u.username === username);
+        if (userIndex !== -1) {
+          if (!allUsers[userIndex].clubs) {
+            allUsers[userIndex].clubs = [];
+          }
+          allUsers[userIndex].clubs.push(clubId);
+        }
+
+        // Update the club's members list
+        const clubIndex = clubsData.findIndex(c => c.id === clubId);
+        if (clubIndex !== -1) {
+          if (!clubsData[clubIndex].members) {
+            clubsData[clubIndex].members = [];
+          }
+          clubsData[clubIndex].members.push(username);
+        }
+
+        // Update the non-members list
+        const nonMembers = allUsers.filter(user => !user.clubs?.includes(clubId));
+        renderNonMembers(nonMembers);
+        
+        const viewMemberBtn = document.getElementById(`view${clubId}Members`);
+        if (viewMemberBtn) {
+          viewMemberBtn.innerHTML = `<i class="ti ti-users mr-1"></i> ${clubsData[clubIndex]?.members?.length || 0}`;
+        }
+
+        showNotification(`${username} added to club!`, 'success');
+      } catch (err) {
+        console.error('Failed to add member:', err);
+        showNotification(err.message || 'Failed to add member. Please try again.', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

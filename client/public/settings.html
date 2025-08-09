@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings | Hillrange</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css" />
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap");
+
+    :root {
+      --primary: #fbbf24; /* Amber-400 */
+      --secondary: #78350f; /* Amber-900 */
+      --accent: #f59e0b; /* Amber-500 */
+      --light: #fef3c7; /* Amber-50 */
+      --dark: #451a03; /* Amber-950 */
+      --blue: #1e40af; /* Blue-800 */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #fef9e7 0%, #fef3c7 100%);
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    .school-font {
+      font-weight: 900;
+      letter-spacing: -0.015em;
+    }
+
+    .school-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+    }
+
+    .school-text-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Navigation */
+    nav {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), #fef3c7);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-link {
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-link:hover::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(1);
+      transform-origin: center;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Dropdown */
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: white;
+      min-width: 200px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+      border-radius: 0.5rem;
+      border: 1px solid #e5e7eb;
+    }
+
+    .dropdown.active .dropdown-content {
+      display: block;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      padding: 1rem;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+    }
+
+    .mobile-menu.active {
+      display: block;
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(69, 26, 3, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.15);
+      overflow: hidden;
+      position: relative;
+      transition: all 0.4s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(69, 26, 3, 0.15);
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--secondary);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: 0.75rem;
+      background: white;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--primary);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 1rem;
+      font-weight: 500;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--secondary);
+      border: 1px solid rgba(251, 191, 36, 0.5);
+    }
+
+    .btn-secondary:hover {
+      background: var(--light);
+      transform: translateY(-2px);
+    }
+
+    /* Danger Zone */
+    .danger-zone {
+      border: 2px dashed #ef4444;
+      background: rgba(239, 68, 68, 0.05);
+      border-radius: 1.5rem;
+      padding: 2rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 1000px) {
+      .desktop-menu {
+        display: none;
+      }
+      
+      .mobile-menu-button {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 relative overflow-x-hidden">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20 items-center">
+        <!-- Logo/Brand -->
+        <div class="flex-shrink-0 flex items-center">
+          <i class="ti ti-school text-4xl text-yellow-600 mr-3 animate-pulse"></i>
+          <span class="text-2xl font-bold school-text-gradient school-font">Settings</span>
+        </div>
+
+        <!-- Desktop Menu -->
+        <div class="hidden lg:flex items-center space-x-8">
+          <div class="desktop-menu flex space-x-6">
+            <a href="dashboard.html" class="nav-link text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 border-transparent text-base font-medium">
+              <i class="ti ti-layout-dashboard mr-2 text-yellow-600"></i> Dashboard
+            </a>
+            <a href="club-events.html" class="nav-link text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 border-transparent text-base font-medium">
+              <i class="ti ti-calendar-event mr-2 text-yellow-600"></i> Events
+            </a>
+            <a href="view-clubs.html" class="nav-link text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 border-transparent text-base font-medium">
+              <i class="ti ti-users-group mr-2 text-yellow-600"></i> Clubs
+            </a>
+            <a href="profile.html" class="nav-link text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 border-transparent text-base font-medium">
+              <i class="ti ti-user mr-2 text-yellow-600"></i> Profile
+            </a>
+            <a href="settings.html" class="nav-link text-yellow-600 inline-flex items-center px-2 pt-1 border-b-2 border-yellow-500 text-base font-medium">
+              <i class="ti ti-settings mr-2 text-yellow-600"></i> Settings
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Side Items -->
+        <div class="flex items-center space-x-4">
+          <!-- Notification Bell -->
+          <button class="p-2 rounded-full text-gray-400 hover:text-yellow-600 focus:outline-none relative">
+            <i class="ti ti-bell text-2xl"></i>
+            <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+          </button>
+
+          <!-- Desktop Profile Dropdown -->
+          <div class="hidden lg:block dropdown">
+            <button class="dropdown-toggle flex items-center space-x-2 focus:outline-none" id="dropdownToggle">
+              <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden">
+                <img id="navProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+                <i class="ti ti-user text-2xl text-yellow-600"></i>
+              </div>
+              <span class="font-medium text-gray-700 school-font" id="username">Loading...</span>
+              <i class="ti ti-chevron-down text-yellow-600"></i>
+            </button>
+            <div class="dropdown-content p-2" id="dropdownMenu">
+              <div class="px-4 py-2 text-sm text-gray-500 border-b border-yellow-50">
+                Logged in as <span id="dropdownUsername" class="font-medium text-gray-700"></span>
+              </div>
+              <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 rounded">
+                <i class="ti ti-user mr-2"></i> Profile
+              </a>
+              <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 rounded">
+                <i class="ti ti-settings mr-2"></i> Settings
+              </a>
+              <button onclick="logout()" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 rounded">
+                <i class="ti ti-logout mr-2"></i> Logout
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <div class="lg:hidden mobile-menu-button">
+            <button type="button" id="mobileMenuButton" class="p-2 rounded-md text-gray-700 hover:text-yellow-600 focus:outline-none">
+              <i class="ti ti-menu-2 text-2xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="lg:hidden mobile-menu" id="mobileMenu">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <a href="dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+          <i class="ti ti-layout-dashboard mr-2"></i> Dashboard
+        </a>
+        <a href="club-events.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+          <i class="ti ti-calendar-event mr-2"></i> Events
+        </a>
+        <a href="view-clubs.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+          <i class="ti ti-users-group mr-2"></i> Clubs
+        </a>
+        <a href="profile.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+          <i class="ti ti-user mr-2"></i> Profile
+        </a>
+        <a href="settings.html" class="block px-3 py-2 rounded-md text-base font-medium text-yellow-600 bg-yellow-50">
+          <i class="ti ti-settings mr-2"></i> Settings
+        </a>
+
+        <!-- Mobile Profile Section -->
+        <div class="pt-4 mt-4 border-t border-yellow-100">
+          <div class="flex items-center px-3 py-2">
+            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden mr-3">
+              <img id="mobileNavProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+              <i class="ti ti-user text-xl text-yellow-600"></i>
+            </div>
+            <span class="font-medium text-gray-700 school-font" id="mobileUsername">Loading...</span>
+          </div>
+          <div class="mt-2 space-y-1">
+            <a href="profile.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+              <i class="ti ti-user mr-2"></i> Profile
+            </a>
+            <a href="settings.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+              <i class="ti ti-settings mr-2"></i> Settings
+            </a>
+            <button onclick="logout()" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+              <i class="ti ti-logout mr-2"></i> Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+      <div>
+        <h1 class="text-3xl md:text-4xl font-bold school-text-gradient school-font mb-2 animate-fade-in">Account Settings</h1>
+        <p class="text-lg text-gray-600">Manage your account preferences and security settings</p>
+      </div>
+    </div>
+
+    <!-- Settings Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-16">
+      <!-- Main Content -->
+      <div class="lg:col-span-2">
+        <!-- Account Settings -->
+        <div class="card p-8 mb-10 animate-fade-in">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-user-circle mr-2 text-yellow-600"></i> Account Information
+          </h2>
+          
+          <div class="form-group">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" id="usernameInput" class="form-input" placeholder="Your username" readonly>
+          </div>
+          
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" id="emailInput" class="form-input" placeholder="Your email address">
+          </div>
+          
+          <div class="form-group">
+            <label for="fullName" class="form-label">Full Name</label>
+            <input type="text" id="fullNameInput" class="form-input" placeholder="Your full name">
+          </div>
+          
+          <button id="saveAccountInfo" class="btn btn-primary mt-4">
+            <i class="ti ti-device-floppy mr-2"></i> Save Changes
+          </button>
+        </div>
+
+        <!-- Password Settings -->
+        <div class="card p-8 mb-10 animate-fade-in" style="animation-delay: 0.1s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-lock mr-2 text-yellow-600"></i> Password & Security
+          </h2>
+          
+          <div class="form-group">
+            <label for="currentPassword" class="form-label">Current Password</label>
+            <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password">
+          </div>
+          
+          <div class="form-group">
+            <label for="newPassword" class="form-label">New Password</label>
+            <input type="password" id="newPassword" class="form-input" placeholder="Enter new password">
+          </div>
+          
+          <div class="form-group">
+            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+            <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm new password">
+          </div>
+          
+          <button id="changePassword" class="btn btn-primary mt-4">
+            <i class="ti ti-key mr-2"></i> Change Password
+          </button>
+        </div>
+
+        <!-- Notification Settings -->
+        <div class="card p-8 animate-fade-in" style="animation-delay: 0.2s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-bell mr-2 text-yellow-600"></i> Notification Preferences
+          </h2>
+          
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="font-medium text-gray-800">Email Notifications</h3>
+              <p class="text-sm text-gray-500">Receive important updates via email</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="emailNotifications" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="font-medium text-gray-800">Push Notifications</h3>
+              <p class="text-sm text-gray-500">Get alerts on your device</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="pushNotifications" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="font-medium text-gray-800">Event Reminders</h3>
+              <p class="text-sm text-gray-500">Reminders for upcoming events</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="eventReminders" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <button id="saveNotificationSettings" class="btn btn-primary mt-6">
+            <i class="ti ti-bell mr-2"></i> Save Preferences
+          </button>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="lg:col-span-1">
+        <!-- Account Security -->
+        <div class="card p-8 mb-10 animate-fade-in" style="animation-delay: 0.3s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-shield-lock mr-2 text-yellow-600"></i> Security
+          </h2>
+          
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-800 mb-2">Two-Factor Authentication</h3>
+            <p class="text-sm text-gray-500 mb-4">Add an extra layer of security to your account</p>
+            <button id="enable2FA" class="btn btn-secondary w-full">
+              <i class="ti ti-shield mr-2"></i> Enable 2FA
+            </button>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-800 mb-2">Active Sessions</h3>
+            <p class="text-sm text-gray-500 mb-2">Currently logged in on:</p>
+            <div class="bg-yellow-50 rounded-lg p-3 mb-2">
+              <div class="flex items-center">
+                <i class="ti ti-device-laptop text-yellow-600 mr-2"></i>
+                <div>
+                  <p class="font-medium">MacBook Pro</p>
+                  <p class="text-xs text-gray-500">Safari • Just now</p>
+                </div>
+              </div>
+            </div>
+            <button id="viewAllSessions" class="text-sm text-yellow-600 hover:text-yellow-800 w-full text-left">
+              View all sessions
+            </button>
+          </div>
+          
+          <button id="logoutAllDevices" class="btn btn-secondary w-full">
+            <i class="ti ti-logout mr-2"></i> Logout All Devices
+          </button>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="danger-zone animate-fade-in" style="animation-delay: 0.4s;">
+          <h2 class="text-2xl font-bold text-red-600 mb-6 flex items-center school-font">
+            <i class="ti ti-alert-triangle mr-2 text-red-600"></i> Danger Zone
+          </h2>
+          
+          <div class="mb-6">
+            <h3 class="font-medium text-red-600 mb-2">Deactivate Account</h3>
+            <p class="text-sm text-gray-600 mb-4">Temporarily disable your account. You can reactivate it later.</p>
+            <button id="deactivateAccount" class="btn btn-secondary w-full border-red-200 text-red-600 hover:bg-red-50">
+              <i class="ti ti-user-off mr-2"></i> Deactivate Account
+            </button>
+          </div>
+          
+          <div>
+            <h3 class="font-medium text-red-600 mb-2">Delete Account</h3>
+            <p class="text-sm text-gray-600 mb-4">Permanently delete your account and all associated data.</p>
+            <button id="deleteAccount" class="btn btn-secondary w-full border-red-200 text-red-600 hover:bg-red-50">
+              <i class="ti ti-trash mr-2"></i> Delete Account
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-yellow-100 mt-16">
+    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center animate-fade-in">
+          <i class="ti ti-school text-3xl text-yellow-600 mr-3 animate-pulse"></i>
+          <span class="text-xl font-bold school-text-gradient school-font">Hillrange Clubs</span>
+        </div>
+        <div class="mt-6 md:mt-0">
+          <p class="text-center text-base text-gray-500">© 2023 Hillrange School. All rights reserved.</p>
+        </div>
+        <div class="mt-6 md:mt-0 flex space-x-8">
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-facebook text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-twitter text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-instagram text-xl"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Navigation and User Management
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load user data
+      const user = JSON.parse(localStorage.getItem('loggedInUser'))?.user;
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Set user info
+      document.getElementById('username').textContent = user.username;
+      document.getElementById('dropdownUsername').textContent = user.username;
+      document.getElementById('mobileUsername').textContent = user.username;
+      document.getElementById('usernameInput').value = user.username;
+      document.getElementById('emailInput').value = user.email || '';
+      document.getElementById('fullNameInput').value = user.fullName || '';
+
+      // Mobile menu toggle
+      const mobileMenuButton = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      
+      if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', function() {
+          const isExpanded = !mobileMenu.classList.contains('active');
+          
+          // Toggle menu
+          mobileMenu.classList.toggle('active');
+          
+          // Change icon
+          mobileMenuButton.innerHTML = isExpanded 
+            ? '<i class="ti ti-x text-2xl"></i>' 
+            : '<i class="ti ti-menu-2 text-2xl"></i>';
+        });
+      }
+
+      // Desktop dropdown toggle
+      const dropdownToggle = document.getElementById('dropdownToggle');
+      const dropdownMenu = document.getElementById('dropdownMenu');
+      
+      if (dropdownToggle && dropdownMenu) {
+        dropdownToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          document.querySelector('.dropdown').classList.toggle('active');
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', function() {
+          document.querySelector('.dropdown').classList.remove('active');
+        });
+      }
+
+      // Close mobile menu when clicking on a link
+      const mobileLinks = document.querySelectorAll('#mobileMenu a');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          mobileMenu.classList.remove('active');
+          if (mobileMenuButton) {
+            mobileMenuButton.innerHTML = '<i class="ti ti-menu-2 text-2xl"></i>';
+          }
+        });
+      });
+
+      // Form Submissions
+      document.getElementById('saveAccountInfo').addEventListener('click', saveAccountInfo);
+      document.getElementById('changePassword').addEventListener('click', changePassword);
+      document.getElementById('saveNotificationSettings').addEventListener('click', saveNotificationSettings);
+      document.getElementById('enable2FA').addEventListener('click', enable2FA);
+      document.getElementById('logoutAllDevices').addEventListener('click', logoutAllDevices);
+      document.getElementById('deactivateAccount').addEventListener('click', deactivateAccount);
+      document.getElementById('deleteAccount').addEventListener('click', deleteAccount);
+    });
+
+    // Account Functions
+    function saveAccountInfo() {
+      const button = this;
+      const originalText = button.innerHTML;
+      button.innerHTML = '<i class="ti ti-loader spinner mr-2"></i> Saving...';
+      button.disabled = true;
+
+      // Simulate API call
+      setTimeout(() => {
+        button.innerHTML = '<i class="ti ti-check mr-2"></i> Saved!';
+        showToast('Account information updated successfully');
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.disabled = false;
+        }, 2000);
+      }, 1000);
+    }
+
+    function changePassword() {
+      const button = this;
+      const originalText = button.innerHTML;
+      button.innerHTML = '<i class="ti ti-loader spinner mr-2"></i> Updating...';
+      button.disabled = true;
+
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        showToast('Please fill in all password fields', 'error');
+        button.innerHTML = originalText;
+        button.disabled = false;
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        showToast('New passwords do not match', 'error');
+        button.innerHTML = originalText;
+        button.disabled = false;
+        return;
+      }
+
+      // Simulate API call
+      setTimeout(() => {
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+        
+        button.innerHTML = '<i class="ti ti-check mr-2"></i> Updated!';
+        showToast('Password changed successfully');
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.disabled = false;
+        }, 2000);
+      }, 1000);
+    }
+
+    function saveNotificationSettings() {
+      const button = this;
+      const originalText = button.innerHTML;
+      button.innerHTML = '<i class="ti ti-loader spinner mr-2"></i> Saving...';
+      button.disabled = true;
+
+      // Simulate API call
+      setTimeout(() => {
+        button.innerHTML = '<i class="ti ti-check mr-2"></i> Saved!';
+        showToast('Notification preferences updated');
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.disabled = false;
+        }, 2000);
+      }, 800);
+    }
+
+    function enable2FA() {
+      showToast('Two-factor authentication setup will open in a new window', 'info');
+    }
+
+    function logoutAllDevices() {
+      if (confirm('Are you sure you want to logout from all devices?')) {
+        showToast('Logged out from all other devices', 'success');
+      }
+    }
+
+    function deactivateAccount() {
+      if (confirm('Are you sure you want to deactivate your account? You can reactivate it by logging in again.')) {
+        showToast('Account deactivated. You can reactivate by logging in again.', 'warning');
+        setTimeout(() => {
+          logout();
+        }, 2000);
+      }
+    }
+
+    function deleteAccount() {
+      if (confirm('WARNING: This will permanently delete your account and all associated data. Are you sure?')) {
+        if (prompt('Type "DELETE" to confirm permanent account deletion') === 'DELETE') {
+          showToast('Account deletion scheduled. All data will be removed within 24 hours.', 'warning');
+          setTimeout(() => {
+            logout();
+          }, 2000);
+        }
+      }
+    }
+
+    // Utility Functions
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white font-medium ${
+        type === 'error' ? 'bg-red-500' : 
+        type === 'warning' ? 'bg-yellow-500' : 
+        type === 'info' ? 'bg-blue-500' : 'bg-green-500'
+      }`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 5000);
+    }
+
+    function logout() {
+      localStorage.removeItem('loggedInUser');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

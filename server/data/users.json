@@ -1,0 +1,50 @@
+[
+  {
+    "username": "Louis_X",
+    "password": "$2b$10$5sOumdlrvzwvwBHPSiyfpOrJJPhv5PUzN1JcEKmgpGjpTNT0zSnMK",
+    "role": "superadmin",
+    "clubs": [
+      "1"
+    ],
+    "bio": "I am a mathematician, coder chess player, thinker and yh",
+    "joinedDate": "2025-07-11T17:36:21.054Z",
+    "events": [
+      "1"
+    ],
+    "recentActivity": [
+      {
+        "date": "2025-07-28T19:36:22.877Z",
+        "header": "Club Created",
+        "message": "You Created a new club: Coding",
+        "icon": "ti-users-group"
+      },
+      {
+        "date": "2025-07-28T19:38:00.037Z",
+        "header": "Event Created",
+        "message": "You Created a new Event: undefined",
+        "icon": "ti-calendar-event"
+      },
+      {
+        "date": "2025-07-30T06:44:08.404Z",
+        "header": "Added User to Event",
+        "message": "You added kk to Booking app hackathon event",
+        "icon": "ti-calendar-event"
+      }
+    ],
+    "profilePicture": "/uploads/profile-pictures/Louis_X-1753948210991-603544218.jpg"
+  },
+  {
+    "username": "kk",
+    "password": "$2b$10$GATfTCeLYRBpvf8ps9m2d.FMOoHzlOga5I5iq0Y1P1xgOi5aJcaVa",
+    "role": "user",
+    "joinedDate": "2025-07-28T18:04:56.522Z",
+    "clubs": [
+      "1"
+    ],
+    "events": [
+      "1"
+    ],
+    "bio": "",
+    "profilePicture": ""
+  }
+]

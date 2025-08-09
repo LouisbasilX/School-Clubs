@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Club Management Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css" />
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+    :root {
+      --primary: #b59a3a; /* Gold/Yellow */
+      --secondary: #5e3a14; /* Brown */
+      --surface: #fef9e7; /* Light yellow background */
+    }
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: var(--surface);
+    }
+    .role-badge {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.5rem;
+      top: -8px;
+      right: -8px;
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: white;
+      min-width: 200px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 0.5rem;
+      border: 1px solid #e5e7eb;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .school-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    }
+    .school-text-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Responsive styles - Fixed version */
+    .mobile-menu-button {
+      display: none;
+    }
+
+    @media (max-width: 1000px) {
+      .desktop-menu {
+        display: none !important;
+      }
+      
+      .mobile-menu-button {
+        display: flex;
+      }
+      
+      .mobile-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+      }
+      
+      .mobile-menu.active {
+        display: block;
+      }
+    }
+
+        @media (max-width: 1000px) {
+      nav .hidden-md {
+        display: none;
+      }
+      
+      .mobile-dropdown {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+      }
+      
+      .mobile-dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, #fef3c7, #fff);
+        box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+        width: 100%;
+      }
+      
+      .mobile-dropdown-menu {
+        display: none;
+        width: 100%;
+        background: white;
+        border-radius: 0.75rem;
+        margin-top: 0.5rem;
+        box-shadow: 0 4px 15px rgba(69, 26, 3, 0.1);
+      }
+      
+      .mobile-dropdown-menu.show {
+        display: block;
+      }
+      
+      .mobile-dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--secondary);
+        transition: all 0.2s ease;
+      }
+      
+      .mobile-dropdown-item:hover {
+        background: #fef3c7;
+      }
+    }
+
+    @media (min-width: 1001px) {
+      .mobile-only {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Vertical Navigation - Fixed version -->
+  <div class="flex h-screen">
+    <!-- Desktop Sidebar - Hidden on mobile -->
+    <nav class="w-64 bg-white shadow-md p-4 hidden lg:block border-r-4 border-yellow-600">
+      <div class="flex items-center space-x-2 mb-8 p-2 relative">
+        <i class="ti ti-school text-2xl text-yellow-600"></i>
+        <span class="text-xl font-semibold school-text-gradient">Hillrange</span>
+        <span id="roleBadge" class="absolute role-badge bg-yellow-100 text-yellow-800 rounded-full font-bold"></span>
+      </div>
+      <ul class="space-y-1" id="navMenu">
+        <!-- Dynamic menu will be inserted here -->
+
+      </ul>
+
+        <!-- Mobile menu - Only shows on mobile -->
+      
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-auto">
+      <header class="bg-white shadow-sm p-4 flex justify-between items-center border-b-2 border-yellow-200">
+        <h1 class="text-xl font-semibold text-gray-800" id="dashboardTitle">Dashboard Overview</h1>
+        <div class="flex items-center space-x-4">
+          <button class="p-2 rounded-full hover:bg-yellow-50 relative">
+            <i class="ti ti-bell text-yellow-600"></i>
+            <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+          </button>
+          <!-- Mobile menu button - Only shows on mobile -->
+          <div class="flex items-center lg:hidden">
+            <button type="button" id="mobileMenuButton" class="p-2 rounded-md text-gray-700 hover:text-yellow-600 focus:outline-none">
+              <i class="ti ti-menu-2 text-2xl"></i>
+            </button>
+          </div>
+          <!-- Desktop profile dropdown - Hidden on mobile -->
+          <div class="hidden lg:block dropdown">
+            <button class="flex items-center space-x-2 focus:outline-none">
+              <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center relative">
+                <i class="ti ti-user text-yellow-600"></i>
+              </div>
+              <span id="username" class="font-medium"></span>
+              <i class="ti ti-chevron-down text-yellow-600"></i>
+            </button>
+            <div class="dropdown-content p-2">
+              <div class="px-4 py-2 text-sm text-gray-500">
+                Logged in as
+                <span id="dropdownUsername" class="font-medium"></span>
+              </div>
+              <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 rounded">
+                <i class="ti ti-user mr-2"></i> Profile
+              </a>
+              <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 rounded">
+                <i class="ti ti-settings mr-2"></i> Settings
+              </a>
+              <button onclick="logout()" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 rounded">
+                <i class="ti ti-logout mr-2"></i> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="lg:hidden hidden" id="mobileMenu">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+           <ul class="space-y-1" id="mobileNavMenu">
+        <!-- Dynamic menu will be inserted here -->
+
+           </ul>
+           <!-- Mobile Profile Dropdown -->
+        <div class="mobile-dropdown">
+          <button class="mobile-dropdown-toggle" id="mobileDropdownToggle">
+            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden mr-3">
+              <img id="mobileNavProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+              <i class="ti ti-user text-xl text-yellow-600"></i>
+            </div>
+            <span class="font-medium text-gray-700 school-font" id="mobileUsername">Loading...</span>
+            <i class="ti ti-chevron-down text-yellow-600 ml-auto"></i>
+          </button>
+          <div class="mobile-dropdown-menu" id="mobileDropdownMenu">
+            <div class="px-4 py-2 text-sm text-gray-500 border-b border-yellow-50">
+              Logged in as <span id="mobileDropdownUsername" class="font-medium text-gray-700"></span>
+            </div>
+            <a href="profile.html" class="mobile-dropdown-item">
+              <i class="ti ti-user mr-2"></i> Profile
+            </a>
+            <a href="settings.html" class="mobile-dropdown-item">
+              <i class="ti ti-settings mr-2"></i> Settings
+            </a>
+            <button onclick="logout()" class="mobile-dropdown-item w-full text-left">
+              <i class="ti ti-logout mr-2"></i> Logout
+            </button>
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Content -->
+      <main class="p-6">
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" id="statsContainer">
+          <!-- Dynamic stats will be inserted here -->
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2">
+            <div class="bg-white rounded-lg p-6 shadow-xs h-full border-t-4 border-yellow-400" id="activitySection">
+              <!-- Dynamic activity will be inserted here -->
+            </div>
+          </div>
+
+          <div>
+            <div class="bg-white rounded-lg p-6 shadow-xs h-full border-t-4 border-brown-400" id="actionsSection">
+              <!-- Dynamic actions will be inserted here -->
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Load dashboard based on role
+    document.addEventListener("DOMContentLoaded", async () => {
+      const user = JSON.parse(localStorage.getItem("loggedInUser"))?.user;
+      const userResponse = await fetch("/api/users");
+      const clubResponse = await fetch("/api/clubs");
+      let users = await userResponse.json();
+      let clubs = await clubResponse.json();
+      let admins = users.filter(
+        (user) => user.role === "admin" || user.role === "superadmin"
+      );
+      let user_clubs = users.find(
+        (User) => User.username === user.username
+      ).clubs;
+   // Mobile menu toggle
+      const mobileMenuButton = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenuButton.addEventListener('click', () => {
+        const isExpanded = mobileMenu.classList.toggle('hidden');
+        mobileMenuButton.innerHTML = isExpanded 
+          ? '<i class="ti ti-menu-2 text-2xl"></i>' 
+          : '<i class="ti ti-x text-2xl"></i>';
+      });
+
+      // Mobile dropdown toggle
+      const mobileDropdownToggle = document.getElementById('mobileDropdownToggle');
+      const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
+      if (mobileDropdownToggle) {
+        mobileDropdownToggle.addEventListener('click', () => {
+          mobileDropdownMenu.classList.toggle('show');
+        });
+      }
+
+      // Role Configuration
+      const ROLES = {
+        SUPERADMIN: {
+          title: "Super Administrator",
+          color: "bg-purple-100 text-purple-800",
+          stats: [
+            {
+              icon: "ti-users-group",
+              label: "Total Clubs",
+              value: `${clubs.length}`,
+              change: "+12%",
+              metric: "clubs",
+            },
+            {
+              icon: "ti-user-plus",
+              label: "All Members",
+              value: `${users.length}`,
+              change: "+8%",
+              metric: "members",
+            },
+            {
+              icon: "ti-shield-lock",
+              label: "Admin Users",
+              value: `${admins.length}`,
+              metric: "admins",
+            },
+          ],
+          navItems: [
+            { icon: "ti-layout-dashboard", label: "Dashboard", link: "#" },
+            {
+              icon: "ti-users-group",
+              label: "Browse Clubs",
+              link: "view-clubs.html",
+            },
+            {
+              icon: "ti-calendar",
+              label: "Upcoming Events",
+              link: "club-events.html",
+            },
+              {
+              icon: "ti-settings",
+              label: "Manage Users",
+              link: "manage-users.html",
+            },
+            {
+              icon: "ti-settings",
+              label: "Manage Clubs",
+              link: "manage-clubs.html",
+            },
+            {
+              icon: "ti-users",
+              label: "Manage Events",
+              link: "manage-events.html",
+            }
+         
+          ],
+          actions: [
+            {
+              icon: "ti-plus",
+              label: "Create New Club",
+              link: "create-club.html",
+            },
+            {
+              icon: "ti-plus",
+              label: "Create New User",
+              link: "create-user.html",
+            },
+            {
+              icon: "ti-calendar-plus",
+              label: "Create Event",
+              link: "create-event.html",
+            },
+          ],
+        },
+        ADMIN: {
+          title: "Club Administrator",
+          color: "bg-blue-100 text-blue-800",
+          stats: [
+            {
+              icon: "ti-users-group",
+              label: "My Clubs",
+              value: `${user_clubs.length}`,
+              metric: "clubs",
+            },
+            {
+              icon: "ti-user-plus",
+              label: "Club Members",
+              value: "87",
+              change: "+5%",
+              metric: "members",
+            },
+            {
+              icon: "ti-calendar-event",
+              label: "Upcoming Events",
+              value: "5",
+              metric: "events",
+            },
+          ],
+          navItems: [
+            { icon: "ti-layout-dashboard", label: "Dashboard", link: "#" },
+            {
+              icon: "ti-users-group",
+              label: "Browse Clubs",
+              link: "view-clubs.html",
+            },
+            {
+              icon: "ti-calendar",
+              label: "Upcoming Events",
+              link: "club-events.html",
+            },
+            {
+              icon: "ti-calendar",
+              label: "My Club Events",
+              link: "club-events.html",
+            },
+            {
+              icon: "ti-settings",
+              label: "Manage Clubs",
+              link: "manage-clubs.html",
+            },
+             {
+              icon: "ti-settings",
+              label: "Manage users",
+              link: "manage-users.html",
+            },
+
+            {
+              icon: "ti-users",
+              label: "Manage Members",
+              link: "manage-members.html",
+            },
+          
+          ],
+          actions: [
+            {
+              icon: "ti-calendar-plus",
+              label: "Create Event",
+              link: "create-event.html",
+            },
+            {
+              icon: "ti-plus",
+              label: "Create New User",
+              link: "create-user.html",
+            },
+            {
+              icon: "ti-plus",
+              label: "Create New Club",
+              link: "create-club.html",
+            }
+          ],
+        },
+        MEMBER: {
+          title: "Club Member",
+          color: "bg-green-100 text-green-800",
+          stats: [
+            {
+              icon: "ti-bookmark",
+              label: "Joined Clubs",
+              value: "2",
+              metric: "clubs",
+            },
+            {
+              icon: "ti-calendar-event",
+              label: "My Events",
+              value: "3",
+              metric: "events",
+            },
+            {
+              icon: "ti-users",
+              label: "Club Members",
+              value: "42",
+              metric: "members",
+            },
+          ],
+          navItems: [
+            { icon: "ti-layout-dashboard", label: "Dashboard", link: "#" },
+            {
+              icon: "ti-users-group",
+              label: "Browse Clubs",
+              link: "view-clubs.html",
+            },
+            {
+              icon: "ti-calendar",
+              label: "Upcoming Events",
+              link: "club-events.html",
+            },
+            {
+              icon: "ti-user-circle",
+              label: "users Directory",
+              link: "view-users.html",
+            },
+          ],
+          actions: [
+          
+          ],
+        },
+      };
+
+      if (!user) window.location.href = "/login.html";
+
+      const roleConfig = ROLES[user.role.toUpperCase()] || ROLES.MEMBER;
+
+      // Set user info
+      document.getElementById("username").textContent = user.username;
+      document.getElementById("dropdownUsername").textContent = user.username;
+          document.getElementById('mobileUsername').textContent = user.username;
+        document.getElementById('mobileDropdownUsername').textContent = user.username;
+      document.getElementById("roleBadge").textContent = user.role;
+      document.getElementById(
+        "roleBadge"
+      ).className = `absolute role-badge ${roleConfig.color} rounded-full font-bold`;
+      document.getElementById(
+        "dashboardTitle"
+      ).textContent = `${roleConfig.title} Dashboard`;
+
+      // Build navigation
+      const navMenu = document.getElementById("navMenu");
+      roleConfig.navItems.forEach((item) => {
+        navMenu.innerHTML += `
+        <li>
+          <a href="${item.link}" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-yellow-50 text-gray-700">
+            <i class="ti ${item.icon} text-yellow-600"></i>
+            <span>${item.label}</span>
+          </a>
+        </li>
+      `;
+      });
+
+      //Build Mobile Nav
+      // Build navigation
+      const mobileNavMenu = document.getElementById("mobileNavMenu");
+      roleConfig.navItems.forEach((item) => {
+        mobileNavMenu.innerHTML += `
+        <li>
+          <a href="${item.link}" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-yellow-50 text-gray-700">
+            <i class="ti ${item.icon} text-yellow-600"></i>
+            <span>${item.label}</span>
+          </a>
+        </li>
+      `;
+      });
+
+      // Add logout at bottom
+      navMenu.innerHTML += `
+      <li class="pt-4 mt-4 border-t border-yellow-100">
+        <button onclick="logout()" class="w-full flex items-center space-x-2 p-3 rounded-lg hover:bg-yellow-50 text-gray-700">
+          <i class="ti ti-logout text-yellow-600"></i>
+          <span>Logout</span>
+        </button>
+      </li>
+    `;
+    // Add logout at bottom
+      mobileNavMenu.innerHTML += `
+      <li class="pt-4 mt-4 border-t border-yellow-100">
+        <button onclick="logout()" class="w-full flex items-center space-x-2 p-3 rounded-lg hover:bg-yellow-50 text-gray-700">
+          <i class="ti ti-logout text-yellow-600"></i>
+          <span>Logout</span>
+        </button>
+      </li>
+    `;
+
+      // Build stats cards
+      const statsContainer = document.getElementById("statsContainer");
+      roleConfig.stats.forEach((stat) => {
+        statsContainer.innerHTML += `
+        <div class="bg-white rounded-lg p-6 shadow-xs border-t-4 border-yellow-400">
+          <div class="flex justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-500">${stat.label}</p>
+              <p class="text-2xl font-semibold mt-1 text-yellow-600">${
+                stat.value
+              }</p>
+            </div>
+            <div class="p-3 rounded-lg bg-yellow-50 text-yellow-600">
+              <i class="ti ${stat.icon} text-xl"></i>
+            </div>
+          </div>
+          ${
+            stat.change
+              ? `
+          <div class="mt-4 pt-4 border-t border-yellow-100">
+            <p class="text-xs text-gray-500 flex items-center">
+              <span class="text-green-500 mr-1">${stat.change}</span> from last month
+            </p>
+          </div>
+          `
+              : ""
+          }
+        </div>
+      `;
+      });
+
+      // Build quick actions
+      const actionsSection = document.getElementById("actionsSection");
+      actionsSection.innerHTML = `
+      <h2 class="font-semibold text-gray-800 mb-4">Quick Actions</h2>
+      <div class="space-y-3">
+        ${roleConfig.actions
+          .map(
+            (action) => `
+          <a href="${action.link}" class="block w-full flex items-center space-x-3 p-3 rounded-lg border border-yellow-200 hover:bg-yellow-50">
+            <div class="p-2 rounded-lg bg-yellow-50 text-yellow-600">
+              <i class="ti ${action.icon}"></i>
+            </div>
+            <span>${action.label}</span>
+          </a>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+
+      // Build activity feed (dynamic based on role)
+      const activitySection = document.getElementById("activitySection");
+      const activities = {
+        SUPERADMIN: [
+          {
+            icon: "ti-shield-lock",
+            title: "Admin permissions updated",
+            detail: "Changed access for 2 administrators",
+            time: "30 min ago",
+          },
+          {
+            icon: "ti-settings",
+            title: "System maintenance",
+            detail: "Updated club management tools",
+            time: "2 hours ago",
+          },
+        ],
+        ADMIN: [
+          {
+            icon: "ti-calendar",
+            title: "New event created",
+            detail: "Debate competition on Nov 15",
+            time: "1 hour ago",
+          },
+          {
+            icon: "ti-user-check",
+            title: "New members approved",
+            detail: "5 students joined your club",
+            time: "3 hours ago",
+          },
+        ],
+        MEMBER: [
+          {
+            icon: "ti-bookmark",
+            title: "Club meeting reminder",
+            detail: "Coding club tomorrow at 4PM",
+            time: "5 hours ago",
+          },
+          {
+            icon: "ti-message",
+            title: "New club announcement",
+            detail: "Hackathon registration open",
+            time: "1 day ago",
+          },
+        ],
+      };
+
+      activitySection.innerHTML = `
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="font-semibold text-gray-800">Recent Activity</h2>
+        <button class="text-sm text-yellow-600 hover:text-yellow-800">View All</button>
+      </div>
+      <div class="space-y-4">
+        ${activities[user.role.toUpperCase()]
+          .map(
+            (activity) => `
+          <div class="flex items-start">
+            <div class="p-2 rounded-lg bg-yellow-50 text-yellow-600 mr-3">
+              <i class="ti ${activity.icon}"></i>
+            </div>
+            <div>
+              <p class="font-medium">${activity.title}</p>
+              <p class="text-sm text-gray-500">${activity.detail}</p>
+              <p class="text-xs text-gray-400 mt-1">${activity.time}</p>
+            </div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+    });
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

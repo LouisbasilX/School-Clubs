@@ -1,0 +1,21 @@
+[
+  {
+    "id": "1",
+    "title": "Booking app hackathon",
+    "club": "Coding",
+    "category": "Competition",
+    "startDate": "2025-07-29 12:00",
+    "endDate": "2025-07-31 12:00",
+    "location": "Computer Lab",
+    "description": "We are discovering minds",
+    "capacity": "unlimited",
+    "requiresRegistration": true,
+    "image": "/uploads/event-1753731479988-119279905.jpg",
+    "createdAt": "2025-07-28T19:37:59.998Z",
+    "createdBy": "Louis_X",
+    "attendees": [
+      "Louis_X",
+      "kk"
+    ]
+  }
+]

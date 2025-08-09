@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Club | Hillrange</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap");
+
+      :root {
+        --primary: #fbbf24; /* Amber-400 */
+        --secondary: #78350f; /* Amber-900 */
+        --accent: #f59e0b; /* Amber-500 */
+        --light: #fef3c7; /* Amber-50 */
+        --dark: #451a03; /* Amber-950 */
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #fef9e7, #fef3c7);
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      .school-font {
+        font-weight: 900;
+        letter-spacing: -0.02em;
+      }
+
+      .school-gradient {
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--accent) 50%,
+          var(--secondary) 100%
+        );
+      }
+
+      .school-text-gradient {
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--accent) 50%,
+          var(--secondary) 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      /* Navigation */
+      nav {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), #fef3c7);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      nav a {
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      nav a:hover::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--accent);
+        transform: scaleX(1);
+        transform-origin: center;
+      }
+
+      nav a::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--accent);
+        transform: scaleX(0);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Dropdown */
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem;
+        border-radius: 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: linear-gradient(135deg, #fef3c7, #fff);
+        box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+        cursor: pointer;
+      }
+
+      .dropdown-toggle:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(69, 26, 3, 0.2);
+        background: linear-gradient(135deg, #fff, #fef3c7);
+      }
+
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        margin-top: 1rem;
+        min-width: 260px;
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 12px 40px rgba(69, 26, 3, 0.2);
+        border: 1px solid rgba(251, 191, 36, 0.2);
+        backdrop-filter: blur(10px);
+        z-index: 100;
+        transform: translateY(10px);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .dropdown-menu.show {
+        display: block;
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        color: var(--secondary);
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .dropdown-item:hover {
+        background: #fef3c7;
+        color: var(--dark);
+        transform: translateX(5px);
+      }
+
+      /* Mobile menu */
+      .mobile-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+      }
+
+      .mobile-menu.active {
+        display: block;
+      }
+
+      @media (max-width: 1000px) {
+        .desktop-menu {
+          display: none !important;
+        }
+      }
+
+      /* Custom file input */
+      .file-input {
+        opacity: 0;
+        width: 0.1px;
+        height: 0.1px;
+        position: absolute;
+      }
+
+      .file-input-label {
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 240px;
+        border-radius: 1rem;
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        cursor: pointer;
+        border: 3px dashed var(--accent);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+      }
+
+      .file-input-label:hover {
+        border-color: var(--secondary);
+        background: linear-gradient(135deg, #fde68a, #fcd34d);
+        transform: scale(1.02);
+      }
+
+      .file-input-label.dragover {
+        background: linear-gradient(135deg, #fcd34d, #fbbf24);
+        border-color: var(--dark);
+        transform: scale(1.02);
+      }
+
+      /* Form styling */
+      .form-card {
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 15px 40px rgba(69, 26, 3, 0.1);
+        border: 1px solid rgba(251, 191, 36, 0.15);
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+      }
+
+      .form-header {
+        background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
+        padding: 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .form-section {
+        padding: 2rem;
+        border-bottom: 1px solid rgba(251, 191, 36, 0.1);
+        position: relative;
+      }
+
+      .form-section:last-child {
+        border-bottom: none;
+      }
+
+      .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--secondary);
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        position: relative;
+      }
+
+      .form-input,
+      .form-select,
+      .form-textarea {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        border-radius: 0.75rem;
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background-color: #fffcf5;
+        box-shadow: 0 2px 8px rgba(251, 191, 36, 0.1);
+      }
+
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.3);
+        background-color: white;
+        transform: translateY(-2px);
+      }
+
+      .form-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2378350f' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 1rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+      }
+
+      .form-textarea {
+        min-height: 140px;
+      }
+
+      /* Button styles */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem 2rem;
+        border-radius: 1rem;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        border: none;
+        box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, var(--accent), var(--secondary));
+        box-shadow: 0 8px 20px rgba(251, 191, 36, 0.5);
+        transform: translateY(-2px) scale(1.02);
+      }
+
+      .btn-secondary {
+        background: white;
+        color: var(--secondary);
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        box-shadow: 0 4px 10px rgba(251, 191, 36, 0.2);
+      }
+
+      .btn-secondary:hover {
+        background: #fef3c7;
+        border-color: var(--accent);
+        transform: translateY(-2px);
+      }
+
+      /* Validation styles */
+      .error-message {
+        color: #ef4444;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .error-message::before {
+        content: '⚠';
+        font-size: 1rem;
+      }
+
+      .has-error .form-input,
+      .has-error .form-select,
+      .has-error .form-textarea {
+        border-color: #ef4444;
+        background-color: #fff1f1;
+      }
+
+      /* Preview image */
+      .image-preview {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .image-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 1rem;
+        box-shadow: 0 4px 15px rgba(69, 26, 3, 0.1);
+      }
+
+      .remove-image {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background-color: rgba(239, 68, 68, 0.9);
+        color: white;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+      }
+
+      .remove-image:hover {
+        background-color: rgba(239, 68, 68, 1);
+        transform: scale(1.15) rotate(90deg);
+      }
+
+      /* Loading spinner */
+      .spinner {
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+         /* Responsive navigation - Changed from 640px to 1000px */
+    @media (max-width: 1000px) {
+      nav .hidden-md {
+        display: none;
+      }
+      
+      .mobile-dropdown {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+      }
+      
+      .mobile-dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, #fef3c7, #fff);
+        box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+        width: 100%;
+      }
+      
+      .mobile-dropdown-menu {
+        display: none;
+        width: 100%;
+        background: white;
+        border-radius: 0.75rem;
+        margin-top: 0.5rem;
+        box-shadow: 0 4px 15px rgba(69, 26, 3, 0.1);
+      }
+      
+      .mobile-dropdown-menu.show {
+        display: block;
+      }
+      
+      .mobile-dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--secondary);
+        transition: all 0.2s ease;
+      }
+      
+      .mobile-dropdown-item:hover {
+        background: #fef3c7;
+      }
+    }
+
+    @media (min-width: 1001px) {
+      .mobile-only {
+        display: none !important;
+      }
+    }
+    </style>
+  </head>
+  <body class="bg-gray-50 relative overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-20">
+          <div class="flex items-center">
+            <div class="flex-shrink-0 flex items-center">
+              <i class="ti ti-school text-4xl text-yellow-600 mr-3 animate-pulse"></i>
+              <span class="text-xl font-bold school-text-gradient school-font">New Club</span>
+            </div>
+            <!-- Desktop Menu -->
+            <div class="hidden lg:flex lg:ml-8 lg:space-x-10 desktop-menu">
+              <a href="dashboard.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in">
+                <i class="ti ti-layout-dashboard mr-2 text-yellow-600"></i> Dashboard
+              </a>
+              <a href="view-clubs.html" class="border-yellow-500 text-gray-900 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.1s;">
+                <i class="ti ti-users-group mr-2 text-yellow-600"></i> Clubs
+              </a>
+              <a href="club-events.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.2s;">
+                <i class="ti ti-calendar-event mr-2 text-yellow-600"></i> Events
+              </a>
+            </div>
+          </div>
+          <div class="hidden lg:ml-6 lg:flex lg:items-center space-x-4">
+            <div class="dropdown">
+              <button class="dropdown-toggle" id="dropdownToggle">
+                <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden">
+                  <i class="ti ti-user text-2xl text-yellow-600"></i>
+                  <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50"></div>
+                </div>
+                <span class="ml-3 font-medium text-gray-700 school-font" id="username">Loading...</span>
+                <i class="ti ti-chevron-down text-yellow-600 ml-2"></i>
+              </button>
+              <div class="dropdown-menu" id="dropdownMenu">
+                <div class="px-4 py-3 text-sm text-gray-500 border-b border-yellow-50">
+                  Logged in as <span id="dropdownUsername" class="font-medium text-gray-700"></span>
+                </div>
+                <a href="profile.html" class="dropdown-item">
+                  <i class="ti ti-user mr-2"></i> Profile
+                </a>
+                <a href="settings.html" class="dropdown-item">
+                  <i class="ti ti-settings mr-2"></i> Settings
+                </a>
+                <button onclick="logout()" class="dropdown-item w-full text-left">
+                  <i class="ti ti-logout mr-2"></i> Logout
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Mobile menu button -->
+          <div class="flex items-center lg:hidden">
+            <button type="button" id="mobileMenuButton" class="p-2 rounded-md text-gray-700 hover:text-yellow-600 focus:outline-none">
+              <i class="ti ti-menu-2 text-2xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Mobile menu -->
+      <div class="lg:hidden hidden" id="mobileMenu">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+          <a href="dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+            <i class="ti ti-layout-dashboard mr-2"></i> Dashboard
+          </a>
+          <a href="view-clubs.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 bg-yellow-50">
+            <i class="ti ti-users-group mr-2"></i> Clubs
+          </a>
+          <a href="club-events.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+            <i class="ti ti-calendar-event mr-2"></i> Events
+          </a>
+          <div class="pt-2 border-t border-yellow-100">
+            <button onclick="logout()" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+              <i class="ti ti-logout mr-2"></i> Logout
+            </button>
+          </div>
+            <div class="mobile-dropdown">
+          <button class="mobile-dropdown-toggle" id="mobileDropdownToggle">
+            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden mr-3">
+              <img id="mobileNavProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+              <i class="ti ti-user text-xl text-yellow-600"></i>
+            </div>
+            <span class="font-medium text-gray-700 school-font" id="mobileUsername">Loading...</span>
+            <i class="ti ti-chevron-down text-yellow-600 ml-auto"></i>
+          </button>
+          <div class="mobile-dropdown-menu" id="mobileDropdownMenu">
+            <div class="px-4 py-2 text-sm text-gray-500 border-b border-yellow-50">
+              Logged in as <span id="mobileDropdownUsername" class="font-medium text-gray-700"></span>
+            </div>
+            <a href="profile.html" class="mobile-dropdown-item">
+              <i class="ti ti-user mr-2"></i> Profile
+            </a>
+            <a href="settings.html" class="mobile-dropdown-item">
+              <i class="ti ti-settings mr-2"></i> Settings
+            </a>
+            <button onclick="logout()" class="mobile-dropdown-item w-full text-left">
+              <i class="ti ti-logout mr-2"></i> Logout
+            </button>
+          </div>
+        </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <!-- Header -->
+      <div class="sm:flex sm:items-center sm:justify-between mb-12">
+        <div class="flex-1 min-w-0">
+          <h1
+            class="text-4xl font-bold leading-tight school-text-gradient school-font"
+          >
+            <i class="ti ti-plus text-yellow-600 mr-3 text-3xl"></i>
+            Create New Club
+          </h1>
+         
+        </div>
+        <div class="mt-6 sm:mt-0 sm:ml-6">
+          <a
+            href="view-clubs.html"
+            class="btn btn-secondary inline-flex items-center text-base"
+          >
+            <i class="ti ti-arrow-back mr-2"></i> Back to Clubs
+          </a>
+        </div>
+      </div>
+
+      <!-- Form Card -->
+      <div class="form-card">
+        <div class="form-header">
+          <h2 class="text-2xl font-bold text-white school-font relative z-10">
+            <i class="ti ti-users-group mr-2"></i> Club Details
+          </h2>
+        </div>
+
+        <form id="createClubForm" enctype="multipart/form-data">
+          <!-- Basic Information Section -->
+          <div class="form-section">
+            <h3
+              class="text-xl font-medium text-gray-900 mb-6 flex items-center school-font"
+            >
+              <i class="ti ti-info-circle text-yellow-600 mr-2"></i>
+              Basic Information
+            </h3>
+            <div class="form-grid">
+              <!-- Club Name -->
+              <div class="mb-6">
+                <label for="club-name" class="form-label">Club Name</label>
+                <input
+                  type="text"
+                  id="club-name"
+                  name="name"
+                  class="form-input"
+                  placeholder="Enter club name"
+                  required
+                />
+                <div id="club-name-error" class="error-message"></div>
+              </div>
+
+              <!-- Category -->
+              <div class="mb-6">
+                <label for="club-category" class="form-label">Category</label>
+                <select
+                  id="club-category"
+                  name="category"
+                  class="form-select"
+                  required
+                >
+                  <option value="">Select a category</option>
+                  <option value="academic">Academic</option>
+                  <option value="arts">Arts</option>
+                  <option value="sports">Sports</option>
+                  <option value="technology">Technology</option>
+                  <option value="other">Other</option>
+                </select>
+                <div id="club-category-error" class="error-message"></div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-6">
+              <label for="club-description" class="form-label"
+                >Description</label
+              >
+              <textarea
+                id="club-description"
+                name="description"
+                class="form-textarea"
+                placeholder="Describe your club's purpose and activities"
+                required
+                rows="4"
+              ></textarea>
+              <div id="club-description-error" class="error-message"></div>
+            </div>
+          </div>
+
+          <!-- Media & Settings Section -->
+          <div class="form-section">
+            <h3
+              class="text-xl font-medium text-gray-900 mb-6 flex items-center school-font"
+            >
+              <i class="ti ti-photo text-yellow-600 mr-2"></i>
+              Media & Settings
+            </h3>
+            <div class="form-grid">
+              <!-- Club Image -->
+              <div class="mb-6">
+                <label class="form-label">Club Image</label>
+                <input
+                  type="file"
+                  id="club-image"
+                  name="image"
+                  accept="image/*"
+                  class="file-input"
+                />
+                <label for="club-image" class="file-input-label">
+                  <i class="ti ti-photo text-5xl text-yellow-600 mb-3 animate-pulse"></i>
+                  <span class="text-base text-gray-600 font-medium"
+                    >Upload a club image</span
+                  >
+                  <span class="text-sm text-gray-500 mt-2"
+                    >PNG, JPG, GIF up to 5MB</span
+                  >
+                </label>
+                <div id="club-image-error" class="error-message"></div>
+              </div>
+
+              <!-- Capacity -->
+              <div class="mb-6">
+                <label for="club-capacity" class="form-label"
+                  >Capacity (optional)</label
+                >
+                <input
+                  type="number"
+                  id="club-capacity"
+                  name="capacity"
+                  class="form-input"
+                  placeholder="Leave blank for unlimited"
+                  min="1"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Section -->
+          <div class="form-section">
+            <div class="flex justify-end space-x-4">
+              <button
+                type="button"
+                onclick="window.location.href='view-clubs.html'"
+                class="btn btn-secondary text-base"
+              >
+                Cancel
+              </button>
+              <button type="submit" id="submit-btn" class="btn btn-primary text-base">
+                <i class="ti ti-plus mr-2"></i> Create Club
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-yellow-100 mt-16">
+      <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="flex items-center">
+            <i class="ti ti-school text-3xl text-yellow-600 mr-3 animate-pulse"></i>
+            <span class="text-xl font-bold school-text-gradient school-font"
+              >Hillrange Clubs</span
+            >
+          </div>
+          <div class="mt-6 md:mt-0">
+            <p class="text-center text-base text-gray-500">
+              © 2023 Hillrange School. All rights reserved.
+            </p>
+          </div>
+          <div class="mt-6 md:mt-0 flex space-x-8">
+            <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+              <i class="ti ti-brand-facebook text-xl"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+              <i class="ti ti-brand-twitter text-xl"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+              <i class="ti ti-brand-instagram text-xl"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Load user data
+      document.addEventListener("DOMContentLoaded", async () => {
+        const user = JSON.parse(localStorage.getItem("loggedInUser"))?.user;
+        if (!user) {
+          window.location.href = "/login.html";
+          return;
+        }
+        if (user.role === "user") window.location.href = "/access-denied.html";
+
+        document.getElementById("username").textContent = user.username;
+        document.getElementById("dropdownUsername").textContent = user.username;
+        document.getElementById('mobileUsername').textContent = user.username;
+        document.getElementById('mobileDropdownUsername').textContent = user.username;
+       // Mobile menu toggle
+      const mobileMenuButton = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenuButton.addEventListener('click', () => {
+        const isExpanded = mobileMenu.classList.toggle('hidden');
+        mobileMenuButton.innerHTML = isExpanded 
+          ? '<i class="ti ti-menu-2 text-2xl"></i>' 
+          : '<i class="ti ti-x text-2xl"></i>';
+      });
+
+      // Mobile dropdown toggle
+      const mobileDropdownToggle = document.getElementById('mobileDropdownToggle');
+      const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
+      if (mobileDropdownToggle) {
+        mobileDropdownToggle.addEventListener('click', () => {
+          mobileDropdownMenu.classList.toggle('show');
+        });
+      }
+
+        // Dropdown toggle
+        const dropdownToggle = document.getElementById("dropdownToggle");
+        const dropdownMenu = document.getElementById("dropdownMenu");
+
+        dropdownToggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle("show");
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", (e) => {
+          if (!dropdownToggle.contains(e.target)) {
+            dropdownMenu.classList.remove("show");
+          }
+        });
+      });
+
+      // File upload handling
+      const fileInput = document.getElementById("club-image");
+      const fileInputLabel = document.querySelector(".file-input-label");
+
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        fileInputLabel.addEventListener(eventName, preventDefaults, false);
+      });
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        fileInputLabel.addEventListener(eventName, highlight, false);
+      });
+
+      ["dragleave", "drop"].forEach((eventName) => {
+        fileInputLabel.addEventListener(eventName, unhighlight, false);
+      });
+
+      function highlight() {
+        fileInputLabel.classList.add("dragover");
+      }
+
+      function unhighlight() {
+        fileInputLabel.classList.remove("dragover");
+      }
+
+      fileInputLabel.addEventListener("drop", handleDrop, false);
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        fileInput.files = files;
+        handleFiles(files);
+      }
+
+      fileInput.addEventListener("change", function () {
+        handleFiles(this.files);
+      });
+
+      function handleFiles(files) {
+        if (files.length) {
+          const file = files[0];
+          if (file.type.startsWith("image/")) {
+            if (file.size > 5 * 1024 * 1024) {
+              alert("Image size must be less than 5MB");
+              return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              fileInputLabel.innerHTML = `
+                 <div class="image-preview">
+                   <img src="${e.target.result}">
+                   <div class="remove-image" onclick="removeImage(event)">
+                     <i class="ti ti-x"></i>
+                   </div>
+                 </div>
+               `;
+            };
+            reader.readAsDataURL(file);
+          } else {
+            alert("Please select an image file");
+          }
+        }
+      }
+
+      function removeImage(e) {
+        e.stopPropagation();
+        fileInput.value = "";
+        fileInputLabel.innerHTML = `
+           <i class="ti ti-photo text-5xl text-yellow-600 mb-3 animate-pulse"></i>
+           <span class="text-base text-gray-600 font-medium">Upload a club image</span>
+           <span class="text-sm text-gray-500 mt-2">PNG, JPG, GIF up to 5MB</span>
+         `;
+      }
+
+      // Form submission
+      document.getElementById("createClubForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const name = form["name"].value.trim();
+        const category = form["category"].value;
+        const description = form["description"].value.trim();
+        const image = form["image"].files[0];
+
+        // Clear previous errors
+        document.querySelectorAll(".error-message").forEach((el) => {
+          el.textContent = "";
+        });
+        document.querySelectorAll(".has-error").forEach((el) => {
+          el.classList.remove("has-error");
+        });
+
+        // Validation
+        let isValid = true;
+
+        if (!name) {
+          document.getElementById("club-name-error").textContent =
+            "Club name is required";
+          form["name"].classList.add("has-error");
+          isValid = false;
+        }
+
+        if (!category) {
+          document.getElementById("club-category-error").textContent =
+            "Please select a category";
+          form["category"].classList.add("has-error");
+          isValid = false;
+        }
+
+        if (!description) {
+          document.getElementById("club-description-error").textContent =
+            "Description is required";
+          form["description"].classList.add("has-error");
+          isValid = false;
+        }
+
+        if (!image) {
+          document.getElementById("club-image-error").textContent =
+            "Club image is required";
+          isValid = false;
+        } else if (image.size > 5 * 1024 * 1024) {
+          document.getElementById("club-image-error").textContent =
+            "Image must be less than 5MB";
+          isValid = false;
+        }
+
+        if (!isValid) {
+          return;
+        }
+
+        const user = JSON.parse(localStorage.getItem("loggedInUser"))?.user;
+        if (!user) {
+          window.location.href = "/login.html";
+          return;
+        }
+
+        const submitBtn = document.getElementById("submit-btn");
+        const originalBtnContent = submitBtn.innerHTML;
+        submitBtn.innerHTML = `<i class="ti ti-loader spinner mr-2"></i> Creating...`;
+        submitBtn.disabled = true;
+
+        try {
+          const formData = new FormData(form);
+          
+          // Create the club
+          const response = await fetch("/api/clubs", {
+            method: "POST",
+            body: formData,
+            headers: {
+              'X-User-Name': user.username,
+              'X-User-Role': user.role
+            }
+          });
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || "Failed to create club");
+          }
+
+          const newClub = await response.json();
+          
+          // Record activity for the admin who created the club
+          try {
+            const activityResponse = await fetch(`/api/users/${encodeURIComponent(user.username)}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                recentActivity: {
+                  header: "Club Created",
+                  message: `Created new club: ${newClub.name}`,
+                  icon: "ti-users-group"
+                },
+                joinClubId: newClub.id // Add the club to user's clubs
+              })
+            });
+
+            if (!activityResponse.ok) {
+              console.error("Failed to record activity, but club was created");
+            }
+          } catch (activityError) {
+            console.error("Error recording activity:", activityError);
+          }
+
+          // Show success notification
+          window.alert("club created succesfully")
+          // Redirect after a short delay to allow notification to be seen
+          setTimeout(() => {
+            window.location.href = "manage-clubs.html";
+          }, 1500);
+
+        } catch (err) {
+          console.error("Club creation error:", err);
+         
+        } finally {
+          submitBtn.innerHTML = originalBtnContent;
+          submitBtn.disabled = false;
+        }
+      });
+
+      function logout() {
+        localStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
+      }
+    </script>
+  </body>
+</html>

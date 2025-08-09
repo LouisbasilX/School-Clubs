@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Club Events | Hillrange</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap");
+
+    :root {
+      --primary: #fbbf24; /* Amber-400 */
+      --secondary: #78350f; /* Amber-900 */
+      --accent: #f59e0b; /* Amber-500 */
+      --light: #fef3c7; /* Amber-50 */
+      --dark: #451a03; /* Amber-950 */
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: #fef9e7;
+    }
+
+    .school-font {
+    }
+
+    .school-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    }
+
+    .school-text-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .event-card {
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .category-badge {
+      font-size: 0.65rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+    }
+
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: white;
+      min-width: 200px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 0.5rem;
+      border: 1px solid #e5e7eb;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #fef3c7;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 4px;
+    }
+
+    /* Calendar styling */
+    .calendar-day {
+      transition: all 0.2s ease;
+    }
+
+    .calendar-day:hover {
+      background-color: var(--light);
+    }
+
+    .calendar-day.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    /* Floating action button */
+    .fab {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 50;
+      transition: all 0.3s ease;
+    }
+
+    .fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Loading spinner */
+    .spinner {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive grid */
+    @media (max-width: 768px) {
+      .events-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+      }
+    }
+
+    /* Event image styling */
+    .event-image-container {
+      height: 180px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .event-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .event-card:hover .event-image {
+      transform: scale(1.05);
+    }
+
+    .event-image-placeholder {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .event-image-placeholder i {
+      font-size: 3rem;
+      color: #78350f;
+      opacity: 0.3;
+    }
+
+    /* Calendar styles */
+    .fc-event {
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      padding: 2px 4px;
+    }
+
+    .fc-daygrid-event {
+      white-space: normal;
+    }
+
+    .fc-toolbar-title {
+      font-family: "Playfair Display", serif;
+      color: var(--secondary);
+    }
+
+    .fc-button {
+      background-color: var(--primary) !important;
+      border-color: var(--primary) !important;
+      color: white !important;
+    }
+
+    .fc-button:hover {
+      background-color: var(--accent) !important;
+      border-color: var(--accent) !important;
+    }
+
+    .fc-button-active {
+      background-color: var(--secondary) !important;
+      border-color: var(--secondary) !important;
+    }
+
+    .fc-daygrid-day-number {
+      color: var(--secondary);
+      font-weight: bold;
+    }
+
+    .fc-day-today {
+      background-color: var(--light) !important;
+    }
+
+    /* Responsive styles - Fixed version */
+    .mobile-menu-button {
+      display: none;
+    }
+
+    @media (max-width: 1000px) {
+      .desktop-menu {
+        display: none !important;
+      }
+      
+      .mobile-menu-button {
+        display: flex;
+      }
+      
+      .mobile-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+      }
+      
+      .mobile-menu.active {
+        display: block;
+      }
+      
+      .events-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+      }
+       nav .hidden-md {
+        display: none;
+      }
+      
+      .mobile-dropdown {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+      }
+      
+      .mobile-dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, #fef3c7, #fff);
+        box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+        width: 100%;
+      }
+      
+      .mobile-dropdown-menu {
+        display: none;
+        width: 100%;
+        background: white;
+        border-radius: 0.75rem;
+        margin-top: 0.5rem;
+        box-shadow: 0 4px 15px rgba(69, 26, 3, 0.1);
+      }
+      
+      .mobile-dropdown-menu.show {
+        display: block;
+      }
+      
+      .mobile-dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--secondary);
+        transition: all 0.2s ease;
+      }
+      
+      .mobile-dropdown-item:hover {
+        background: #fef3c7;
+      }
+    
+    }
+     
+
+    @media (min-width: 1001px) {
+      .mobile-only {
+        display: none !important;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" />
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation - Fixed version -->
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <i class="ti ti-school text-3xl text-yellow-600 mr-2"></i>
+            <span class="text-xl font-bold school-text-gradient">Hillrange Clubs</span>
+          </div>
+          <!-- Desktop Menu - Will be hidden on mobile -->
+          <div class="hidden lg:flex lg:ml-8 lg:space-x-8">
+            <a href="dashboard.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+              <i class="ti ti-layout-dashboard mr-1"></i> Dashboard
+            </a>
+            <a href="view-clubs.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+              <i class="ti ti-users-group mr-1"></i> Clubs
+            </a>
+            <a href="club-events.html" class="border-yellow-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+              <i class="ti ti-calendar-event mr-1"></i> Events
+            </a>
+          </div>
+        </div>
+        <div class="hidden lg:flex lg:items-center">
+          <button class="p-1 rounded-full text-gray-400 hover:text-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+            <i class="ti ti-bell text-xl"></i>
+          </button>
+          <div class="ml-3 relative dropdown">
+            <div>
+              <button class="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center relative">
+                  <i class="ti ti-user text-yellow-600"></i>
+                </div>
+                <span class="ml-2 font-medium text-gray-700" id="username">Loading...</span>
+                <i class="ti ti-chevron-down text-yellow-600 ml-1"></i>
+              </button>
+            </div>
+            <div class="dropdown-content origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div class="px-4 py-2 text-sm text-gray-500">
+                Logged in as
+                <span id="dropdownUsername" class="font-medium"></span>
+              </div>
+              <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50">
+                <i class="ti ti-user mr-2"></i> Profile
+              </a>
+              <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50">
+                <i class="ti ti-settings mr-2"></i> Settings
+              </a>
+              <button onclick="logout()" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50">
+                <i class="ti ti-logout mr-2"></i> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Mobile menu button - Only shows on mobile -->
+        <div class="flex items-center lg:hidden">
+          <button type="button" id="mobileMenuButton" class="p-2 rounded-md text-gray-700 hover:text-yellow-600 focus:outline-none">
+            <i class="ti ti-menu-2 text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile menu - Only shows on mobile -->
+    <div class="lg:hidden hidden" id="mobileMenu">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <a href="dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+          <i class="ti ti-layout-dashboard mr-2"></i> Dashboard
+        </a>
+        <a href="view-clubs.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+          <i class="ti ti-users-group mr-2"></i> Clubs
+        </a>
+        <a href="club-events.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 bg-yellow-50">
+          <i class="ti ti-calendar-event mr-2"></i> Events
+        </a>
+        <div class="pt-2 border-t border-yellow-100">
+          <button onclick="logout()" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50">
+            <i class="ti ti-logout mr-2"></i> Logout
+          </button>
+        </div>
+         <!-- Mobile Profile Dropdown -->
+        <div class="mobile-dropdown">
+          <button class="mobile-dropdown-toggle" id="mobileDropdownToggle">
+            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden mr-3">
+              <img id="mobileNavProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+              <i class="ti ti-user text-xl text-yellow-600"></i>
+            </div>
+            <span class="font-medium text-gray-700 school-font" id="mobileUsername">Loading...</span>
+            <i class="ti ti-chevron-down text-yellow-600 ml-auto"></i>
+          </button>
+          <div class="mobile-dropdown-menu" id="mobileDropdownMenu">
+            <div class="px-4 py-2 text-sm text-gray-500 border-b border-yellow-50">
+              Logged in as <span id="mobileDropdownUsername" class="font-medium text-gray-700"></span>
+            </div>
+            <a href="profile.html" class="mobile-dropdown-item">
+              <i class="ti ti-user mr-2"></i> Profile
+            </a>
+            <a href="settings.html" class="mobile-dropdown-item">
+              <i class="ti ti-settings mr-2"></i> Settings
+            </a>
+            <button onclick="logout()" class="mobile-dropdown-item w-full text-left">
+              <i class="ti ti-logout mr-2"></i> Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="sm:flex sm:items-center sm:justify-between mb-8">
+      <div class="flex-1 min-w-0">
+        <h1 class="text-3xl font-bold leading-tight text-gray-900 school-font">
+          <i class="ti ti-calendar-event text-yellow-600 mr-2"></i>
+          Club Events
+        </h1>
+        <p class="mt-2 text-sm text-gray-600">
+          Discover, join, and manage all upcoming club activities and events
+        </p>
+      </div>
+      <div class="create-event-btn mt-4 sm:mt-0 sm:ml-4">
+        <a href="create-event.html" class="school-gradient inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 pulse-animation">
+          <i class="ti ti-plus mr-2"></i> Create New Event
+        </a>
+      </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="mb-8 bg-white p-4 rounded-lg shadow-sm border border-yellow-100">
+      <div class="sm:flex sm:items-center sm:justify-between">
+        <div class="w-full sm:max-w-xs mb-4 sm:mb-0">
+          <label for="search" class="sr-only">Search</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="ti ti-search text-gray-400"></i>
+            </div>
+            <input id="search" name="search" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm" placeholder="Search events..." type="search" />
+          </div>
+        </div>
+        <div class="flex space-x-3">
+          <div>
+            <select id="club-filter" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm rounded-md">
+              <option value="">All Clubs</option>
+              <!-- Clubs will be populated from API -->
+            </select>
+          </div>
+          <div>
+            <select id="date-filter" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm rounded-md">
+              <option value="">All Dates</option>
+              <option>Today</option>
+              <option>This Week</option>
+              <option>This Month</option>
+              <option>Upcoming</option>
+              <option>Past Events</option>
+            </select>
+          </div>
+          <div>
+            <select id="category-filter" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm rounded-md">
+              <option value="">All Categories</option>
+              <option>Workshop</option>
+              <option>Competition</option>
+              <option>Meeting</option>
+              <option>Social</option>
+              <option>Performance</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar View Toggle -->
+    <div class="flex justify-end mb-4">
+      <div class="inline-flex rounded-md shadow-sm">
+        <button id="list-view-btn" class="inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-yellow-500 focus:border-yellow-500">
+          <i class="ti ti-list mr-2"></i> List View
+        </button>
+        <button id="calendar-view-btn" class="-ml-px inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-yellow-500 focus:border-yellow-500">
+          <i class="ti ti-calendar mr-2"></i> Calendar View
+        </button>
+      </div>
+    </div>
+
+    <!-- Events List View -->
+    <div id="list-view" class="space-y-6">
+      <!-- Events Grid -->
+      <div class="events-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Events will be loaded here from the server -->
+      </div>
+    </div>
+
+    <!-- Calendar View (Hidden by default) -->
+    <div id="calendar-view" class="hidden bg-white shadow overflow-hidden rounded-lg p-4">
+      <div id="calendar"></div>
+    </div>
+  </div>
+
+  <!-- Create Event Floating Button -->
+  <a href="create-event.html" class="fab school-gradient text-white create-event-btn">
+    <i class="ti ti-plus text-xl"></i>
+  </a>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 mt-12">
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center">
+          <i class="ti ti-school text-2xl text-yellow-600 mr-2"></i>
+          <span class="text-lg font-bold school-text-gradient">Hillrange Clubs</span>
+        </div>
+        <div class="mt-4 md:mt-0">
+          <p class="text-center text-sm text-gray-500">
+            &copy; 2023 Hillrange School. All rights reserved.
+          </p>
+        </div>
+        <div class="mt-4 md:mt-0 flex space-x-6">
+          <a href="#" class="text-gray-400 hover:text-yellow-600">
+            <i class="ti ti-brand-facebook"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-yellow-600">
+            <i class="ti ti-brand-twitter"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-yellow-600">
+            <i class="ti ti-brand-instagram"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
+  <script>
+    // Global variables
+    let allEvents = [];
+    let calendar = null;
+    let allClubs = [];
+
+    // Toggle between list and calendar views
+    document.getElementById("calendar-view-btn").addEventListener("click", function () {
+      document.getElementById("list-view").classList.add("hidden");
+      document.getElementById("calendar-view").classList.remove("hidden");
+      this.classList.add("bg-yellow-50", "border-yellow-500", "text-yellow-700");
+      document.getElementById("list-view-btn").classList.remove("bg-yellow-50", "border-yellow-500", "text-yellow-700");
+
+      // Initialize calendar if not already done
+      if (!calendar) {
+        initializeCalendar();
+      }
+    });
+
+    document.getElementById("list-view-btn").addEventListener("click", function () {
+      document.getElementById("calendar-view").classList.add("hidden");
+      document.getElementById("list-view").classList.remove("hidden");
+      this.classList.add("bg-yellow-50", "border-yellow-500", "text-yellow-700");
+      document.getElementById("calendar-view-btn").classList.remove("bg-yellow-50", "border-yellow-500", "text-yellow-700");
+    });
+
+    
+     // Mobile menu toggle
+      const mobileMenuButton = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenuButton.addEventListener('click', () => {
+        const isExpanded = mobileMenu.classList.toggle('hidden');
+        mobileMenuButton.innerHTML = isExpanded 
+          ? '<i class="ti ti-menu-2 text-2xl"></i>' 
+          : '<i class="ti ti-x text-2xl"></i>';
+      });
+    
+      // Mobile dropdown toggle
+      const mobileDropdownToggle = document.getElementById('mobileDropdownToggle');
+      const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
+      if (mobileDropdownToggle) {
+        mobileDropdownToggle.addEventListener('click', () => {
+          mobileDropdownMenu.classList.toggle('show');
+        });
+      }
+
+    const user = JSON.parse(localStorage.getItem("loggedInUser"))?.user;
+    if (!user) window.location.href = "/login.html";
+
+    // Load user data
+    document.addEventListener("DOMContentLoaded", async () => {
+      document.getElementById("username").textContent = user.username;
+      document.getElementById("dropdownUsername").textContent = user.username;
+        document.getElementById('mobileUsername').textContent = user.username;
+        document.getElementById('mobileDropdownUsername').textContent = user.username;
+
+      // Load clubs for filter dropdown
+      await loadClubs();
+
+      // Load events
+      await loadEvents();
+
+      // Setup event filters
+      document.getElementById("search").addEventListener("input", (e) => {
+        filterEvents();
+      });
+
+      document.getElementById("club-filter").addEventListener("change", (e) => {
+        filterEvents();
+      });
+
+      document.getElementById("date-filter").addEventListener("change", (e) => {
+        filterEvents();
+      });
+
+      document.getElementById("category-filter").addEventListener("change", (e) => {
+        filterEvents();
+      });
+    });
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "login.html";
+    }
+
+    // Load clubs for filter dropdown
+    async function loadClubs() {
+      try {
+        const response = await fetch("/api/clubs");
+        allClubs = await response.json();
+
+        const clubFilter = document.getElementById("club-filter");
+        allClubs.forEach((club) => {
+          const option = document.createElement("option");
+          option.value = club.name;
+          option.textContent = club.name;
+          clubFilter.appendChild(option);
+        });
+      } catch (err) {
+        console.error("Failed to load clubs:", err);
+      }
+    }
+
+    // Initialize FullCalendar
+    function initializeCalendar() {
+      const calendarEl = document.getElementById("calendar");
+
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: "dayGridMonth",
+        headerToolbar: {
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek,timeGridDay",
+        },
+        events: allEvents.map((event) => ({
+          id: event.id,
+          title: event.title,
+          start: event.startDate,
+          end: event.endDate || event.startDate,
+          extendedProps: {
+            club: event.club,
+            category: event.category,
+            location: event.location,
+            description: event.description,
+          },
+          backgroundColor: getCategoryColor(event.category),
+          borderColor: getCategoryColor(event.category),
+          textColor: "#fff",
+        })),
+        eventClick: function (info) {
+          showEventDetails(info.event.id);
+        },
+        eventDidMount: function (info) {
+          // Add tooltip to events
+          info.el.setAttribute("title", `${info.event.title}\n${info.event.extendedProps.club}`);
+        },
+      });
+
+      calendar.render();
+    }
+
+    // Get color for calendar events based on category
+    function getCategoryColor(category) {
+      const colors = {
+        Workshop: "#6366F1", // indigo
+        Competition: "#3B82F6", // blue
+        Meeting: "#8B5CF6", // purple
+        Social: "#EC4899", // pink
+        Performance: "#EF4444", // red
+        Exhibition: "#10B981", // green
+        Sports: "#059669", // emerald
+        Discussion: "#F59E0B", // amber
+      };
+      return colors[category] || "#6B7280"; // gray as default
+    }
+
+    // Fetch and display events
+    async function loadEvents() {
+      try {
+        // Show loading state
+        document.querySelector(".events-grid").innerHTML = `
+          <div class="col-span-3 flex justify-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+          </div>
+        `;
+
+        const response = await fetch("/api/events");
+        allEvents = await response.json();
+
+        if (!allEvents.length) {
+          document.querySelector(".events-grid").innerHTML = `
+            <div class="col-span-3 text-center py-12">
+              <i class="ti ti-calendar-off text-4xl text-gray-400 mb-4"></i>
+              <h3 class="text-lg font-medium text-gray-900">No events found</h3>
+              <p class="mt-1 text-sm text-gray-500">Create the first event for your club!</p>
+            </div>
+          `;
+          return;
+        }
+
+        renderEvents(allEvents);
+      } catch (err) {
+        console.error("Failed to load events:", err);
+        document.querySelector(".events-grid").innerHTML = `
+          <div class="col-span-3 text-center py-12">
+            <i class="ti ti-alert-triangle text-4xl text-red-500 mb-4"></i>
+            <h3 class="text-lg font-medium text-gray-900">Failed to load events</h3>
+            <p class="mt-1 text-sm text-gray-500">Please try again later</p>
+          </div>
+        `;
+      }
+    }
+
+    // Filter events based on current filters
+    function filterEvents() {
+      const searchTerm = document.getElementById("search").value.toLowerCase();
+      const clubFilter = document.getElementById("club-filter").value;
+      const dateFilter = document.getElementById("date-filter").value;
+      const categoryFilter = document.getElementById("category-filter").value;
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const filteredEvents = allEvents.filter((event) => {
+        // Search filter
+        if (
+          searchTerm &&
+          !event.title.toLowerCase().includes(searchTerm) &&
+          !event.description.toLowerCase().includes(searchTerm)
+        ) {
+          return false;
+        }
+
+        // Club filter
+        if (clubFilter && event.club !== clubFilter) {
+          return false;
+        }
+
+        // Category filter
+        if (categoryFilter && event.category !== categoryFilter) {
+          return false;
+        }
+
+        // Date filters
+        const eventDate = new Date(event.startDate);
+        eventDate.setHours(0, 0, 0, 0);
+
+        if (dateFilter === "Today" && eventDate.getTime() !== today.getTime()) {
+          return false;
+        }
+
+        if (dateFilter === "This Week") {
+          const weekStart = new Date(today);
+          weekStart.setDate(today.getDate() - today.getDay()); // Start of week (Sunday)
+
+          const weekEnd = new Date(weekStart);
+          weekEnd.setDate(weekStart.getDate() + 6); // End of week (Saturday)
+
+          if (eventDate < weekStart || eventDate > weekEnd) {
+            return false;
+          }
+        }
+
+        if (dateFilter === "This Month") {
+          if (
+            eventDate.getMonth() !== today.getMonth() ||
+            eventDate.getFullYear() !== today.getFullYear()
+          ) {
+            return false;
+          }
+        }
+
+        if (dateFilter === "Upcoming") {
+          if (eventDate < today) {
+            return false;
+          }
+        }
+
+        if (dateFilter === "Past Events") {
+          if (eventDate >= today) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      renderEvents(filteredEvents);
+
+      // Update calendar if it's visible
+      if (calendar) {
+        calendar.removeAllEvents();
+        filteredEvents.forEach((event) => {
+          calendar.addEvent({
+            id: event.id,
+            title: event.title,
+            start: event.startDate,
+            end: event.endDate || event.startDate,
+            extendedProps: {
+              club: event.club,
+              category: event.category,
+              location: event.location,
+              description: event.description,
+            },
+            backgroundColor: getCategoryColor(event.category),
+            borderColor: getCategoryColor(event.category),
+            textColor: "#fff",
+          });
+        });
+      }
+    }
+
+    // Render events to the DOM with images
+    function renderEvents(events) {
+      const eventsGrid = document.querySelector(".events-grid");
+      eventsGrid.innerHTML = "";
+
+      if (!events.length) {
+        eventsGrid.innerHTML = `
+          <div class="col-span-3 text-center py-12">
+            <i class="ti ti-search-off text-4xl text-gray-400 mb-4"></i>
+            <h3 class="text-lg font-medium text-gray-900">No matching events found</h3>
+            <p class="mt-1 text-sm text-gray-500">Try adjusting your filters</p>
+          </div>
+        `;
+        return;
+      }
+
+      events.forEach((event) => {
+        const eventCard = document.createElement("div");
+        eventCard.className = "event-card bg-white overflow-hidden shadow rounded-lg border border-gray-200 hover:border-yellow-300 flex flex-col h-full";
+
+        // Determine if event has an image
+        const hasImage = event.image && event.image !== "null";
+
+        eventCard.innerHTML = `
+          <div class="event-image-container ${
+            !hasImage ? "event-image-placeholder" : ""
+          }">
+            ${
+              hasImage
+                ? `<img src="${event.image}" alt="${event.title}" class="event-image">`
+                : `<i class="${getEventIcon(event.category)}"></i>`
+            }
+          </div>
+          <div class="p-4 flex-grow">
+            <div class="flex items-start">
+              <div class="flex-shrink-0 bg-yellow-500 rounded-md p-2">
+                <i class="${getEventIcon(event.category)} text-white"></i>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">${
+                  event.title
+                }</h3>
+                <p class="mt-1 text-sm text-gray-500">${event.club}</p>
+              </div>
+            </div>
+            <div class="mt-4">
+              <div class="flex items-center text-sm text-gray-500">
+                <i class="ti ti-calendar mr-1"></i>
+                <span>${formatDate(event.startDate)} • ${formatTime(event.startDate)}</span>
+              </div>
+              <div class="flex items-center text-sm text-gray-500 mt-1">
+                <i class="ti ti-map-pin mr-1"></i>
+                <span>${event.location || "TBA"}</span>
+              </div>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+              <span class="category-badge ${getCategoryBadgeClass(event.category)}">${event.category}</span>
+              ${
+                event.capacity
+                  ? `
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  event.attendees && event.attendees.length >= event.capacity
+                    ? "bg-red-100 text-red-800"
+                    : "bg-yellow-100 text-yellow-800"
+                }">
+                  ${event.attendees ? event.attendees.length : 0}/${
+                    event.capacity
+                  } spots
+                  ${
+                    event.attendees &&
+                    event.attendees.length >= event.capacity
+                      ? " (Full)"
+                      : ""
+                  }
+                </span>
+              `
+                  : ""
+              }
+            </div>
+          </div>
+          <div class="px-4 pb-4">
+            <div class="flex justify-end space-x-2">
+              <button onclick="showEventDetails('${
+                event.id
+              }')" class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                Details
+              </button>
+              <button onclick="registerForEvent('${
+                event.id
+              }', this)" class="school-gradient inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 ${
+              event.capacity &&
+              event.attendees &&
+              event.attendees.length >= event.capacity
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }" ${
+              event.capacity &&
+              event.attendees &&
+              event.attendees.length >= event.capacity
+                ? "disabled"
+                : ""
+            }>
+                ${
+                  event.capacity &&
+                  event.attendees &&
+                  event.attendees.length >= event.capacity
+                    ? "Event Full"
+                    : "Register"
+                }
+              </button>
+            </div>
+          </div>
+        `;
+        eventsGrid.appendChild(eventCard);
+      });
+    }
+
+    // Helper functions
+    function getEventIcon(category) {
+      const icons = {
+        Workshop: "ti ti-device-laptop",
+        Competition: "ti ti-trophy",
+        Meeting: "ti ti-users",
+        Social: "ti ti-mood-smile",
+        Performance: "ti ti-music",
+        Exhibition: "ti ti-photo",
+        Sports: "ti ti-ball-football",
+        Discussion: "ti ti-message-circle",
+      };
+      return icons[category] || "ti ti-calendar-event";
+    }
+
+    function getCategoryBadgeClass(category) {
+      const classes = {
+        Workshop: "bg-indigo-100 text-indigo-800",
+        Competition: "bg-blue-100 text-blue-800",
+        Meeting: "bg-purple-100 text-purple-800",
+        Social: "bg-pink-100 text-pink-800",
+        Performance: "bg-red-100 text-red-800",
+        Exhibition: "bg-green-100 text-green-800",
+        Sports: "bg-emerald-100 text-emerald-800",
+        Discussion: "bg-amber-100 text-amber-800",
+      };
+      return classes[category] || "bg-gray-100 text-gray-800";
+    }
+
+    function formatDate(dateString) {
+      const options = { weekday: "short", month: "short", day: "numeric" };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    }
+
+    function formatTime(dateString) {
+      const options = { hour: "numeric", minute: "2-digit" };
+      return new Date(dateString).toLocaleTimeString(undefined, options);
+    }
+
+    // Event handlers
+    async function registerForEvent(eventId, buttonElement) {
+      const user = JSON.parse(localStorage.getItem("loggedInUser"))?.user;
+      if (!user) {
+        window.location.href = "/login.html";
+        return;
+      }
+
+      // Find the event
+      const event = allEvents.find((e) => e.id === eventId);
+      if (!event) {
+        alert("Event not found!");
+        return;
+      }
+         
+      // Check if already registered
+      if (event.attendees && event.attendees.includes(user.username)) {
+        alert("You're already registered for this event!");
+        return;
+      }
+
+      // Check if event is full
+      if (
+        event.capacity &&
+        event.attendees &&
+        event.attendees.length >= event.capacity
+      ) {
+        alert("This event is already full!");
+        return;
+      }
+
+      try {
+        // Show loading state on button
+        if (buttonElement) {
+          const originalText = buttonElement.innerHTML;
+          buttonElement.innerHTML = `<i class="ti ti-loader spinner mr-1"></i> Registering...`;
+          buttonElement.disabled = true;
+        }
+
+        const response1 = await fetch(`/api/events/${eventId}/register`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username: user.username }),
+        });
+        
+        const response2 = await fetch(`/api/users/${encodeURIComponent(user.username)}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ joinEventId : eventId}),
+        });
+    
+        if (response1.ok && response2.ok) {
+          // Update the local event data
+          const updatedEvent = await response1.json();
+          allEvents = allEvents.map((e) =>
+            e.id === eventId ? updatedEvent : e
+          );
+
+          // Re-render events with updated data
+          filterEvents();
+
+          alert(`Successfully registered for "${event.title}"!`);
+        } else {
+          const error = await response1.json();
+          alert(error.error || "Registration failed");
+        }
+      } catch (err) {
+        alert("Network error - please try again");
+      } finally {
+        if (buttonElement) {
+          buttonElement.innerHTML = `Register`;
+          buttonElement.disabled = false;
+        }
+      }
+    }
+
+    function showEventDetails(eventId) {
+      window.location.href = `event-details.html?id=${eventId}`;
+    }
+  </script>
+</body>
+</html>

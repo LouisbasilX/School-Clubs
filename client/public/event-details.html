@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Details | Hillrange</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap");
+
+    :root {
+      --primary: #fbbf24; /* Amber-400 */
+      --secondary: #78350f; /* Amber-900 */
+      --accent: #f59e0b; /* Amber-500 */
+      --light: #fef3c7; /* Amber-50 */
+      --dark: #451a03; /* Amber-950 */
+      --blue: #1e40af; /* Blue-800 */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #fef9e7 0%, #fef3c7 100%);
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    .school-font {
+      font-weight: 900;
+      letter-spacing: -0.015em;
+    }
+
+    .school-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+    }
+
+    .school-text-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Navigation */
+    nav {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), #fef3c7);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav a {
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    nav a:hover::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(1);
+      transform-origin: center;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Dropdown */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-radius: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, #fef3c7, #fff);
+      box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+    }
+
+    .dropdown-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(69, 26, 3, 0.2);
+      background: linear-gradient(135deg, #fff, #fef3c7);
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 1rem;
+      min-width: 260px;
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 12px 40px rgba(69, 26, 3, 0.2);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      transform: translateY(10px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dropdown-menu.show {
+      display: block;
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      color: var(--secondary);
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-item:hover {
+      background: #fef3c7;
+      color: var(--dark);
+      transform: translateX(5px);
+    }
+
+    /* Event Image */
+    .event-image-container {
+      height: 500px;
+      overflow: hidden;
+      position: relative;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(69, 26, 3, 0.2);
+      background: linear-gradient(135deg, #fef3c7, #fff);
+    }
+
+    .event-image-placeholder {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      position: relative;
+    }
+
+    .event-image-placeholder i {
+      font-size: 6rem;
+      color: var(--secondary);
+      opacity: 0.3;
+      animation: pulseIcon 2s ease-in-out infinite;
+    }
+
+    .event-image-placeholder span {
+      color: var(--secondary);
+      font-size: 1.25rem;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+
+    /* Buttons */
+    .back-button {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
+    }
+
+    .back-button:hover {
+      transform: translateX(-5px) scale(1.02);
+      box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+    }
+
+    .register-button {
+      background: linear-gradient(135deg, var(--primary), var(--blue));
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .register-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: 0.5s;
+    }
+
+    .register-button:hover::before {
+      left: 100%;
+    }
+
+    .register-button:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 8px 20px rgba(251, 191, 36, 0.5);
+    }
+
+    .register-button.disabled {
+      background: linear-gradient(135deg, #9ca3af, #6b7280);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Category Badge */
+    .category-badge {
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #fef3c7, #fff);
+      color: var(--secondary);
+      box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .category-badge:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+    }
+
+    /* Animations */
+    @keyframes pulseIcon {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.2); opacity: 0.5; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .animate-slide-in {
+      animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(69, 26, 3, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.15);
+      overflow: hidden;
+      position: relative;
+      transition: all 0.4s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(69, 26, 3, 0.15);
+    }
+
+    /* Countdown */
+    .countdown-item {
+      background: linear-gradient(135deg, #fef3c7, #fff);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .countdown-number {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--secondary);
+      position: relative;
+      display: inline-block;
+    }
+
+    .countdown-number::before {
+      content: attr(data-number);
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.3s ease;
+    }
+
+    .countdown-number.flip::before {
+      transform: translateY(100%);
+    }
+
+    .countdown-label {
+      font-size: 0.875rem;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Attendees */
+    .attendee-avatar {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .attendee-avatar:hover {
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 6px 15px rgba(69, 26, 3, 0.2);
+    }
+
+    .attendee-tooltip {
+      position: absolute;
+      top: -2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--secondary);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .attendee-avatar:hover .attendee-tooltip {
+      opacity: 1;
+      top: -3rem;
+    }
+
+    /* Progress Ring */
+    .progress-ring {
+      position: relative;
+      width: 100px;
+      height: 100px;
+    }
+
+    .progress-ring circle {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: center;
+    }
+
+    .progress-ring .bg {
+      stroke: #e5e7eb;
+    }
+
+    .progress-ring .progress {
+      stroke: var(--primary);
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 0.5s ease;
+    }
+
+    /* Share Buttons */
+    .share-button {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(135deg, #fef3c7, #fff);
+      padding: 0.75rem;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+    }
+
+    .share-button:hover {
+      transform: scale(1.2);
+      box-shadow: 0 6px 15px rgba(69, 26, 3, 0.2);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+    }
+
+    /* Event Card */
+    .event-card {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(69, 26, 3, 0.15);
+      border-color: var(--accent);
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.75rem;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, var(--primary), var(--accent));
+      border-radius: 2px;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.25rem;
+      top: 0.5rem;
+      width: 1rem;
+      height: 1rem;
+      background: var(--primary);
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .timeline-item:hover::before {
+      transform: scale(1.2);
+      background: var(--accent);
+    }
+
+    /* Decorations */
+    .decoration {
+      position: absolute;
+      z-index: -1;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .decoration-1 {
+      top: 5%;
+      left: 3%;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, var(--primary) 0%, transparent 60%);
+      animation: pulse 10s ease-in-out infinite;
+    }
+
+    .decoration-2 {
+      bottom: 5%;
+      right: 3%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--accent) 0%, transparent 60%);
+      animation: pulse 12s ease-in-out infinite;
+    }
+
+    .decoration-3 {
+      top: 20%;
+      right: 10%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, var(--blue) 0%, transparent 60%);
+      animation: pulse 8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.15; }
+      50% { transform: scale(1.2); opacity: 0.25; }
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+     /* Responsive navigation - Changed from 640px to 1000px */
+    @media (max-width: 1000px) {
+      nav .hidden-md {
+        display: none;
+      }
+      
+      .mobile-dropdown {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+      }
+      
+      .mobile-dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, #fef3c7, #fff);
+        box-shadow: 0 4px 10px rgba(69, 26, 3, 0.1);
+        width: 100%;
+      }
+      
+      .mobile-dropdown-menu {
+        display: none;
+        width: 100%;
+        background: white;
+        border-radius: 0.75rem;
+        margin-top: 0.5rem;
+        box-shadow: 0 4px 15px rgba(69, 26, 3, 0.1);
+      }
+      
+      .mobile-dropdown-menu.show {
+        display: block;
+      }
+      
+      .mobile-dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--secondary);
+        transition: all 0.2s ease;
+      }
+      
+      .mobile-dropdown-item:hover {
+        background: #fef3c7;
+      }
+    }
+
+    @media (min-width: 1001px) {
+      .mobile-only {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 relative overflow-x-hidden">
+  <!-- Decorations -->
+  <div class="decoration decoration-1"></div>
+  <div class="decoration decoration-2"></div>
+  <div class="decoration decoration-3"></div>
+
+  <!-- 3D Background Canvas -->
+  <canvas id="bgCanvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+
+   <!-- Navigation -->
+   <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <i class="ti ti-school text-3xl text-yellow-600 mr-3 animate-pulse"></i>
+            <span class="text-xl font-bold school-text-gradient school-font">Hillrange Event</span>
+          </div>
+          <div class="hidden-md sm:ml-8 sm:flex sm:space-x-10">
+            <a href="dashboard.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in">
+              <i class="ti ti-layout-dashboard mr-2 text-yellow-600"></i> Dashboard
+            </a>
+            <a href="club-events.html" class="border-yellow-500 text-gray-900 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.1s;">
+              <i class="ti ti-calendar-event mr-2 text-yellow-600"></i> Event
+            </a>
+            <a href="view-clubs.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.2s;">
+              Clubs
+            </a>
+            <a href="home.html" class="border-transparent text-gray-600 hover:text-gray-800 inline-flex items-center px-2 pt-1 border-b-2 text-base font-medium animate-slide-in" style="animation-delay: 0.3s;">
+              Home
+            </a>
+          </div>
+        </div>
+        <div class="hidden-md sm:ml-6 sm:flex sm:items-center space-x-4">
+          <button class="p-2 rounded-full text-gray-400 hover:text-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-300 animate-pulse">
+            <i class="ti ti-bell text-2xl"></i>
+          </button>
+          <div class="dropdown">
+            <button class="dropdown-toggle" id="dropdownToggle">
+              <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden">
+                <img id="navProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+                <i class="ti ti-user text-2xl text-yellow-600"></i>
+                <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50"></div>
+              </div>
+              <span class="ml-3 font-medium text-gray-700 school-font" id="username">Loading...</span>
+              <i class="ti ti-chevron-down text-yellow-600 ml-2"></i>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <div class="px-4 py-3 text-sm text-gray-500 border-b border-yellow-50">
+                Logged in as <span id="dropdownUsername" class="font-medium text-gray-700"></span>
+              </div>
+              <a href="profile.html" class="dropdown-item">
+                <i class="ti ti-user mr-2"></i> Profile
+              </a>
+              <a href="settings.html" class="dropdown-item">
+                <i class="ti ti-settings mr-2"></i> Settings
+              </a>
+              <button onclick="logout()" class="dropdown-item w-full text-left">
+                <i class="ti ti-logout mr-2"></i> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Mobile menu button -->
+        <div class="mobile-only flex items-center">
+          <button type="button" id="mobileMenuButton" class="p-2 rounded-md text-gray-700 hover:text-yellow-600 focus:outline-none">
+            <i class="ti ti-menu-2 text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div class="mobile-only hidden absolute top-20 left-0 right-0 bg-white shadow-lg z-50" id="mobileMenu">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <a href="dashboard.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
+          <i class="ti ti-layout-dashboard mr-2"></i> Dashboard
+        </a>
+        <a href="club-events.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 bg-yellow-50">
+          <i class="ti ti-calendar-event mr-2"></i> Events
+        </a>
+        <a href="view-clubs.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
+          Clubs
+        </a>
+        <a href="home.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600">
+           Home
+        </a>
+        
+        <!-- Mobile Profile Dropdown -->
+        <div class="mobile-dropdown">
+          <button class="mobile-dropdown-toggle" id="mobileDropdownToggle">
+            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center relative overflow-hidden mr-3">
+              <img id="mobileNavProfilePicture" class="w-full h-full object-cover hidden" alt="Profile">
+              <i class="ti ti-user text-xl text-yellow-600"></i>
+            </div>
+            <span class="font-medium text-gray-700 school-font" id="mobileUsername">Loading...</span>
+            <i class="ti ti-chevron-down text-yellow-600 ml-auto"></i>
+          </button>
+          <div class="mobile-dropdown-menu" id="mobileDropdownMenu">
+            <div class="px-4 py-2 text-sm text-gray-500 border-b border-yellow-50">
+              Logged in as <span id="mobileDropdownUsername" class="font-medium text-gray-700"></span>
+            </div>
+            <a href="profile.html" class="mobile-dropdown-item">
+              <i class="ti ti-user mr-2"></i> Profile
+            </a>
+            <a href="settings.html" class="mobile-dropdown-item">
+              <i class="ti ti-settings mr-2"></i> Settings
+            </a>
+            <button onclick="logout()" class="mobile-dropdown-item w-full text-left">
+              <i class="ti ti-logout mr-2"></i> Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Back Button -->
+    <button onclick="window.history.back()" class="back-button mb-8 inline-flex items-center text-white animate-fade-in">
+      <i class="ti ti-arrow-left mr-2"></i> Back to Events
+    </button>
+
+    <!-- Event Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
+      <div>
+        <h1 class="text-4xl md:text-5xl font-bold leading-tight school-text-gradient school-font mb-4 animate-fade-in" id="event-title">
+          Loading Event...
+        </h1>
+        <div class="flex items-center space-x-6 animate-slide-in">
+          <span class="category-badge" id="event-category">Loading...</span>
+          <span class="text-base text-gray-600 school-font" id="event-club">
+            <i class="ti ti-users-group mr-1"></i> Loading...
+          </span>
+        </div>
+      </div>
+      <div class="mt-6 md:mt-0 flex items-center space-x-4">
+        <button id="register-button" class="register-button inline-flex items-center px-6 py-3 text-lg font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 animate-fade-in">
+          <i class="ti ti-calendar-plus mr-2"></i> Register Now
+        </button>
+        <div class="flex space-x-3">
+          <button class="share-button share-facebook" title="Share on Facebook">
+            <i class="ti ti-brand-facebook"></i>
+          </button>
+          <button class="share-button share-twitter" title="Share on Twitter">
+            <i class="ti ti-brand-twitter"></i>
+          </button>
+          <button class="share-button share-link" title="Copy Link">
+            <i class="ti ti-link"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event Spotlight -->
+    <div class="event-image-container mb-12 animate-fade-in" id="event-image-container">
+      <canvas id="eventCanvas" class="w-full h-full"></canvas>
+      <div class="event-image-placeholder h-full">
+        <i class="ti ti-calendar-event"></i>
+        <span>No image available</span>
+      </div>
+    </div>
+
+    <!-- Event Details Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-16">
+      <!-- Main Content -->
+      <div class="lg:col-span-2">
+        <!-- Description -->
+        <div class="card p-8 mb-10 animate-slide-in">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-notes mr-2 text-yellow-600"></i> Event Description
+          </h2>
+          <div class="prose max-w-none text-gray-700 leading-relaxed" id="event-description">
+            Loading event description...
+          </div>
+        </div>
+
+        <!-- Schedule -->
+        <div class="card p-8 mb-10 animate-slide-in" style="animation-delay: 0.1s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-clock mr-2 text-yellow-600"></i> Event Timeline
+          </h2>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 bg-yellow-100 rounded-full p-3 mr-4">
+                  <i class="ti ti-calendar text-yellow-600"></i>
+                </div>
+                <div>
+                  <h3 class="font-medium text-gray-900 school-font">Date & Time</h3>
+                  <p class="text-gray-600" id="event-datetime">Loading date and time...</p>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 bg-yellow-100 rounded-full p-3 mr-4">
+                  <i class="ti ti-map-pin text-yellow-600"></i>
+                </div>
+                <div>
+                  <h3 class="font-medium text-gray-900 school-font">Location</h3>
+                  <p class="text-gray-600" id="event-location">Loading location...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Countdown -->
+        <div id="countdown-container" class="hidden card p-8 mb-10 animate-slide-in" style="animation-delay: 0.2s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-hourglass mr-2 text-yellow-600"></i> Countdown to Event
+          </h2>
+          <div class="flex justify-center space-x-6" id="countdown">
+            <div class="countdown-item flex-1 text-center">
+              <div class="countdown-number" id="countdown-days" data-number="00">00</div>
+              <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-item flex-1 text-center">
+              <div class="countdown-number" id="countdown-hours" data-number="00">00</div>
+              <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-item flex-1 text-center">
+              <div class="countdown-number" id="countdown-minutes" data-number="00">00</div>
+              <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-item flex-1 text-center">
+              <div class="countdown-number" id="countdown-seconds" data-number="00">00</div>
+              <div class="countdown-label">Seconds</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="lg:col-span-1">
+        <!-- Event Stats -->
+        <div class="card p-8 mb-10 animate-slide-in" style="animation-delay: 0.3s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-chart-bar mr-2 text-yellow-600"></i> Event Stats
+          </h2>
+          <div class="space-y-6">
+            <div>
+              <h3 class="text-sm font-medium text-gray-500">Capacity</h3>
+              <p class="text-lg font-semibold text-gray-900 school-font" id="event-capacity">
+                Loading...
+              </p>
+            </div>
+            <div>
+              <h3 class="text-sm font-medium text-gray-500">Registered</h3>
+              <div class="flex items-center justify-center">
+                <svg class="progress-ring" viewBox="0 0 100 100">
+                  <circle class="bg" cx="50" cy="50" r="45"></circle>
+                  <circle class="progress" cx="50" cy="50" r="45" id="registration-progress"></circle>
+                </svg>
+                <div class="absolute text-lg font-semibold text-gray-900" id="event-registered">
+                  Loading...
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-sm font-medium text-gray-500">Organizer</h3>
+              <p class="text-lg font-semibold text-gray-900 school-font" id="event-organizer">
+                Loading...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attendees -->
+        <div class="card p-8 animate-slide-in" style="animation-delay: 0.4s;">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-users mr-2 text-yellow-600"></i> Attendees
+          </h2>
+          <div id="attendees-list" class="flex flex-wrap gap-4 justify-center">
+            <div class="animate-pulse text-gray-400">Loading attendees...</div>
+          </div>
+          <div class="flex justify-between mt-6">
+            <button id="attendees-prev" class="share-button disabled">
+              <i class="ti ti-chevron-left"></i>
+            </button>
+            <button id="attendees-next" class="share-button">
+              <i class="ti ti-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Similar Events -->
+    <div class="mb-16">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center school-font animate-fade-in">
+        <i class="ti ti-calendar mr-2 text-yellow-600"></i> Similar Events
+      </h2>
+      <div class="relative">
+        <div id="similar-events" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 overflow-hidden"></div>
+        <button id="similar-prev" class="absolute top-1/2 -left-4 transform -translate-y-1/2 share-button">
+          <i class="ti ti-chevron-left"></i>
+        </button>
+        <button id="similar-next" class="absolute top-1/2 -right-4 transform -translate-y-1/2 share-button">
+          <i class="ti ti-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-yellow-100 mt-16">
+    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center animate-fade-in">
+          <i class="ti ti-school text-3xl text-yellow-600 mr-3 animate-pulse"></i>
+          <span class="text-xl font-bold school-text-gradient school-font">Hillrange Clubs</span>
+        </div>
+        <div class="mt-6 md:mt-0">
+          <p class="text-center text-base text-gray-500">© 2023 Hillrange School. All rights reserved.</p>
+        </div>
+        <div class="mt-6 md:mt-0 flex space-x-8">
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-facebook text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-twitter text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-yellow-600 transition-all duration-300 transform hover:scale-110">
+            <i class="ti ti-brand-instagram text-xl"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Global variables
+    let currentEvent = null;
+    let countdownInterval = null;
+    let attendeesPage = 0;
+    const attendeesPerPage = 6;
+    let similarEventsPage = 0;
+    let similarEventsData = [];
+    let scene, camera, renderer, particles;
+
+    // Initialize 3D Background
+    function initBackground() {
+      const canvas = document.getElementById('bgCanvas');
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const geometry = new THREE.BufferGeometry();
+      const vertices = [];
+      const colors = [];
+      const sizes = [];
+
+      const color = new THREE.Color();
+      const palette = [0xfbbf24, 0xf59e0b, 0x78350f, 0x1e40af];
+
+      for (let i = 0; i < 500; i++) {
+        vertices.push(
+          Math.random() * 2000 - 1000,
+          Math.random() * 2000 - 1000,
+          Math.random() * 2000 - 1000
+        );
+        color.setHex(palette[Math.floor(Math.random() * palette.length)]);
+        colors.push(color.r, color.g, color.b);
+        sizes.push(Math.random() * 5 + 2);
+      }
+
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+      geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+
+      const material = new THREE.PointsMaterial({
+        size: 5,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.3,
+      });
+
+      particles = new THREE.Points(geometry, material);
+      scene.add(particles);
+      camera.position.z = 1000;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        particles.rotation.y += 0.001;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+
+    // Initialize Event Canvas
+    let eventScene, eventCamera, eventRenderer, eventTexture;
+    function initEventCanvas(imageSrc) {
+      const canvas = document.getElementById('eventCanvas');
+      eventScene = new THREE.Scene();
+      eventCamera = new THREE.PerspectiveCamera(75, canvas.offsetWidth / canvas.offsetHeight, 0.1, 1000);
+      eventRenderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+      eventRenderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
+
+      const geometry = new THREE.PlaneGeometry(5, 3);
+      const material = new THREE.MeshBasicMaterial({ map: null, transparent: true });
+      const plane = new THREE.Mesh(geometry, material);
+      eventScene.add(plane);
+      eventCamera.position.z = 5;
+
+      if (imageSrc) {
+        const loader = new THREE.TextureLoader();
+        loader.load(imageSrc, (texture) => {
+          eventTexture = texture;
+          material.map = texture;
+          material.needsUpdate = true;
+        });
+      }
+
+      function animateEvent() {
+        requestAnimationFrame(animateEvent);
+        plane.rotation.y += 0.005;
+        eventRenderer.render(eventScene, eventCamera);
+      }
+      animateEvent();
+
+      window.addEventListener('resize', () => {
+        eventRenderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
+        eventCamera.aspect = canvas.offsetWidth / canvas.offsetHeight;
+        eventCamera.updateProjectionMatrix();
+      });
+    }
+
+    // Dropdown functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.getElementById('dropdownToggle');
+      const menu = document.getElementById('dropdownMenu');
+
+      toggle.addEventListener('click', () => {
+        menu.classList.toggle('show');
+        gsap.to(menu, {
+          opacity: menu.classList.contains('show') ? 1 : 0,
+          y: menu.classList.contains('show') ? 0 : 10,
+          duration: 0.3,
+          ease: 'power2.out',
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.remove('show');
+          gsap.to(menu, { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out' });
+        }
+      });
+
+      // Initialize GSAP animations
+      gsap.from('nav', { y: -100, opacity: 0, duration: 1, ease: 'power3.out' });
+      gsap.from('.back-button', { x: -50, opacity: 0, duration: 0.8, delay: 0.2, ease: 'power3.out' });
+      gsap.from('#event-title', { scale: 0.8, opacity: 0, duration: 0.8, delay: 0.4, ease: 'power3.out' });
+      gsap.from('.category-badge, #event-club', { x: 20, opacity: 0, stagger: 0.2, duration: 0.6, delay: 0.6, ease: 'power3.out' });
+      gsap.from('#register-button, .share-button', { y: 20, opacity: 0, stagger: 0.2, duration: 0.6, delay: 0.8, ease: 'power3.out' });
+
+      // Scroll animations
+      gsap.utils.toArray('.card').forEach((card, i) => {
+        gsap.from(card, {
+          y: 50,
+          opacity: 0,
+          duration: 0.8,
+          delay: i * 0.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 80%',
+          },
+        });
+      });
+
+      // Initialize 3D background
+      initBackground();
+    });
+
+    // Load event data
+    async function loadEventData(eventId) {
+      try {
+        document.getElementById('event-title').textContent = 'Loading...';
+        const user = JSON.parse(localStorage.getItem('loggedInUser'))?.user;
+        if (!user) {
+          window.location.href = '/login.html';
+          return;
+        }
+
+        document.getElementById('username').textContent = user.username;
+        document.getElementById('dropdownUsername').textContent = user.username;
+          document.getElementById('mobileUsername').textContent = user.username;
+        document.getElementById('mobileDropdownUsername').textContent = user.username;
+
+        const response = await fetch(`/api/events/${eventId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        currentEvent = await response.json();
+        populateEventData();
+        startCountdown();
+        loadSimilarEvents();
+        initEventCanvas(currentEvent.image && currentEvent.image !== 'null' ? currentEvent.image : null);
+      } catch (err) {
+        console.error('Failed to load event:', err);
+        showError('Failed to load event details. Please try again later.');
+      }
+    }
+
+    // Populate event data
+    function populateEventData() {
+      if (!currentEvent) return;
+
+      document.getElementById('event-title').textContent = currentEvent.title;
+      document.getElementById('event-category').textContent = currentEvent.category;
+      document.getElementById('event-club').innerHTML = `<i class="ti ti-users-group mr-1"></i> ${currentEvent.club}`;
+      document.getElementById('event-description').textContent = currentEvent.description || 'No description provided';
+
+      const startDate = new Date(currentEvent.startDate);
+      const endDate = currentEvent.endDate ? new Date(currentEvent.endDate) : null;
+      let datetimeText = startDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      });
+      datetimeText += ` at ${startDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
+      if (endDate) {
+        datetimeText += ` to ${endDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
+      }
+      document.getElementById('event-datetime').textContent = datetimeText;
+      document.getElementById('event-location').textContent = currentEvent.location || 'Location not specified';
+
+      const attendeesCount = currentEvent.attendees ? currentEvent.attendees.length : 0;
+      document.getElementById('event-registered').textContent = `${attendeesCount} attending`;
+      if (currentEvent.capacity && currentEvent.capacity !== 'unlimited') {
+        document.getElementById('event-capacity').textContent = `${currentEvent.capacity} spots total`;
+        const percentage = Math.min(100, Math.round((attendeesCount / currentEvent.capacity) * 283));
+        document.getElementById('registration-progress').style.strokeDashoffset = 283 - percentage;
+      } else {
+        document.getElementById('event-capacity').textContent = 'Unlimited capacity';
+        document.getElementById('registration-progress').style.strokeDashoffset = 0;
+      }
+      document.getElementById('event-organizer').textContent = currentEvent.createdBy || 'Club Organizer';
+
+      const user = JSON.parse(localStorage.getItem('loggedInUser'))?.user;
+      const registerButton = document.getElementById('register-button');
+      if (currentEvent.attendees && currentEvent.attendees.includes(user.username)) {
+        registerButton.innerHTML = '<i class="ti ti-check mr-2"></i> Already Registered';
+        registerButton.classList.add('disabled', 'bg-green-600', 'hover:bg-green-700');
+        registerButton.disabled = true;
+      } else if (currentEvent.capacity && currentEvent.capacity !== 'unlimited' && attendeesCount >= currentEvent.capacity) {
+        registerButton.innerHTML = '<i class="ti ti-x mr-2"></i> Event Full';
+        registerButton.classList.add('disabled', 'bg-red-600', 'hover:bg-red-700');
+        registerButton.disabled = true;
+      }
+
+      loadAttendees();
+    }
+
+    // Load attendees
+    function loadAttendees() {
+      const attendeesList = document.getElementById('attendees-list');
+      attendeesList.innerHTML = '';
+      if (!currentEvent.attendees || currentEvent.attendees.length === 0) {
+        attendeesList.innerHTML = '<p class="text-gray-500 school-font">No attendees yet</p>';
+        return;
+      }
+
+      const start = attendeesPage * attendeesPerPage;
+      const end = start + attendeesPerPage;
+      const paginatedAttendees = currentEvent.attendees.slice(start, end);
+
+      paginatedAttendees.forEach((attendee, i) => {
+        const attendeeElement = document.createElement('div');
+        attendeeElement.className = 'attendee-avatar flex flex-col items-center';
+        attendeeElement.style.animationDelay = `${i * 0.1}s`;
+        attendeeElement.innerHTML = `
+          <div class="w-14 h-14 rounded-full bg-yellow-100 flex items-center justify-center mb-2 relative overflow-hidden">
+            <i class="ti ti-user text-yellow-600 text-2xl"></i>
+            <div class="absolute inset-0 bg-gradient-to-br from-yellow-50 to-transparent opacity-50"></div>
+            <span class="attendee-tooltip">${attendee}</span>
+          </div>
+          <span class="text-sm text-gray-600 truncate w-20 text-center">${attendee}</span>
+        `;
+        attendeesList.appendChild(attendeeElement);
+      });
+
+      document.getElementById('attendees-prev').classList.toggle('disabled', attendeesPage === 0);
+      document.getElementById('attendees-next').classList.toggle('disabled', end >= currentEvent.attendees.length);
+    }
+
+    // Attendees navigation
+    document.getElementById('attendees-prev').addEventListener('click', () => {
+      if (attendeesPage > 0) {
+        attendeesPage--;
+        loadAttendees();
+        gsap.from('#attendees-list .attendee-avatar', { x: -20, opacity: 0, stagger: 0.1, duration: 0.5, ease: 'power3.out' });
+      }
+    });
+
+    document.getElementById('attendees-next').addEventListener('click', () => {
+      if ((attendeesPage + 1) * attendeesPerPage < currentEvent.attendees.length) {
+        attendeesPage++;
+        loadAttendees();
+        gsap.from('#attendees-list .attendee-avatar', { x: 20, opacity: 0, stagger: 0.1, duration: 0.5, ease: 'power3.out' });
+      }
+    });
+
+    // Start countdown
+    function startCountdown() {
+      const eventDate = new Date(currentEvent.startDate);
+      const now = new Date();
+      if (eventDate > now) {
+        document.getElementById('countdown-container').classList.remove('hidden');
+        updateCountdown();
+        countdownInterval = setInterval(updateCountdown, 1000);
+      }
+    }
+
+    // Update countdown
+    function updateCountdown() {
+      const eventDate = new Date(currentEvent.startDate);
+      const now = new Date();
+      const diff = eventDate - now;
+
+      if (diff <= 0) {
+        clearInterval(countdownInterval);
+        document.getElementById('countdown-container').innerHTML = `
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center school-font">
+            <i class="ti ti-check mr-2 text-green-600"></i> This event has started
+          </h2>
+        `;
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      updateCountdownNumber('countdown-days', days);
+      updateCountdownNumber('countdown-hours', hours);
+      updateCountdownNumber('countdown-minutes', minutes);
+      updateCountdownNumber('countdown-seconds', seconds);
+    }
+
+    function updateCountdownNumber(id, value) {
+      const element = document.getElementById(id);
+      const current = parseInt(element.dataset.number);
+      if (current !== value) {
+        element.dataset.number = value.toString().padStart(2, '0');
+        element.classList.add('flip');
+        setTimeout(() => {
+          element.textContent = value.toString().padStart(2, '0');
+          element.classList.remove('flip');
+        }, 300);
+      }
+    }
+// Mobile menu toggle
+      const mobileMenuButton = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenuButton.addEventListener('click', () => {
+        const isExpanded = mobileMenu.classList.toggle('hidden');
+        mobileMenuButton.innerHTML = isExpanded 
+          ? '<i class="ti ti-menu-2 text-2xl"></i>' 
+          : '<i class="ti ti-x text-2xl"></i>';
+      });
+
+      // Mobile dropdown toggle
+      const mobileDropdownToggle = document.getElementById('mobileDropdownToggle');
+      const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
+      if (mobileDropdownToggle) {
+        mobileDropdownToggle.addEventListener('click', () => {
+          mobileDropdownMenu.classList.toggle('show');
+        });
+      }
+    // Load similar events
+    async function loadSimilarEvents() {
+      try {
+        const response = await fetch(`/api/events/club/${encodeURIComponent(currentEvent.club)}`);
+        const clubEvents = await response.json();
+        const now = new Date();
+        similarEventsData = clubEvents.filter(event => event.id !== currentEvent.id && new Date(event.startDate) > now);
+        similarEventsPage = 0;
+        renderSimilarEvents();
+      } catch (err) {
+        console.error('Failed to load similar events:', err);
+        document.getElementById('similar-events').innerHTML = '<p class="text-gray-500 school-font">Failed to load similar events</p>';
+      }
+    }
+
+    function renderSimilarEvents() {
+      const container = document.getElementById('similar-events');
+      container.innerHTML = '';
+      if (similarEventsData.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 school-font">No similar events found</p>';
+        return;
+      }
+
+      const start = similarEventsPage * 3;
+      const end = start + 3;
+      const paginatedEvents = similarEventsData.slice(start, end);
+
+      paginatedEvents.forEach((event, i) => {
+        const eventElement = document.createElement('div');
+        eventElement.className = 'event-card bg-white overflow-hidden shadow rounded-lg border border-gray-200 animate-slide-in';
+        eventElement.style.animationDelay = `${i * 0.2}s`;
+        eventElement.innerHTML = `
+          <div class="event-image-container ${!event.image || event.image === 'null' ? 'event-image-placeholder' : ''} h-48">
+            ${event.image && event.image !== 'null'
+              ? `<img src="${event.image}" alt="${event.title}" class="event-image w-full h-full object-cover">`
+              : `<i class="${getEventIcon(event.category)} mb-4"></i><span>No image available</span>`}
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-2 school-font">${event.title}</h3>
+            <div class="flex items-center text-sm text-gray-500 mb-3">
+              <i class="ti ti-calendar mr-1"></i>
+              <span>${new Date(event.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+            </div>
+            <button onclick="window.location.href='event-details.html?id=${event.id}'" class="w-full school-gradient inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+              View Details
+            </button>
+          </div>
+        `;
+        container.appendChild(eventElement);
+      });
+
+      document.getElementById('similar-prev').classList.toggle('disabled', similarEventsPage === 0);
+      document.getElementById('similar-next').classList.toggle('disabled', end >= similarEventsData.length);
+    }
+
+    // Similar events navigation
+    document.getElementById('similar-prev').addEventListener('click', () => {
+      if (similarEventsPage > 0) {
+        similarEventsPage--;
+        renderSimilarEvents();
+        gsap.from('#similar-events .event-card', { x: -20, opacity: 0, stagger: 0.2, duration: 0.5, ease: 'power3.out' });
+      }
+    });
+
+    document.getElementById('similar-next').addEventListener('click', () => {
+      if ((similarEventsPage + 1) * 3 < similarEventsData.length) {
+        similarEventsPage++;
+        renderSimilarEvents();
+        gsap.from('#similar-events .event-card', { x: 20, opacity: 0, stagger: 0.2, duration: 0.5, ease: 'power3.out' });
+      }
+    });
+
+    // Register for event
+    document.getElementById('register-button').addEventListener('click', async function () {
+      if (!currentEvent) return;
+      const button = this;
+      const originalText = button.innerHTML;
+      try {
+        button.innerHTML = '<i class="ti ti-loader spinner mr-2"></i> Registering...';
+        button.disabled = true;
+        const user = JSON.parse(localStorage.getItem('loggedInUser'))?.user;
+        const response = await fetch(`/api/events/${currentEvent.id}/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: user.username }),
+        });
+        const response2 = await fetch(`/api/users/${encodeURIComponent(user.username)}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ eventId: currentEvent.id}),
+          });
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+        if (!response2.ok) {
+          throw new Error(await response2.text());
+        }
+        currentEvent = await response.json();
+        populateEventData();
+        button.innerHTML = '<i class="ti ti-check mr-2"></i> Registered!';
+        button.classList.add('disabled', 'bg-green-600', 'hover:bg-green-700');
+      } catch (err) {
+        console.error('Registration failed:', err);
+        button.innerHTML = originalText;
+        button.disabled = false;
+        alert('Registration failed. Please try again.');
+      }
+    });
+
+    // Share functionality
+    document.querySelectorAll('.share-button').forEach(button => {
+      button.addEventListener('click', () => {
+        const url = window.location.href;
+        if (button.classList.contains('share-facebook')) {
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+        } else if (button.classList.contains('share-twitter')) {
+          window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(currentEvent.title)}`, '_blank');
+        } else if (button.classList.contains('share-link')) {
+          navigator.clipboard.write(url).then(() => {
+            button.innerHTML = '<i class="ti ti-check"></i>';
+            setTimeout(() => {
+              button.innerHTML = '<i class="ti ti-link"></i>';
+            }, 2000);
+          });
+        }
+        gsap.to(button, { scale: 1.3, duration: 0.2, ease: 'power2.out', yoyo: true, repeat: 1 });
+      });
+    });
+
+    // Helper function to get event icon
+    function getEventIcon(category) {
+      const icons = {
+        Workshop: 'ti ti-device-laptop',
+        Competition: 'ti ti-trophy',
+        Meeting: 'ti ti-users',
+        Social: 'ti ti-mood-smile',
+        Performance: 'ti ti-music',
+        Exhibition: 'ti ti-photo',
+        Sports: 'ti ti-ball-football',
+        Discussion: 'ti ti-message-circle',
+      };
+      return icons[category] || 'ti ti-calendar-event';
+    }
+
+    // Show error message
+    function showError(message) {
+      const mainContent = document.querySelector('.max-w-7xl.mx-auto');
+      mainContent.innerHTML = `
+        <div class="text-center py-20 animate-fade-in">
+          <i class="ti ti-alert-triangle text-6xl text-red-500 mb-6"></i>
+          <h2 class="text-3xl font-bold text-gray-900 mb-4 school-font">Error Loading Event</h2>
+          <p class="text-gray-600 mb-8">${message}</p>
+          <button onclick="window.history.back()" class="school-gradient inline-flex items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-lg font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+            <i class="ti ti-arrow-left mr-2"></i> Back to Events
+          </button>
+        </div>
+      `;
+    }
+
+    // Logout function
+    function logout() {
+      localStorage.removeItem('loggedInUser');
+      window.location.href = 'login.html';
+    }
+
+    // Load event on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const eventId = urlParams.get('id');
+      if (!eventId) {
+        showError('No event ID provided');
+        return;
+      }
+      loadEventData(eventId);
+    });
+
+    // Clean up
+    window.addEventListener('beforeunload', () => {
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+      }
+    });
+  </script>
+</body>
+</html>

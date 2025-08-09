@@ -1,0 +1,129 @@
+ <div
+          class="bg-white overflow-hidden shadow rounded-lg border-2 border-yellow-400"
+        >
+          <div class="p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+                <i class="ti ti-star text-white text-xl"></i>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                  Featured: Annual Coding Hackathon
+                </h3>
+                <p class="mt-1 text-sm text-gray-500">
+                  Join us for 24 hours of coding, snacks, and prizes!
+                </p>
+              </div>
+            </div>
+            <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-3">
+              <div class="flex items-start">
+                <div class="flex-shrink-0">
+                  <i class="ti ti-calendar text-yellow-600"></i>
+                </div>
+                <div class="ml-3">
+                  <p class="text-sm font-medium text-gray-500">Date & Time</p>
+                  <p class="text-sm text-gray-900">
+                    Sat, Nov 18, 2023 • 9:00 AM - 5:00 PM
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div class="flex-shrink-0">
+                  <i class="ti ti-map-pin text-yellow-600"></i>
+                </div>
+                <div class="ml-3">
+                  <p class="text-sm font-medium text-gray-500">Location</p>
+                  <p class="text-sm text-gray-900">
+                    Computer Lab 3 & Auditorium
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div class="flex-shrink-0">
+                  <i class="ti ti-users text-yellow-600"></i>
+                </div>
+                <div class="ml-3">
+                  <p class="text-sm font-medium text-gray-500">Attendees</p>
+                  <p class="text-sm text-gray-900">
+                    45 registered • 10 spots left
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6 flex justify-between items-center">
+              <div>
+                <span class="category-badge bg-yellow-100 text-yellow-800"
+                  >Competition</span
+                >
+                <span class="category-badge bg-green-100 text-green-800"
+                  >Coding Club</span
+                >
+              </div>
+              <div class="flex space-x-3">
+                <button
+                  class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+                >
+                  <i class="ti ti-info-circle mr-1"></i> Details
+                </button>
+                <button
+                  class="school-gradient inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+                >
+                  <i class="ti ti-user-plus mr-1"></i> Register
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+ <!-- Event Card -->
+ <div
+            class="event-card bg-white overflow-hidden shadow rounded-lg border border-gray-200 hover:border-yellow-300"
+          >
+            <div class="px-4 py-5 sm:p-6">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+                  <i class="ti ti-microphone text-white"></i>
+                </div>
+                <div class="ml-4">
+                  <h3 class="text-lg leading-6 font-medium text-gray-900">
+                    Debate Tournament
+                  </h3>
+                  <p class="mt-1 text-sm text-gray-500">Quarterfinal rounds</p>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="flex items-center text-sm text-gray-500">
+                  <i class="ti ti-calendar mr-1"></i>
+                  <span>Wed, Nov 15 • 3:30 PM</span>
+                </div>
+                <div class="flex items-center text-sm text-gray-500 mt-1">
+                  <i class="ti ti-map-pin mr-1"></i>
+                  <span>Room 205</span>
+                </div>
+              </div>
+              <div class="mt-4 flex justify-between items-center">
+                <span class="category-badge bg-blue-100 text-blue-800"
+                  >Competition</span
+                >
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"
+                >
+                  12 attending
+                </span>
+              </div>
+              <div class="mt-4 flex justify-end space-x-2">
+                <button
+                  class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+                >
+                  Details
+                </button>
+                <button
+                  class="school-gradient inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+                >
+                  Register
+                </button>
+              </div>
+            </div>
+          </div>

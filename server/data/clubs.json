@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "name": "Coding",
+    "category": "academic",
+    "description": "We are coders\r\n",
+    "capacity": "10",
+    "image": "/uploads/event-1753731382789-370141179.jpg",
+    "createdAt": "2025-07-28T19:36:22.866Z",
+    "createdBy": "Louis_X",
+    "members": [
+      "kk",
+      "Louis_X"
+    ]
+  }
+]
