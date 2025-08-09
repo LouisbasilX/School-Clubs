@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create User | Hillrange Clubs</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
@@ -149,8 +150,9 @@
         color: var(--dark);
         transform: translateX(5px);
       }
-      /* Responsive navigation - Changed from 640px to 1000px */
-      @media (max-width: 1000px) {
+
+      /* Responsive navigation */
+      @media (max-width: 768px) {
         nav .hidden-md {
           display: none;
         }
@@ -195,11 +197,54 @@
         .mobile-dropdown-item:hover {
           background: #fef3c7;
         }
+
+        /* Adjust form for mobile */
+        main {
+          padding: 1rem;
+          margin-top: 1rem;
+        }
+
+        .bg-gradient-to-r {
+          padding: 1.5rem;
+        }
+
+        #createUserForm {
+          padding: 1.5rem;
+        }
+
+        input,
+        select {
+          padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+          font-size: 0.9rem;
+        }
+
+        button[type="submit"] {
+          padding: 0.75rem;
+        }
       }
 
-      @media (min-width: 1001px) {
+      @media (min-width: 769px) {
         .mobile-only {
           display: none !important;
+        }
+      }
+
+      /* Small mobile devices */
+      @media (max-width: 480px) {
+        .flex-shrink-0 span {
+          font-size: 1.25rem;
+        }
+
+        .bg-gradient-to-r h1 {
+          font-size: 1.5rem;
+        }
+
+        .bg-gradient-to-r p {
+          font-size: 0.875rem;
+        }
+
+        label {
+          font-size: 1rem !important;
         }
       }
     </style>
@@ -395,13 +440,13 @@
       </div>
     </nav>
 
-    <main class="max-w-2xl mx-auto mt-8 p-4">
+    <main class="max-w-2xl mx-auto mt-8 p-4 sm:p-6">
       <div
         class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100"
       >
         <!-- Form Header with School Colors -->
         <div
-          class="bg-gradient-to-r from-hillrange-yellow to-hillrange-blue p-6"
+          class="bg-gradient-to-r from-hillrange-yellow to-hillrange-blue p-6 sm:p-8"
         >
           <div class="flex items-center">
             <i class="ti ti-user-plus text-2xl text-white mr-3"></i>
@@ -413,7 +458,7 @@
         </div>
 
         <!-- Form Content -->
-        <form id="createUserForm" class="p-8 space-y-6">
+        <form id="createUserForm" class="p-6 sm:p-8 space-y-6">
           <div class="space-y-1">
             <label class="block text-lg font-semibold text-hillrange-brown"
               >Username</label
@@ -535,6 +580,22 @@
         passwordField.setAttribute("type", type);
         togglePassword.classList.toggle("ti-eye");
         togglePassword.classList.toggle("ti-eye-off");
+      });
+
+      // Dropdown toggle
+      const dropdownToggle = document.getElementById("dropdownToggle");
+      const dropdownMenu = document.getElementById("dropdownMenu");
+
+      dropdownToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle("show");
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!dropdownToggle.contains(e.target)) {
+          dropdownMenu.classList.remove("show");
+        }
       });
 
       // Form submission
