@@ -9,6 +9,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap");
 
@@ -55,11 +56,6 @@
         height: 30vh;
         min-height: 250px;
         background: linear-gradient(135deg, var(--primary), var(--blue));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 1rem;
       }
 
       /* Login Container */
@@ -71,7 +67,6 @@
         width: 90%;
         max-width: 500px;
         margin: -3rem auto 2rem;
-        padding: 2rem;
       }
 
       /* Form Elements */
@@ -81,14 +76,10 @@
         background: var(--input-bg);
         color: #f8fafc;
         width: 100%;
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
         transition: all 0.2s ease;
-        margin-bottom: 1rem;
       }
 
       .form-input:focus {
-        outline: none;
         border-color: var(--accent);
         box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.3);
       }
@@ -96,9 +87,6 @@
       .form-label {
         color: var(--light);
         font-weight: 600;
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
-        display: block;
       }
 
       /* Sign In Button */
@@ -106,15 +94,7 @@
         background: linear-gradient(135deg, var(--primary), var(--blue));
         color: white;
         font-weight: 700;
-        font-size: 1rem;
-        padding: 0.75rem;
-        border-radius: 0.75rem;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         transition: all 0.2s ease;
-        margin-top: 1rem;
       }
 
       .login-button:hover {
@@ -122,70 +102,34 @@
         box-shadow: 0 5px 15px rgba(251, 191, 36, 0.3);
       }
 
-      .login-button:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-      }
-
       /* Password Toggle */
       .password-toggle {
-        position: absolute;
-        right: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
         color: var(--primary);
         cursor: pointer;
-        font-size: 1.25rem;
       }
 
-      /* Error Message */
-      .error-message {
-        color: #f87171;
-        font-weight: 600;
-        font-size: 0.875rem;
-        text-align: center;
-        margin-top: 1rem;
+      /* Responsive Text Sizing */
+      .responsive-text {
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+      }
+
+      .responsive-subtext {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+      }
+
+      .responsive-form-text {
+        font-size: clamp(0.875rem, 2vw, 1rem);
+      }
+
+      /* Responsive Padding */
+      .responsive-padding {
+        padding: clamp(1.5rem, 5vw, 3rem);
       }
 
       /* Footer */
       footer {
         background: var(--card-bg);
         border-top: 1px solid #334155;
-        padding: 1.5rem;
-        margin-top: auto;
-      }
-
-      /* Responsive Adjustments */
-      @media (min-width: 640px) {
-        .hero-section {
-          height: 35vh;
-        }
-        .login-container {
-          padding: 2.5rem;
-        }
-        .form-input {
-          padding: 1rem;
-          font-size: 1.1rem;
-        }
-        .login-button {
-          padding: 1rem;
-          font-size: 1.1rem;
-        }
-      }
-
-      @media (min-width: 768px) {
-        .hero-section {
-          height: 40vh;
-        }
-        .login-container {
-          padding: 3rem;
-        }
-        .form-input {
-          font-size: 1.2rem;
-        }
-        .login-button {
-          font-size: 1.2rem;
-        }
       }
 
       /* Animations */
@@ -201,67 +145,144 @@
       .animate-spin {
         animation: spin 1s linear infinite;
       }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-5px);
+        }
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(5px);
+        }
+      }
+
+      .animate-shake {
+        animation: shake 0.5s ease both;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-in {
+        animation: fadeInUp 0.6s ease forwards;
+      }
+
+      @keyframes scaleUp {
+        from {
+          transform: scale(0.95);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .animate-scale-up {
+        animation: scaleUp 0.8s ease forwards;
+      }
     </style>
   </head>
-  <body>
+  <body class="relative">
+    <!-- Theme Toggle -->
+    <button
+      id="themeToggle"
+      class="fixed top-4 right-4 bg-yellow-500 p-3 rounded-full text-gray-900 z-50"
+    >
+      <i class="ti ti-sun"></i>
+    </button>
+
     <!-- Hero Section -->
-    <div class="hero-section">
+    <div class="hero-section flex items-center justify-center text-center">
       <div>
         <h1
-          class="text-3xl md:text-4xl lg:text-5xl font-bold school-text-gradient school-font mb-2 md:mb-4"
+          class="responsive-text font-bold school-text-gradient school-font mb-2 md:mb-4"
         >
           Welcome to Hillrange Clubs
         </h1>
-        <p class="text-lg md:text-xl text-white opacity-95 school-font">
+        <p class="responsive-subtext text-white opacity-95 school-font">
           Connect, Engage, Thrive
         </p>
       </div>
     </div>
 
     <!-- Login Form -->
-    <main class="flex-grow">
-      <div class="login-container">
+    <div class="flex-grow container mx-auto px-4 sm:px-6">
+      <div class="login-container responsive-padding animate-scale-up">
         <div class="flex justify-center mb-4 md:mb-6">
           <i class="ti ti-school text-4xl md:text-5xl text-yellow-500"></i>
         </div>
         <h2
-          class="text-2xl md:text-3xl font-bold text-center school-text-gradient school-font mb-4 md:mb-6"
+          class="responsive-text font-bold text-center school-text-gradient school-font mb-4 md:mb-6"
         >
           Sign In to Your Account
         </h2>
-
-        <form id="loginForm" class="space-y-4">
+        <form id="loginForm" class="space-y-4 md:space-y-6">
           <div>
-            <label for="username" class="form-label">Username</label>
+            <label
+              for="username"
+              class="form-label responsive-form-text block mb-2"
+            >
+              Username
+            </label>
             <input
               type="text"
               id="username"
-              class="form-input"
+              class="form-input responsive-form-text p-3 md:p-4"
               required
               placeholder="Enter your username"
             />
           </div>
-
           <div class="relative">
-            <label for="password" class="form-label">Password</label>
+            <label
+              for="password"
+              class="form-label responsive-form-text block mb-2"
+            >
+              Password
+            </label>
             <input
               type="password"
               id="password"
-              class="form-input pr-12"
+              class="form-input responsive-form-text p-3 md:p-4 pr-12"
               required
               placeholder="Enter your password"
             />
-            <i id="passwordToggle" class="ti ti-eye password-toggle"></i>
+            <i
+              id="passwordToggle"
+              class="ti ti-eye password-toggle absolute right-3 top-[55%] text-xl"
+            ></i>
           </div>
-
-          <button type="submit" id="loginButton" class="login-button">
+          <button
+            type="submit"
+            id="loginButton"
+            class="login-button responsive-form-text w-full py-3 md:py-4 rounded-lg flex items-center justify-center"
+          >
             <i class="ti ti-login mr-2"></i> Sign In
           </button>
-
-          <p id="loginMessage" class="error-message"></p>
+          <p
+            id="loginMessage"
+            class="responsive-form-text text-center text-red-400"
+          ></p>
         </form>
-
-        <p class="text-center text-gray-400 mt-4 md:mt-6">
+        <p class="responsive-form-text text-center text-gray-400 mt-4 md:mt-6">
           Don't have an account?
           <a
             href="register.html"
@@ -271,28 +292,28 @@
           </a>
         </p>
       </div>
-    </main>
+    </div>
 
     <!-- Footer -->
-    <footer>
-      <div class="container mx-auto px-4">
+    <footer class="py-6 md:py-8">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row justify-between items-center">
           <div class="flex items-center mb-4 md:mb-0">
             <i
               class="ti ti-school text-2xl md:text-3xl text-yellow-500 mr-2"
             ></i>
-            <span class="text-xl font-bold school-text-gradient school-font">
+            <span
+              class="responsive-form-text font-bold school-text-gradient school-font"
+            >
               Hillrange Clubs
             </span>
           </div>
-
           <div class="mb-4 md:mb-0">
-            <p class="text-center text-gray-400">
+            <p class="responsive-form-text text-center text-gray-400">
               © 2023 Hillrange School. All rights reserved.
             </p>
           </div>
-
-          <div class="flex space-x-4">
+          <div class="flex space-x-4 md:space-x-6">
             <a href="#" class="text-gray-400 hover:text-yellow-500">
               <i class="ti ti-brand-facebook text-xl md:text-2xl"></i>
             </a>
@@ -322,7 +343,7 @@
           }
         });
 
-      // Form Submission
+      // Form Submission with Real API Call
       document
         .getElementById("loginForm")
         .addEventListener("submit", async function (e) {
@@ -335,10 +356,11 @@
 
           // Clear previous messages
           loginMessage.textContent = "";
-          loginMessage.classList.remove("text-green-500");
+          loginMessage.classList.remove("text-green-500", "animate-shake");
 
           if (!username || !password) {
             loginMessage.textContent = "Please fill in all fields";
+            loginMessage.classList.add("animate-shake");
             return;
           }
 
@@ -347,22 +369,112 @@
             '<i class="ti ti-loader animate-spin mr-2"></i> Signing In...';
 
           try {
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1500));
+            const response = await fetch("/api/users/login", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify({
+                username: username,
+                password: password,
+              }),
+              credentials: "include", // Include cookies if needed
+            });
 
-            // On success
+            const data = await response.json();
+
+            if (!response.ok) {
+              throw new Error(data.message || "Login failed");
+            }
+
+            // Store user data and token
+            localStorage.setItem("loggedInUser", JSON.stringify(data.user));
+            if (data.token) {
+              localStorage.setItem("authToken", data.token);
+            }
+
+            // Update UI for success
             loginMessage.textContent = "Login successful! Redirecting...";
             loginMessage.classList.add("text-green-500");
 
+            // Redirect to dashboard or home page
             setTimeout(() => {
-              window.location.href = "home.html";
+              window.location.href = data.redirectTo || "/dashboard.html";
             }, 1000);
           } catch (error) {
-            loginMessage.textContent = "Login failed. Please try again.";
+            console.error("Login error:", error);
+            loginMessage.textContent =
+              error.message || "Login failed. Please try again.";
+            loginMessage.classList.add("animate-shake");
+          } finally {
             loginButton.disabled = false;
             loginButton.innerHTML = '<i class="ti ti-login mr-2"></i> Sign In';
           }
         });
+
+      // Initialize Page with GSAP Animations
+      document.addEventListener("DOMContentLoaded", () => {
+        gsap.from(".hero-section", {
+          opacity: 0,
+          y: -50,
+          duration: 0.8,
+          ease: "power2.out",
+        });
+
+        gsap.from(".login-container", {
+          scale: 0.95,
+          opacity: 0,
+          duration: 0.6,
+          delay: 0.3,
+          ease: "power2.out",
+        });
+
+        gsap.from(".form-input, .form-label", {
+          y: 10,
+          opacity: 0,
+          stagger: 0.1,
+          duration: 0.4,
+          delay: 0.5,
+          ease: "power2.out",
+        });
+
+        gsap.from(".login-button", {
+          y: 10,
+          opacity: 0,
+          duration: 0.5,
+          delay: 0.7,
+          ease: "power2.out",
+        });
+
+        gsap.from("#themeToggle", {
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.5,
+          delay: 0.9,
+          ease: "power2.out",
+        });
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById("themeToggle");
+        themeToggle.addEventListener("click", () => {
+          document.body.classList.toggle("light-theme");
+          const icon = themeToggle.querySelector("i");
+          if (document.body.classList.contains("light-theme")) {
+            icon.classList.replace("ti-sun", "ti-moon");
+            document.body.style.setProperty("--background", "#f8fafc");
+            document.body.style.setProperty("--card-bg", "#ffffff");
+            document.body.style.setProperty("--input-bg", "#f1f5f9");
+            document.body.style.setProperty("--text-light", "#1e293b");
+          } else {
+            icon.classList.replace("ti-moon", "ti-sun");
+            document.body.style.setProperty("--background", "#0f172a");
+            document.body.style.setProperty("--card-bg", "#1e293b");
+            document.body.style.setProperty("--input-bg", "#334155");
+            document.body.style.setProperty("--text-light", "#e2e8f0");
+          }
+        });
+      });
     </script>
   </body>
 </html>
